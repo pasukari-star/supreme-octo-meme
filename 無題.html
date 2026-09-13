@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIRIUS 粉体塗装 条件・実績管理 SYSTEM</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Tailwind CSS & Preflight無効化 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: { preflight: false },
+      theme: { extend: { colors: { industry: { 50: '#f4f6f8', 900: '#0f172a' } } } }
+    }
+  </script>
+
+  <!-- FontAwesome & React / Babel -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+    :root {
+      --bg-main: #f1f5f9;
+      --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #eef2ff 100%);
+      --bg-card: rgba(255, 255, 255, 0.92);
+      --bg-card-hover: rgba(255, 255, 255, 0.98);
+      --bg-input: #ffffff;
+      --border-color: rgba(203, 213, 225, 0.8);
+      --border-focus: #0284c7;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --accent-cyan: #0284c7;
+      --accent-cyan-glow: rgba(2, 132, 199, 0.15);
+      --accent-indigo: #4f46e5;
+      --accent-danger: #e11d48;
+      --accent-danger-glow: rgba(225, 29, 72, 0.1);
+      --accent-success: #059669;
+      --accent-warning: #d97706;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow-glow: 0 10px 30px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans JP', 'Plus Jakarta Sans', -apple-system, sans-serif; }
+    
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      padding: 16px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; transition: max-width 0.3s ease; }
+
+    #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; }
+    .login-card {
+      background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      width: 100%; max-width: 440px; padding: 48px 32px; border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); text-align: center; border: 1px solid var(--border-color);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .icon-badge {
+      width: 68px; height: 68px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+      color: #fff; border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 30px; margin: 0 auto 20px; box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+    }
+    .login-brand {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: 3px;
+      background: linear-gradient(135deg, #0284c7, #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-align: center; margin-bottom: 6px;
+    }
+    .login-title { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; text-align: center; }
+    .login-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 28px; text-align: center; }
+    .login-input {
+      width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color); border-radius: var(--radius); font-size: 24px;
+      text-align: center; letter-spacing: 10px; outline: none; background: var(--bg-input); color: var(--text-main); font-weight: bold;
+      transition: all 0.3s ease; height: 56px;
+    }
+    .login-input:focus { border-color: var(--border-focus); box-shadow: 0 0 15px var(--accent-cyan-glow); }
+    .btn-login {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo)); color: #fff; border: none; padding: 16px;
+      border-radius: var(--radius); font-size: 15px; font-weight: bold; width: 100%; margin-top: 20px; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.25); transition: transform 0.2s, opacity 0.2s; height: 52px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-login:hover { transform: translateY(-1px); opacity: 0.95; }
+
+    #app-screen { display: none; background: transparent; padding: 0; }
+    .header-bar { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); gap: 12px; }
+    .header-title-box { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
+    .app-title { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif; font-size: 19px; font-weight: 800; letter-spacing: 0.5px; color: var(--text-main); text-align: center; }
+    .header-info-row { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; width: 100%; min-height: 32px; }
+    .sync-status { font-size: 11px; color: var(--accent-success); font-weight: 700; background: rgba(5, 150, 105, 0.08); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(5, 150, 105, 0.2); display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .realtime-clock {
+      font-family: 'Plus Jakarta Sans', monospace; font-size: 12px; font-weight: 700; color: var(--accent-cyan);
+      background: rgba(2, 132, 199, 0.06); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(2, 132, 199, 0.2);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; min-width: 250px; box-sizing: border-box;
+    }
+
+    .header-btn-group { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; width: 100%; }
+    .btn-settings { 
+      background: #ffffff; color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: var(--radius-sm); 
+      font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .btn-settings:hover { background: #f8fafc; color: var(--text-main); border-color: #cbd5e1; }
+    .btn-admin-setting { background: rgba(79, 70, 229, 0.04); color: var(--accent-indigo); border: 1px solid rgba(79, 70, 229, 0.2); }
+    .btn-admin-setting:hover { background: rgba(79, 70, 229, 0.1); color: var(--accent-indigo); border-color: rgba(79, 70, 229, 0.4); }
+
+    .main-nav-tabs { display: flex; gap: 8px; margin-bottom: 22px; background: rgba(226, 232, 240, 0.7); padding: 6px; border-radius: var(--radius); border: 1px solid var(--border-color); }
+    .main-tab-btn { flex: 1; padding: 12px; border: none; background: transparent; font-weight: 700; font-size: 13px; color: var(--text-muted); border-radius: 11px; cursor: pointer; text-align: center; transition: all 0.25s; }
+    .main-tab-btn.active { background: #ffffff; color: var(--accent-cyan); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid rgba(203, 213, 225, 0.6); }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+    .card { background: var(--bg-card); backdrop-filter: blur(12px); padding: 16px 10px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-glow); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .card-title { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; text-align: center; }
+    .card-value { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 19px; font-weight: 800; color: var(--accent-cyan); line-height: 1.2; }
+    .card-value.ng-val { color: var(--accent-danger); }
+    .unit { font-size: 11px; font-weight: normal; color: var(--text-dim); margin-left: 2px; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(203, 213, 225, 0.9); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 1); }
+
+    .text-danger { color: var(--accent-danger) !important; font-weight: bold; }
+
+    .cause-analysis-card { background: var(--bg-card); backdrop-filter: blur(12px); padding: 18px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 16px; box-shadow: var(--shadow-glow); }
+    .cause-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .cause-tabs { display: flex; gap: 6px; }
+    .btn-tab { padding: 5px 12px; font-size: 11px; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .btn-tab.active { background: var(--accent-cyan); color: #fff; border-color: var(--accent-cyan); }
+    .cause-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; max-height: 180px; overflow-y: auto; padding-right: 4px; }
+    .cause-item { font-size: 12px; }
+    .cause-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; color: var(--text-muted); }
+    .cause-bar-bg { background: #e2e8f0; height: 7px; border-radius: 4px; overflow: hidden; }
+    .cause-bar-fill { background: linear-gradient(90deg, #e11d48, #f43f5e); height: 100%; width: 0%; transition: width 0.4s ease-out; }
+
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; font-weight: 800; color: #fff; margin-right: 6px; flex-shrink: 0; }
+    .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3); }
+    .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); box-shadow: 0 2px 4px rgba(100, 116, 139, 0.3); }
+    .rank-3 { background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 2px 4px rgba(180, 83, 9, 0.3); }
+    .rank-other { background: #e2e8f0; color: #64748b; }
+
+    .form-section { background: var(--bg-card); backdrop-filter: blur(12px); padding: 22px; border-radius: var(--radius); margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow-glow); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; align-items: start; }
+    .full { grid-column: span 2; }
+    .prod-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .prod-scroll-container { max-height: 220px; overflow-y: auto; padding-right: 6px; border: 1px solid var(--border-color); background: rgba(248, 250, 252, 0.6); border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .cause-input-row { display: grid; grid-template-columns: 3fr 1fr; gap: 8px; align-items: center; }
+    .multi-select-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .multi-select-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    
+    label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; margin-bottom: 6px; letter-spacing: 0.3px; flex-wrap: wrap; gap: 4px; }
+    .optional-tag { font-size: 10px; color: var(--text-dim); font-weight: normal; margin-left: 4px; }
+    
+    input, select { width: 100%; height: 42px; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; outline: none; background: var(--bg-input); color: var(--text-main); transition: all 0.2s; display: flex; align-items: center; }
+    input:focus, select:focus { border-color: var(--border-focus); background: #ffffff; box-shadow: 0 0 10px var(--accent-cyan-glow); }
+    
+    input[type="date"].filter-date-input { position: relative; color: var(--text-main); }
+    input[type="date"].filter-date-input:invalid, input[type="date"].filter-date-input:empty { color: transparent; }
+    input[type="date"].filter-date-input:invalid::before, input[type="date"].filter-date-input:empty::before { content: "📅 日付を選択"; color: var(--text-dim); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 12px; }
+
+    .ng-input-container { background: rgba(225, 29, 72, 0.03); border: 1px dashed rgba(225, 29, 72, 0.3); padding: 18px; border-radius: var(--radius-sm); margin-top: 6px; display: none; }
+    .ng-input-container.active { display: block; }
+    .ng-title { font-size: 12.5px; font-weight: bold; color: var(--accent-danger); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+    .btn-submit { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo)); color: #fff; border: none; padding: 14px 20px; border-radius: var(--radius-sm); font-size: 14.5px; font-weight: 700; width: 100%; margin-top: 22px; cursor: pointer; box-shadow: 0 6px 18px rgba(2, 132, 199, 0.25); transition: all 0.25s ease; height: 50px; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.5px; }
+    .btn-submit:hover { opacity: 0.96; transform: translateY(-2px); box-shadow: 0 8px 22px rgba(2, 132, 199, 0.35); }
+    .btn-submit:active { transform: translateY(0); box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2); }
+
+    .tochaku-res-card-dark { background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border-radius: var(--radius-sm); padding: 22px; margin-top: 18px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .eval-badge { font-size: 11.5px; padding: 10px 14px; border-radius: var(--radius-sm); margin-top: 14px; font-weight: bold; text-align: center; }
+    .eval-good { background: rgba(5, 150, 105, 0.2); color: #34d399; border: 1px solid rgba(5, 150, 105, 0.4); }
+    .eval-warn { background: rgba(217, 119, 6, 0.2); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.4); }
+    .eval-danger { background: rgba(225, 29, 72, 0.2); color: #f87171; border: 1px solid rgba(225, 29, 72, 0.4); }
+
+    .next-guide-banner { background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(79, 70, 229, 0.12)); border: 1.5px solid rgba(2, 132, 199, 0.4); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 12.5px; color: var(--accent-cyan); font-weight: 700; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08); animation: pulse-guide 2s infinite; }
+    @keyframes pulse-guide { 0% { border-color: rgba(2, 132, 199, 0.4); } 50% { border-color: rgba(2, 132, 199, 0.9); box-shadow: 0 0 15px rgba(2, 132, 199, 0.25); } 100% { border-color: rgba(2, 132, 199, 0.4); } }
+    .input-highlight { border: 2px solid var(--accent-cyan) !important; background-color: rgba(224, 242, 254, 0.5) !important; box-shadow: 0 0 12px rgba(2, 132, 199, 0.3) !important; }
+    .auto-calc-badge { font-size: 9.5px; background: rgba(2, 132, 199, 0.12); color: var(--accent-cyan); padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: auto; border: 1px solid rgba(2, 132, 199, 0.25); white-space: nowrap; }
+
+    .list-section { background: var(--bg-card); backdrop-filter: blur(12px); padding: 22px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-glow); }
+    .list-title { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 14px; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .filter-box { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
+    .filter-box input { font-size: 12px; height: 38px; }
+    .btn-filter-ng { height: 38px; padding: 0 14px; background: rgba(225, 29, 72, 0.08); color: var(--accent-danger); border: 1px solid rgba(225, 29, 72, 0.2); border-radius: var(--radius-sm); font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-filter-ng:hover { background: rgba(225, 29, 72, 0.15); }
+    .btn-clear { height: 38px; padding: 0 14px; background: #ffffff; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-clear:hover { background: #f8fafc; color: var(--text-main); }
+
+    .card-item { background: #ffffff; border: 1px solid var(--border-color); border-left: 4px solid var(--accent-cyan); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 14px; font-size: 12px; line-height: 1.6; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .card-item:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.05); }
+    .card-item.ng-item { border-left-color: var(--accent-danger); background: #fff1f2; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; font-weight: bold; font-size: 13px; color: var(--text-main); flex-wrap: wrap; gap: 6px; }
+    .card-data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 12px; margin-bottom: 8px; }
+    .card-data-row { display: flex; align-items: flex-start; gap: 6px; word-break: break-all; }
+    .card-data-row.full-row { grid-column: span 2; white-space: normal; }
+    .card-label { color: var(--text-dim); font-weight: 500; min-width: 75px; flex-shrink: 0; }
+    .card-value-text { color: var(--text-main); font-weight: 600; flex: 1; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+
+    @media (max-width: 600px) {
+      .card-data-grid { grid-template-columns: 1fr; gap: 6px; }
+      .card-data-row.full-row { grid-column: span 1; }
+      body { padding: 10px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .full { grid-column: span 1; }
+      .multi-select-grid-3, .multi-select-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .badge-ok { background: rgba(5, 150, 105, 0.1); color: #047857; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid rgba(5, 150, 105, 0.2); }
+    .badge-ng { background: rgba(225, 29, 72, 0.1); color: #be123c; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid rgba(225, 29, 72, 0.2); }
+    .badge-tochaku { background: rgba(2, 132, 199, 0.1); color: #0369a1; border: 1px solid rgba(2, 132, 199, 0.2); padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    
+    .card-footer-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border-color); flex-wrap: wrap; }
+    .btn-del { background: rgba(225, 29, 72, 0.08); color: var(--accent-danger); border: 1px solid rgba(225, 29, 72, 0.2); padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+    .btn-del:hover { background: rgba(225, 29, 72, 0.18); }
+    .btn-edit { background: rgba(2, 132, 199, 0.08); color: var(--accent-cyan); border: 1px solid rgba(2, 132, 199, 0.2); padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+    .btn-edit:hover { background: rgba(2, 132, 199, 0.18); }
+    .ng-memo-box { background: rgba(225, 29, 72, 0.05); border: 1px solid rgba(225, 29, 72, 0.2); color: #9f1239; padding: 10px 12px; border-radius: 6px; margin: 8px 0; font-size: 11.5px; line-height: 1.5; word-break: break-all; }
+    
+    .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px; }
+    .btn-page { background: #ffffff; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.2s; height: 36px; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-page:hover:not(:disabled) { background: #f8fafc; color: var(--text-main); }
+    .btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
+    .page-info { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+    .empty-msg { text-align: center; color: var(--text-dim); padding: 32px 16px; font-size: 13px; }
+
+    @media (min-width: 992px) {
+      .container { max-width: 1280px; }
+      .header-bar { flex-direction: row; justify-content: space-between; text-align: left; align-items: center; padding-bottom: 18px; }
+      .header-title-box { align-items: flex-start; }
+      .app-title { font-size: 21px; text-align: left; }
+      .header-info-row { justify-content: flex-start; }
+      .header-btn-group { width: auto; justify-content: flex-end; }
+      .summary-grid { gap: 14px; }
+      .card-value { font-size: 23px; }
+      .pc-two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+      .cause-list { max-height: 200px; }
+      .form-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .multi-select-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .multi-select-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+    .modal-content { background: var(--bg-card); border-radius: var(--radius); width: 100%; max-width: 480px; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); max-height: 90vh; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-title { font-size: 16px; font-weight: bold; color: var(--text-main); display: flex; align-items: center; gap: 8px;}
+    .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); line-height: 1;}
+    .btn-close:hover { color: var(--accent-danger); }
+    .product-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding-right: 4px; }
+    .product-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; gap: 8px;}
+    .product-add-group { display: flex; gap: 8px; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body>
+
+<datalist id="registered-products"></datalist>
+
+<div class="container">
+  <!-- ログイン画面 -->
+  <div id="login-screen">
+    <form class="login-card" onsubmit="checkPassword(); return false;">
+      <div class="icon-badge">✨</div>
+      <div class="login-brand">SIRIUS</div>
+      <div class="login-title">粉体塗装 条件・実績管理 SYSTEM</div>
+      <div class="login-sub">パスワードを入力してください</div>
+      <input type="password" id="pass-input" class="login-input" placeholder="••••" autofocus>
+      <button type="submit" class="btn-login"><i class="fa-solid fa-right-to-bracket mr-2"></i> LOGIN</button>
+    </form>
+  </div>
+
+  <!-- メイン画面 -->
+  <div id="app-screen">
+    <div class="header-bar">
+      <div class="header-title-box">
+        <div class="app-title">SIRIUS 粉体塗装 条件・実績管理 SYSTEM</div>
+        <div class="header-info-row">
+          <div class="sync-status">🟢 リアルタイム共有中</div>
+          <div class="realtime-clock" id="realtime-clock-display">📅 2026-09-12 (土) 00:00:00</div>
+        </div>
+      </div>
+      <div class="header-btn-group">
+        <button type="button" class="btn-settings" onclick="openOperatorSettings()">👷 塗装者登録</button>
+        <button type="button" class="btn-settings" onclick="openProductSettings()">🏷 品名登録</button>
+        <button type="button" class="btn-settings" onclick="openCauseSettings()">⚙️ 原因内容設定</button>
+        <button type="button" class="btn-settings" onclick="openPasswordSettings()">🔑 パスワード設定</button>
+        <button type="button" class="btn-settings btn-admin-setting" onclick="openAdminPasswordSettings()">👑 管理者パス設定</button>
+      </div>
+    </div>
+
+    <div class="main-nav-tabs">
+      <button type="button" class="main-tab-btn active" id="tab-nav-main" onclick="switchMainTab('main')">📋 実績登録・集計</button>
+      <button type="button" class="main-tab-btn" id="tab-nav-tochaku" onclick="switchMainTab('tochaku')">🎯 塗着率・歩留まり解析</button>
+      <button type="button" class="main-tab-btn" id="tab-nav-calc" onclick="switchMainTab('calc')">🧮 塗料使用量算出</button>
+    </div>
+
+    <!-- Tab 1: 実績管理 -->
+    <div id="tab-content-main">
+      <div class="summary-grid">
+        <div class="card"><div class="card-title">週間 塗料使用量</div><div class="card-value" id="s-week-weight">0 kg</div></div>
+        <div class="card"><div class="card-title">月間 塗料使用量</div><div class="card-value" id="s-month-weight">0 kg</div></div>
+        <div class="card"><div class="card-title">年間 塗料使用量</div><div class="card-value" id="s-year-weight">0 kg</div></div>
+        <div class="card"><div class="card-title">週間 再塗装率</div><div class="card-value ng-val" id="s-week-ng">0 <span class="unit">%</span></div></div>
+        <div class="card"><div class="card-title">月間 再塗装率</div><div class="card-value ng-val" id="s-month-ng">0 <span class="unit">%</span></div></div>
+        <div class="card"><div class="card-title">年間 再塗装率</div><div class="card-value ng-val" id="s-year-ng">0 <span class="unit">%</span></div></div>
+      </div>
+
+      <div class="pc-two-columns">
+        <div>
+          <div class="form-section">
+            <form id="p-form">
+              <div class="form-grid">
+                <div class="full"><label>日付</label><input type="date" id="date" required onchange="onDateChanged()"></div>
+                <div class="full">
+                  <label>品名・塗装台数 (最大10種類)</label>
+                  <div class="prod-scroll-container">
+                    <div class="prod-grid"><input type="text" id="product1" placeholder="品名1 (例: 制御盤A)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity1" placeholder="台数1" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product2" placeholder="品名2 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity2" placeholder="台数2" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product3" placeholder="品名3 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity3" placeholder="台数3" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product4" placeholder="品名4 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity4" placeholder="台数4" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product5" placeholder="品名5 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity5" placeholder="台数5" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product6" placeholder="品名6 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity6" placeholder="台数6" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product7" placeholder="品名7 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity7" placeholder="台数7" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product8" placeholder="品名8 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity8" placeholder="台数8" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product9" placeholder="品名9 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity9" placeholder="台数9" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="product10" placeholder="品名10 (任意)" oninput="updateNGOptions()" list="registered-products"><input type="number" id="quantity10" placeholder="台数10" min="1"></div>
+                  </div>
+                </div>
+
+                <div class="full">
+                  <label>塗装者 (最大3名まで同時に選択可能)</label>
+                  <div class="multi-select-grid-3">
+                    <select id="operator1" required></select>
+                    <select id="operator2"></select>
+                    <select id="operator3"></select>
+                  </div>
+                </div>
+
+                <div class="full">
+                  <label>使用塗装機 (最大2種まで選択可能)</label>
+                  <div class="multi-select-grid-2">
+                    <select id="machine1" required>
+                      <option value="旭サナック" selected>旭サナック</option>
+                      <option value="ワグナー">ワグナー</option>
+                      <option value="ワグナーカップガン">ワグナーカップガン</option>
+                    </select>
+                    <select id="machine2">
+                      <option value="" selected>-- 2台目なし --</option>
+                      <option value="旭サナック">旭サナック</option>
+                      <option value="ワグナー">ワグナー</option>
+                      <option value="ワグナーカップガン">ワグナーカップガン</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="full">
+                  <label>天候自動取得 地域選択</label>
+                  <select id="location-select" onchange="onLocationChanged()">
+                    <option value="fukuyama" selected>広島県 福山市 (既定)</option>
+                    <option value="hiroshima">広島県 広島市</option>
+                    <option value="okayama">岡山県 岡山市</option>
+                    <option value="tokyo">東京都 千代田区</option>
+                    <option value="osaka">大阪府 大阪市</option>
+                    <option value="nagoya">愛知県 名古屋市</option>
+                    <option value="fukuoka">福岡県 福岡市</option>
+                    <option value="sendai">宮城県 仙台市</option>
+                    <option value="sapporo">北海道 札幌市</option>
+                  </select>
+                </div>
+
+                <div><label>天気 <span class="auto-calc-badge">✨ 自動取得</span></label><select id="weather"><option value="晴れ">晴れ</option><option value="曇り">曇り</option><option value="雨">雨</option><option value="雪">雪</option></select></div>
+                <div><label>気温 (℃) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="temp" step="0.1" placeholder="22.5"></div>
+                <div class="full"><label>湿度 (%) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="humidity" step="0.1" placeholder="55"></div>
+
+                <div><label>使用塗料 (kg)</label><input type="number" id="paint_weight" step="any" required placeholder="例: 5.3"></div>
+                <div><label>平均膜厚 (μm)<span class="optional-tag">(任意)</span></label><input type="number" id="thickness" step="0.1" value="50" placeholder="未入力OK (例: 50)"></div>
+                <div><label>設定電圧 (kV)</label><input type="number" id="voltage" step="0.1" value="50"></div>
+                <div><label>設定電流 (μA)</label><input type="number" id="current" step="0.1" value="20"></div>
+                <div><label>焼付温度 (℃)</label><input type="number" id="bake_temp" step="1" value="200" required></div>
+                <div><label>焼付時間 (分)</label><input type="number" id="bake_time" step="1" value="20" required></div>
+
+                <div class="full"><label>判定</label>
+                  <select id="status" onchange="toggleNGSection()">
+                    <option value="OK">OK (全数合格)</option>
+                    <option value="NG" class="text-danger">再塗装(NG)</option>
+                  </select>
+                </div>
+
+                <div class="full">
+                  <div id="ng-section" class="ng-input-container">
+                    <div class="ng-title">🚨 <span class="text-danger">再塗装(NG)</span>の詳細を入力してください</div>
+                    <div class="form-grid">
+                      <div class="full"><label><span class="text-danger">再塗装(NG)</span>発生品名</label><select id="ng_product_select"></select></div>
+                      <div class="full"><label>不具合の原因 1 と その個数 (必須)</label><div class="cause-input-row"><select id="ng_cause_select1"></select><input type="number" id="ng_cause_qty1" placeholder="個数" min="1" value="1"></div></div>
+                      <div class="full"><label>不具合の原因 2 と その個数 (任意)</label><div class="cause-input-row"><select id="ng_cause_select2"></select><input type="number" id="ng_cause_qty2" placeholder="個数" min="1"></div></div>
+                      <div class="full"><label>不具合の原因 3 と その個数 (任意)</label><div class="cause-input-row"><select id="ng_cause_select3"></select><input type="number" id="ng_cause_qty3" placeholder="個数" min="1"></div></div>
+                      <div class="full"><label>補足メモ・具体的な症状</label><input type="text" id="ng_memo" placeholder="例: ブツ2個、弾き1個発生"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="full"><label>特記事項・メモ</label><input type="text" id="memo" placeholder="作業特記事項など"></div>
+              </div>
+              <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> 実績を登録・保存</button>
+            </form>
+          </div>
+        </div>
+
+        <div>
+          <div class="cause-analysis-card" style="padding-bottom: 4px; margin-bottom: 12px; border-bottom: none; border-radius: var(--radius) var(--radius) 0 0;">
+            <div class="cause-title" style="margin-bottom: 0;">
+              <span>📈 統計・各種ランキング表示</span>
+              <div class="cause-tabs">
+                <button type="button" class="btn-tab active" id="tab-week" onclick="setCauseRange('week')">週間</button>
+                <button type="button" class="btn-tab" id="tab-month" onclick="setCauseRange('month')">月間</button>
+                <button type="button" class="btn-tab" id="tab-year" onclick="setCauseRange('year')">年間</button>
+              </div>
+            </div>
+          </div>
+          <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0;"><div class="cause-title" style="font-size: 12px;">🚨 <span class="text-danger">再塗装(NG)</span> 発生原因</div><div class="cause-list" id="cause-analysis-list"></div></div>
+          <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0;"><div class="cause-title" style="font-size: 12px;">📦 品名別 <span class="text-danger">再塗装(NG)</span> 台数順</div><div class="cause-list" id="product-analysis-list"></div></div>
+          <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0; padding: 12px 18px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(2, 132, 199, 0.08)); border-left: 4px solid var(--accent-indigo);">
+            <button type="button" onclick="openTroubleModal()" style="width: 100%; border: none; background: linear-gradient(135deg, var(--accent-indigo), #3b82f6); color: #ffffff; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); transition: all 0.2s;">
+              <i class="fa-solid fa-spray-can-sparkles" style="font-size: 15px;"></i><span>💡 不具合でお困りの方はこちら（不具合原因・対策DB）</span><span style="font-size: 10px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; white-space: nowrap; margin-left: auto;">確認する ▶</span>
+            </button>
+          </div>
+          <div class="cause-analysis-card" style="border-radius: 0 0 var(--radius) var(--radius); border-top: none; margin-bottom: 20px;"><div class="cause-title" style="font-size: 12px;">🎨 品名別 塗料総使用量</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
+
+          <div class="list-section">
+            <div class="list-title">📋 登録実績一覧</div>
+            <div class="filter-box">
+              <input type="text" id="search-input" placeholder="🔍 検索 (品名/担当/原因/メモ)" style="flex:1; min-width: 140px;" oninput="resetPageAndRender()">
+              <input type="date" id="filter-date" class="filter-date-input" style="flex:1; min-width: 120px;" onchange="resetPageAndRender()">
+              <button type="button" class="btn-filter-ng" onclick="filterNGOnly()">⚠️ 再塗装(NG)のみ</button>
+              <button type="button" class="btn-clear" id="btn-sort-toggle" onclick="toggleSortOrder()">📅 日付の最新順</button>
+              <button type="button" class="btn-clear" onclick="clearFilters()">クリア</button>
+            </div>
+            <div id="record-list"></div>
+            <div class="pagination" id="pagination-box">
+              <button type="button" class="btn-page" id="btn-prev" onclick="changePage(-1)">◀ 前の10件</button>
+              <span class="page-info" id="page-info">1 / 1 ページ (0件)</span>
+              <button type="button" class="btn-page" id="btn-next" onclick="changePage(1)">次の10件 ▶</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: 塗着率・歩留まり解析 -->
+    <div id="tab-content-tochaku" style="display: none;">
+      <div class="pc-two-columns">
+        <div>
+          <div class="form-section">
+            <div class="list-title" style="margin-bottom:6px;">🎯 塗着率・粉体歩留まり効率解析</div>
+            <div id="tochaku-guide-banner" class="next-guide-banner">👉 <span id="tochaku-guide-text">まず「使用した塗料量 (kg)」を入力してください。</span></div>
+            <form id="tochaku-form">
+              <div class="form-grid">
+                <div class="full"><label>日付</label><input type="date" id="t_date" required></div>
+                <div class="full">
+                  <label>ワーク品名・塗装台数 (最大5種類まで選択可能)</label>
+                  <div class="prod-scroll-container" style="max-height: 160px;">
+                    <div class="prod-grid"><input type="text" id="t_product1" placeholder="品名1 (例: BOXパネル)" list="registered-products"><input type="number" id="t_qty1" placeholder="台数1" min="1" value="1"></div>
+                    <div class="prod-grid"><input type="text" id="t_product2" placeholder="品名2 (任意)" list="registered-products"><input type="number" id="t_qty2" placeholder="台数2" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="t_product3" placeholder="品名3 (任意)" list="registered-products"><input type="number" id="t_qty3" placeholder="台数3" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="t_product4" placeholder="品名4 (任意)" list="registered-products"><input type="number" id="t_qty4" placeholder="台数4" min="1"></div>
+                    <div class="prod-grid"><input type="text" id="t_product5" placeholder="品名5 (任意)" list="registered-products"><input type="number" id="t_qty5" placeholder="台数5" min="1"></div>
+                  </div>
+                </div>
+                <div><label>塗装担当者</label><select id="t_operator"></select></div>
+                <div><label>塗料比重 (g/cm³)</label>
+                  <select id="t_density" onchange="runTochakuCalc()">
+                    <option value="1.40" selected>一般ポリエステル樹脂 (1.40)</option>
+                    <option value="1.50">高比重・ホワイト系 (1.50)</option>
+                    <option value="1.20">クリア系・低比重 (1.20)</option>
+                  </select>
+                </div>
+                <div><label>使用した塗料量 (kg) <span class="optional-tag">※必須</span></label><input type="number" id="t_used_paint_kg" step="any" required placeholder="例: 0.50 (kg)" oninput="runTochakuCalc()"></div>
+                <div><label id="label_attached_weight">焼付後の塗膜増量 (kg) <span class="auto-calc-badge" id="badge_attached_weight" style="display:none;">✨ 自動計算済</span><span class="optional-tag">※膜厚とどちらか</span></label><input type="number" id="t_attached_weight_kg" step="any" placeholder="例: 0.315 (実測値kg)" oninput="onUserModifiedAttachedWeight()"></div>
+                <div><label id="label_area">ワーク総表面積 (m²) <span class="auto-calc-badge" id="badge_area" style="display:none;">✨ 自動計算済</span></label><input type="number" id="t_area" step="0.01" placeholder="例: 1.2 (未入力OK)" oninput="onUserModifiedArea()"></div>
+                <div><label id="label_film">平均膜厚 (μm) <span class="auto-calc-badge" id="badge_film" style="display:none;">✨ 自動計算済</span></label><input type="number" id="t_film" step="0.1" placeholder="例: 75" oninput="onUserModifiedFilm()"></div>
+                <div class="full"><label id="label_measured_loss">実測ロス率 (%) <span class="optional-tag">※任意（実測値を優先指定して逆算する場合に入力）</span></label><input type="number" id="t_measured_loss" step="0.1" placeholder="例: 35.0 (任意入力)" oninput="onUserModifiedLoss()"></div>
+              </div>
+
+              <div class="tochaku-res-card-dark">
+                <div style="font-size: 13px; font-weight: bold; color: #38bdf8; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+                  <span>✨ 塗着率・歩留まり 解析プレビュー</span><span style="font-size: 10px; background: rgba(56, 189, 248, 0.2); padding: 3px 8px; border-radius: 10px; color: #38bdf8;" id="r_mode_badge">自動計算・理論モード</span>
+                </div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                  <div style="font-size: 12px; color: #94a3b8; margin-bottom: 6px; font-weight: bold;" id="r_rate_label">塗着率 <span id="r_rate_type" style="font-size: 10px; color: #38bdf8;"></span></div>
+                  <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 48px; font-weight: 800; color: #38bdf8; line-height: 1; text-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);"><span id="r_rate">0.0</span> <span style="font-size: 22px; color: #cbd5e1;">%</span></div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+                  <div style="background: rgba(255,255,255,0.06); padding: 10px 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); text-align: center;"><div style="font-size: 10px; color: #94a3b8; font-weight: bold;" id="label_box_area">総表面積</div><div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; color: #fff; margin-top: 4px; word-break: break-all;" id="r_expected_area">-</div></div>
+                  <div style="background: rgba(255,255,255,0.06); padding: 10px 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); text-align: center;"><div style="font-size: 10px; color: #94a3b8; font-weight: bold;" id="label_box_film">平均膜厚</div><div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; color: #38bdf8; margin-top: 4px; word-break: break-all;" id="r_expected_film">-</div></div>
+                  <div style="background: rgba(255,255,255,0.06); padding: 10px 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); text-align: center;"><div style="font-size: 10px; color: #94a3b8; font-weight: bold;">塗着重量 (付着量)</div><div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; color: #34d399; margin-top: 4px; word-break: break-all;" id="r_theoretical">-</div></div>
+                </div>
+                <div style="background: rgba(255,255,255,0.06); border-radius: 10px; padding: 14px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;"><span style="font-size: 11.5px; color: #fbbf24; font-weight: bold;">💨 ロス率合計</span><span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 800; color: #fbbf24;" id="r_loss_rate">0.0 %</span></div>
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 11px; color: #94a3b8; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px;">
+                    <div>🌀 吸い込みロス <span style="font-size:9px; background:rgba(255,255,255,0.1); padding:1px 4px; border-radius:4px; color:#cbd5e1;">予測</span>: <span id="r_suikomi_loss" style="color:#fff; font-weight:600;">0g (0.0%)</span></div>
+                    <div>📉 落下ロス <span style="font-size:9px; background:rgba(255,255,255,0.1); padding:1px 4px; border-radius:4px; color:#cbd5e1;">予測</span>: <span id="r_rakka_loss" style="color:#fff; font-weight:600;">0g (0.0%)</span></div>
+                  </div>
+                </div>
+                <div style="margin-top: 14px; font-size: 11px; color: #cbd5e1; line-height: 1.5; background: rgba(225, 29, 72, 0.12); border: 1px solid rgba(225, 29, 72, 0.3); padding: 12px; border-radius: 8px;">
+                  <div style="font-size: 11.5px; font-weight: bold; color: #f87171; margin-bottom: 4px;">⚠️ 塗着率・歩留まり自動計算に関するご注意</div>
+                  本画面の自動計算値は、入力数値に基づく理論上の目安です。全ての項目を正確に実測し入力することで、より確実なロス量や歩留まり率の把握が可能になります。工程最適化の指標としてご活用ください。
+                </div>
+                <div class="eval-badge eval-good" id="r_eval_badge">使用塗料量(kg)と、必要な計測項目を入力してください</div>
+              </div>
+              <button type="submit" class="btn-submit" style="margin-top: 18px;"><i class="fa-solid fa-cloud-arrow-up"></i> 解析結果をクラウドに保存</button>
+            </form>
+          </div>
+        </div>
+
+        <div>
+          <div class="list-section">
+            <div class="list-title">📋 塗着率・歩留まり測定ログ (kg対応＆複数品名対応)</div>
+            <div class="filter-box">
+              <input type="text" id="tochaku-search-input" placeholder="🔍 検索 (ワーク品名/担当者)" style="flex:1; min-width: 140px;" oninput="resetTochakuPageAndRender()">
+              <input type="date" id="tochaku-filter-date" class="filter-date-input" style="flex:1; min-width: 120px;" onchange="resetTochakuPageAndRender()">
+              <button type="button" class="btn-clear" onclick="clearTochakuFilters()">クリア</button>
+            </div>
+            <div id="tochaku-log-list"></div>
+            <div class="pagination" id="tochaku-pagination-box">
+              <button type="button" class="btn-page" id="btn-tochaku-prev" onclick="changeTochakuPage(-1)">◀ 前の10件</button>
+              <span class="page-info" id="tochaku-page-info">1 / 1 ページ (0件)</span>
+              <button type="button" class="btn-page" id="btn-tochaku-next" onclick="changeTochakuPage(1)">次の10件 ▶</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: 塗料使用量算出 -->
+    <div id="tab-content-calc" style="display: none;">
+      <div class="pc-two-columns">
+        <div>
+          <div class="form-section">
+            <div class="list-title">📐 対象ワーク設定</div>
+            <div class="form-grid">
+              <div class="full">
+                <label>ワーク形状 (用途別分類)</label>
+                <select id="c_work_type">
+                  <option value="panel">1. 制御盤・配電盤・BOX</option>
+                  <option value="flat">2. 平板・パネル</option>
+                  <option value="angle">3. アングル・Cチャン</option>
+                  <option value="pipe">4. パイプ・丸棒</option>
+                </select>
+              </div>
+            </div>
+            
+            <div id="c_sec_panel" class="calc-work-section">
+              <div class="ng-input-container active" style="margin-bottom:12px;">
+                <div class="ng-title">📦 本体寸法 (mm)</div>
+                <div class="form-grid">
+                  <div><label>幅 (W)</label><input type="number" id="c_w" placeholder="例: 800" oninput="autoCalcSubParts()"></div>
+                  <div><label>高さ (H)</label><input type="number" id="c_h" placeholder="例: 1200" oninput="autoCalcSubParts()"></div>
+                  <div><label>奥行 (D)</label><input type="number" id="c_d" placeholder="例: 300" oninput="autoCalcSubParts()"></div>
+                  <div><label>本体 台数</label><input type="number" id="c_qty" value="1" oninput="runPaintCalc()"></div>
+                  <div class="full" style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="c_panel_double" checked style="width:auto; height:auto;" onchange="autoCalcSubParts()">
+                    <label style="margin:0; font-size:12px; cursor:pointer;" for="c_panel_double">本体内外両面を塗装する</label>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                  <label style="font-size:12.5px; color:var(--text-main); margin:0; font-weight:700;">🔩 子部品・付属パーツ設定 (最大5種まで選択)</label>
+                  <button type="button" class="btn-settings" onclick="addSubPartRow()" style="padding:4px 10px; font-size:11px; height:28px;">＋ 追加 (残り <span id="sub-parts-remain">5</span>)</button>
+                </div>
+                <div style="font-size:11px; color:var(--text-dim); margin-bottom:10px;">配電盤や制御盤・スイッチBOXから考えられる子部品を選択すると、本体寸法(W×H×D)から適切な平米数が自動で予測・反映されます。</div>
+                <div id="sub-parts-list-container" style="display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; padding-right:2px;"></div>
+              </div>
+            </div>
+
+            <div id="c_sec_flat" class="calc-work-section" style="display:none;">
+              <div class="form-grid">
+                <div><label>幅 (W) mm</label><input type="number" id="c_flat_w" placeholder="例: 1000"></div>
+                <div><label>高さ (H) mm</label><input type="number" id="c_flat_h" placeholder="例: 1000"></div>
+                <div><label>枚数</label><input type="number" id="c_flat_qty" value="1"></div>
+                <div class="full" style="display:flex; align-items:center; gap:8px;">
+                  <input type="checkbox" id="c_flat_double" checked style="width:auto; height:auto;">
+                  <label style="margin:0; font-size:12px; cursor:pointer;" for="c_flat_double">表裏両面を塗装する</label>
+                </div>
+              </div>
+            </div>
+
+            <div id="c_sec_angle" class="calc-work-section" style="display:none;">
+              <div class="form-grid">
+                <div class="full">
+                  <label>形状タイプ</label>
+                  <select id="c_angle_shape">
+                    <option value="L">Lアングル (L字)</option>
+                    <option value="C">Cチャンネル (コの字)</option>
+                    <option value="Box">角パイプ (ロの字・外周4面のみ計算)</option>
+                    <option value="FlatBar">フラットバー (平鋼)</option>
+                  </select>
+                </div>
+                <div><label>辺 A / 背 (mm)</label><input type="number" id="c_angle_a" placeholder="例: 50"></div>
+                <div><label>辺 B / 袖 (mm)</label><input type="number" id="c_angle_b" placeholder="例: 50"></div>
+                <div><label>長さ L (mm)</label><input type="number" id="c_angle_l" placeholder="例: 2000"></div>
+                <div><label>本数</label><input type="number" id="c_angle_qty" value="1"></div>
+                <div class="full" id="c_angle_surface_container">
+                  <label>塗装面</label>
+                  <select id="c_angle_surface">
+                    <option value="all">全周 (表裏 / 内外両面)</option>
+                    <option value="outer">外周のみ (外側面のみ)</option>
+                    <option value="inner">内周のみ (内側面のみ)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="c_sec_pipe" class="calc-work-section" style="display:none;">
+              <div class="form-grid">
+                <div><label>直径 D (mm)</label><input type="number" id="c_pipe_d" placeholder="例: 100"></div>
+                <div><label>長さ L (mm)</label><input type="number" id="c_pipe_l" placeholder="例: 2000"></div>
+                <div class="full"><label>本数</label><input type="number" id="c_pipe_qty" value="1"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="list-title">⚙️ 塗装条件</div>
+            <div class="form-grid">
+              <div><label>目標膜厚 (μm)</label><input type="number" id="c_film" value="60" required></div>
+              <div><label>塗料比重 (g/cm³)</label>
+                <select id="c_density">
+                  <option value="1.40" selected>一般ポリエステル (1.40)</option>
+                  <option value="1.50">高比重・ホワイト系 (1.50)</option>
+                  <option value="1.20">クリア系・低比重 (1.20)</option>
+                  <option value="1.60">ジンクリッチ (1.60)</option>
+                </select>
+              </div>
+              <div class="full"><label>ロス率 (%) <span class="optional-tag">※ブースへの吸い込み等（初期値40%）</span></label><input type="number" id="c_loss" value="40" required></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="list-section" style="background: linear-gradient(135deg, #0f172a, #1e293b); color: white; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <div class="list-title" style="color: #e2e8f0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 24px;">✨ 必要塗料 算出結果</div>
+            <div style="text-align: center; margin-bottom: 28px;">
+              <div style="font-size: 14px; color: #94a3b8; margin-bottom: 12px; font-weight: bold;">推定使用塗料量</div>
+              <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 48px; font-weight: 800; color: #38bdf8; line-height: 1; text-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);" id="res_actual_kg_display">0 g</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.06); border-radius: 12px; padding: 18px; border: 1px solid rgba(255,255,255,0.1);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; color: #cbd5e1;">総塗装面積</span>
+                <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 700; color: #fff;"><span id="res_area">0.00</span> <span style="font-size: 12px; color: #94a3b8;">m²</span></span>
+              </div>
+            </div>
+            <div style="margin-top: 24px; font-size: 11.5px; color: #94a3b8; line-height: 1.6; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px;">
+              💡 <strong>計算式:</strong><br>
+              推定使用量 = (面積(m²) × 膜厚(μm) × 比重(g/cm³)) ÷ ((100 - ロス率) ÷ 100)
+            </div>
+            <div style="margin-top: 16px; font-size: 11.5px; color: #cbd5e1; line-height: 1.6; background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.2); padding: 14px; border-radius: 8px;">
+              <div style="font-size: 12.5px; font-weight: bold; color: #f87171; margin-bottom: 8px;">⚠️ 塗料使用量に関するご注意</div>
+              本計算による塗料使用量は、入力数値に基づく理論上の目安です。塗装条件を正確に設定することで、より実態に近い使用量の算出が可能になります。発注やコスト管理の参考値としてご活用ください。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 品名登録モーダル -->
+<div id="product-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">🏷 品名登録 (最大50件)</div>
+      <button class="btn-close" onclick="closeProductSettings()">×</button>
+    </div>
+    <div class="product-list" id="modal-product-list"></div>
+    <div class="product-add-group">
+      <input type="text" id="new-product-name" placeholder="新しい品名を入力" style="flex:1;">
+      <button type="button" class="btn-settings" onclick="addProduct()" style="background:var(--accent-cyan); color:#fff; border:none; height:42px; padding:0 20px;">追加</button>
+    </div>
+    <div style="font-size:11px; color:var(--text-dim); margin-top:8px; text-align:right;" id="product-count">0 / 50 件</div>
+  </div>
+</div>
+
+<!-- 原因内容設定モーダル -->
+<div id="cause-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ 不具合原因の編集・登録 (最大20種)</div>
+      <button class="btn-close" onclick="closeCauseSettings()">×</button>
+    </div>
+    <div class="product-list" id="modal-cause-list"></div>
+    <div class="product-add-group">
+      <input type="text" id="new-cause-name" placeholder="新しい原因を入力" style="flex:1;">
+      <button type="button" class="btn-settings" onclick="addCause()" style="background:var(--accent-cyan); color:#fff; border:none; height:42px; padding:0 20px;">追加</button>
+    </div>
+    <div style="font-size:11px; color:var(--text-dim); margin-top:8px; text-align:right;" id="cause-count">0 / 20 件</div>
+  </div>
+</div>
+
+<!-- 不具合DBモーダル -->
+<div id="trouble-db-modal" class="modal-overlay" style="z-index: 2000; display: none;">
+  <div class="modal-content" style="max-width: 960px; width: 95%; height: 90vh; padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 16px; border: 1px solid var(--border-color);">
+    <div style="background: #0f172a; color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <div style="font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-spray-can-sparkles text-blue-400" style="font-size: 18px;"></i> 粉体塗装 不具合レポート・対策データベース
+      </div>
+      <button type="button" class="btn-close" onclick="closeTroubleModal()" style="color: #94a3b8; font-size: 24px; background: none; border: none; cursor: pointer; line-height: 1;">×</button>
+    </div>
+    <div id="trouble-db-root" style="flex: 1; overflow-y: auto; background-color: #f8fafc;"></div>
+  </div>
+</div>
+
+<script>
+  let currentPassword = '1234', adminPassword = '19850715';
+  let operatorsList = ['担当者A', '担当者B', '担当者C'], productsList = []; 
+
+  const locationCoords = {
+    fukuyama: { lat: 34.4858, lon: 133.3642, label: '福山市' },
+    hiroshima: { lat: 34.3853, lon: 132.4553, label: '広島市' },
+    okayama: { lat: 34.6617, lon: 133.9350, label: '岡山市' },
+    tokyo: { lat: 35.6895, lon: 139.6917, label: '東京都' },
+    osaka: { lat: 34.6937, lon: 135.5023, label: '大阪市' },
+    nagoya: { lat: 35.1815, lon: 136.9066, label: '名古屋市' },
+    fukuoka: { lat: 33.5904, lon: 130.4017, label: '福岡市' },
+    sendai: { lat: 38.2682, lon: 140.8694, label: '仙台市' },
+    sapporo: { lat: 43.0642, lon: 141.3469, label: '札幌市' }
+  };
+
+  let causesList = [
+    'ブツ・ゴミ・毛など', '湧き', 'マスキング跡', '弾き', 'クレーター',
+    '傷', '肌荒れ', '色散り', '板金の凹み', '脱脂不良',
+    'アース不良', '膜厚不足', 'その他'
+  ];
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC4K1DTi4GLHmCRGHP1d4UglfzMSgNzSVM",
+    authDomain: "powdercoating-9254b.firebaseapp.com",
+    projectId: "powdercoating-9254b",
+    storageBucket: "powdercoating-9254b.firebasestorage.app",
+    messagingSenderId: "1094264514813",
+    appId: "1:1094264514813:web:a6edb6b3c96b12fbbc7694"
+  };
+
+  let db = null;
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  } catch (e) { console.error("Firebase 初期化エラー:", e); }
+
+  let globalRecords = [], globalTochakuRecords = [];
+  let ngFilterActive = false, sortByDate = false;
+  let editingRecordId = null, editingTochakuId = null;
+  let currentPage = 1, currentTochakuPage = 1;
+  const pageSize = 10, tochakuPageSize = 10;
+  let currentCauseRange = 'week';
+  let isAreaAuto = false, isFilmAuto = false, isAttachedUser = false;
+
+  let subPartsItems = [
+    { type: 'door', qty: 1, area: 0 },
+    { type: 'plate', qty: 1, area: 0 }
+  ];
+
+  function formatWeight(kgVal) {
+    const kg = parseFloat(kgVal) || 0;
+    return kg < 1 ? `${Math.round(kg * 1000)} g` : `${Number(kg.toFixed(3))} kg`;
+  }
+
+  function verifyAdminPassword() {
+    const inputPass = prompt('【管理者専用機能】\n管理者パスワードを入力してください:');
+    if (inputPass === null) return false;
+    if (inputPass.trim() === String(adminPassword).trim()) return true;
+    alert('管理者パスワードが違います。権限がありません。');
+    return false;
+  }
+
+  function getTodayString() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  }
+
+  function updateRealtimeClock() {
+    const clockEl = document.getElementById('realtime-clock-display');
+    if (!clockEl) return;
+    const now = new Date(), days = ['日', '月', '火', '水', '木', '金', '土'];
+    const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0'), d = String(now.getDate()).padStart(2, '0');
+    const dayOfWeek = days[now.getDay()], h = String(now.getHours()).padStart(2, '0'), min = String(now.getMinutes()).padStart(2, '0'), s = String(now.getSeconds()).padStart(2, '0');
+    clockEl.innerHTML = `📅 ${y}-${m}-${d} (${dayOfWeek}) ${h}:${min}:${s}`;
+  }
+  setInterval(updateRealtimeClock, 1000);
+
+  function fetchWeatherForDate(targetDateStr, callback) {
+    if (!targetDateStr) return;
+    const locKey = document.getElementById('location-select')?.value || 'fukuyama';
+    const loc = locationCoords[locKey] || locationCoords.fukuyama;
+    const diffDays = (new Date(getTodayString()).getTime() - new Date(targetDateStr).getTime()) / 86400000;
+    const url = (diffDays <= 5 && diffDays >= 0)
+      ? `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&start_date=${targetDateStr}&end_date=${targetDateStr}&hourly=temperature_2m,relative_humidity_2m,weather_code`
+      : `https://archive-api.open-meteo.com/v1/archive?latitude=${loc.lat}&longitude=${loc.lon}&start_date=${targetDateStr}&end_date=${targetDateStr}&hourly=temperature_2m,relative_humidity_2m,weather_code`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.hourly && data.hourly.temperature_2m && data.hourly.temperature_2m.length > 0) {
+          const idx = Math.min(12, data.hourly.temperature_2m.length - 1);
+          const temp = data.hourly.temperature_2m[idx];
+          const humidity = data.hourly.relative_humidity_2m ? data.hourly.relative_humidity_2m[idx] : 55;
+          const code = data.hourly.weather_code ? data.hourly.weather_code[idx] : 0;
+          let weatherStr = '晴れ';
+          if ([1, 2, 3].includes(code)) weatherStr = '曇り';
+          else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) weatherStr = '雨';
+          else if ([71, 73, 75, 77, 85, 86].includes(code)) weatherStr = '雪';
+          if (callback) callback({ temp, humidity, weather: weatherStr });
+        } else if (callback) callback(null);
+      })
+      .catch(() => callback && callback(null));
+  }
+
+  function fetchFukuyamaWeather() {
+    fetchWeatherForDate(getTodayString(), (wData) => {
+      if (wData) {
+        const tempEl = document.getElementById('temp'), humEl = document.getElementById('humidity'), weatherEl = document.getElementById('weather');
+        if (tempEl && !tempEl.value) tempEl.value = wData.temp;
+        if (humEl && !humEl.value) humEl.value = wData.humidity;
+        if (weatherEl) weatherEl.value = wData.weather;
+      }
+    });
+  }
+
+  function onLocationChanged() {
+    fetchWeatherForDate(document.getElementById('date').value || getTodayString(), (wData) => {
+      if (wData) {
+        document.getElementById('temp').value = wData.temp;
+        document.getElementById('humidity').value = wData.humidity;
+        document.getElementById('weather').value = wData.weather;
+      }
+    });
+  }
+
+  function onDateChanged() {
+    const dVal = document.getElementById('date').value;
+    if (dVal) {
+      fetchWeatherForDate(dVal, (wData) => {
+        if (wData) {
+          document.getElementById('temp').value = wData.temp;
+          document.getElementById('humidity').value = wData.humidity;
+          document.getElementById('weather').value = wData.weather;
+        }
+      });
+    }
+  }
+
+  function initCauseDropdowns() {
+    for (let i = 1; i <= 3; i++) {
+      const select = document.getElementById(`ng_cause_select${i}`);
+      if (!select) continue;
+      const currentVal = select.value;
+      select.innerHTML = '';
+      if (i > 1) select.appendChild(new Option('-- なし --', ''));
+      causesList.forEach(c => select.appendChild(new Option(c, c)));
+      if (currentVal && causesList.includes(currentVal)) select.value = currentVal;
+    }
+  }
+
+  if (db) {
+    db.collection('settings').doc('config').onSnapshot(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data.password != null) currentPassword = String(data.password);
+        if (data.adminPassword != null) adminPassword = String(data.adminPassword);
+        if (Array.isArray(data.operators) && data.operators.length > 0) operatorsList = data.operators;
+        if (Array.isArray(data.products)) productsList = data.products;
+        if (Array.isArray(data.causes) && data.causes.length > 0) causesList = data.causes;
+      }
+      updateOperatorSelect();
+      updateProductDatalist();
+      initCauseDropdowns();
+      renderCauseModalList();
+    });
+  }
+
+  function updateOperatorSelect() {
+    [document.getElementById('operator1'), document.getElementById('t_operator')].forEach(select => {
+      if (!select) return;
+      const val = select.value;
+      select.innerHTML = '';
+      operatorsList.forEach(op => select.appendChild(new Option(op, op)));
+      if (operatorsList.includes(val)) select.value = val;
+    });
+
+    [document.getElementById('operator2'), document.getElementById('operator3')].forEach(select => {
+      if (!select) return;
+      const val = select.value;
+      select.innerHTML = '<option value="">-- 2/3人目なし --</option>';
+      operatorsList.forEach(op => select.appendChild(new Option(op, op)));
+      if (val && operatorsList.includes(val)) select.value = val;
+    });
+  }
+
+  function updateProductDatalist() {
+    const dl = document.getElementById('registered-products');
+    if (!dl) return;
+    dl.innerHTML = '';
+    productsList.forEach(p => dl.appendChild(new Option(p, p)));
+    renderProductModalList(); 
+  }
+
+  function checkPassword() {
+    try {
+      const inputEl = document.getElementById('pass-input');
+      if (!inputEl) return;
+      let inputVal = (inputEl.value || '').trim().replace(/[Ａ-Ｚａ-ｚ０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
+      if (!inputVal) return alert('パスワードを入力してください。');
+      if (inputVal === String(currentPassword).trim()) {
+        try { sessionStorage.setItem('authenticated', 'true'); } catch (e) {}
+        showApp();
+      } else alert('パスワードが正しくありません。');
+    } catch (err) { alert('ログイン処理でエラーが発生しました: ' + err.message); }
+  }
+
+  function openOperatorSettings() {
+    if (!db) return alert('データベースに接続されていません');
+    const op1 = prompt('塗装者 1人目:', operatorsList[0] || '担当者A'); if (op1 === null) return;
+    const op2 = prompt('塗装者 2人目:', operatorsList[1] || '担当者B'); if (op2 === null) return;
+    const op3 = prompt('塗装者 3人目:', operatorsList[2] || '担当者C'); if (op3 === null) return;
+    db.collection('settings').doc('config').set({ operators: [op1.trim()||'担当者A', op2.trim()||'担当者B', op3.trim()||'担当者C'] }, { merge: true })
+      .then(() => alert('塗装者を更新しました！'));
+  }
+
+  function openPasswordSettings() {
+    if (!db || !verifyAdminPassword()) return;
+    const newPass = prompt('新しいログインパスワード:');
+    if (newPass && newPass.trim()) db.collection('settings').doc('config').set({ password: newPass.trim() }, { merge: true }).then(() => alert('ログインパスワードを変更しました！'));
+  }
+
+  function openAdminPasswordSettings() {
+    if (!db || !verifyAdminPassword()) return;
+    const newAdminPass = prompt('新しい管理者パスワード:');
+    if (newAdminPass && newAdminPass.trim()) db.collection('settings').doc('config').set({ adminPassword: newAdminPass.trim() }, { merge: true }).then(() => alert('管理者パスワードを変更しました！'));
+  }
+
+  function openProductSettings() {
+    if (!db || !verifyAdminPassword()) return;
+    document.getElementById('product-modal').style.display = 'flex';
+    renderProductModalList();
+  }
+  function closeProductSettings() { document.getElementById('product-modal').style.display = 'none'; }
+
+  function renderProductModalList() {
+    const listEl = document.getElementById('modal-product-list'), countEl = document.getElementById('product-count');
+    if (!listEl || !countEl) return;
+    listEl.innerHTML = '';
+    productsList.forEach((p, idx) => {
+      const item = document.createElement('div');
+      item.className = 'product-item';
+      item.innerHTML = `<span style="flex:1; word-break:break-all;">${p}</span><button type="button" class="btn-edit" onclick="editProduct(${idx})">編集</button><button type="button" class="btn-del" onclick="deleteProduct(${idx})">削除</button>`;
+      listEl.appendChild(item);
+    });
+    countEl.textContent = `${productsList.length} / 50 件`;
+  }
+
+  function addProduct() {
+    const input = document.getElementById('new-product-name'), name = input.value.trim();
+    if (!name) return;
+    if (productsList.includes(name)) return alert('既に登録されています。');
+    if (productsList.length >= 50) return alert('最大登録数(50件)に達しています。');
+    productsList.push(name); saveProducts(); input.value = '';
+  }
+
+  function editProduct(idx) {
+    const currentName = productsList[idx], newName = prompt('品名を編集:', currentName);
+    if (newName !== null && newName.trim() !== '') {
+      const trimmed = newName.trim();
+      if (productsList.includes(trimmed) && trimmed !== currentName) return alert('既に同じ品名が存在します。');
+      productsList[idx] = trimmed; saveProducts();
+    }
+  }
+
+  function deleteProduct(idx) {
+    if (confirm('この品名を削除しますか？')) { productsList.splice(idx, 1); saveProducts(); }
+  }
+
+  function saveProducts() {
+    if (db) db.collection('settings').doc('config').set({ products: productsList }, { merge: true }).catch(err => alert('保存エラー: ' + err.message));
+  }
+
+  function openCauseSettings() {
+    if (!db || !verifyAdminPassword()) return;
+    document.getElementById('cause-modal').style.display = 'flex';
+    renderCauseModalList();
+  }
+  function closeCauseSettings() { document.getElementById('cause-modal').style.display = 'none'; }
+
+  function renderCauseModalList() {
+    const listEl = document.getElementById('modal-cause-list'), countEl = document.getElementById('cause-count');
+    if (!listEl || !countEl) return;
+    listEl.innerHTML = '';
+    causesList.forEach((c, idx) => {
+      const item = document.createElement('div');
+      item.className = 'product-item';
+      item.innerHTML = `<span style="flex:1; word-break:break-all;">${c}</span><button type="button" class="btn-edit" onclick="editCauseItem(${idx})">編集</button><button type="button" class="btn-del" onclick="deleteCauseItem(${idx})">削除</button>`;
+      listEl.appendChild(item);
+    });
+    countEl.textContent = `${causesList.length} / 20 件`;
+  }
+
+  function addCause() {
+    const input = document.getElementById('new-cause-name'), name = input.value.trim();
+    if (!name) return;
+    if (causesList.includes(name)) return alert('既に登録されている原因です。');
+    if (causesList.length >= 20) return alert('原因の登録は最大20種までです。');
+    causesList.push(name); saveCauses(); input.value = '';
+  }
+
+  function editCauseItem(idx) {
+    const currentName = causesList[idx], newName = prompt('不具合原因を編集:', currentName);
+    if (newName !== null && newName.trim() !== '') {
+      const trimmed = newName.trim();
+      if (causesList.includes(trimmed) && trimmed !== currentName) return alert('既に同じ原因が存在します。');
+      causesList[idx] = trimmed; saveCauses();
+    }
+  }
+
+  function deleteCauseItem(idx) {
+    if (confirm('この原因を削除しますか？')) { causesList.splice(idx, 1); saveCauses(); }
+  }
+
+  function saveCauses() {
+    if (db) db.collection('settings').doc('config').set({ causes: causesList }, { merge: true }).then(() => { initCauseDropdowns(); renderCauseModalList(); }).catch(err => alert('保存エラー: ' + err.message));
+  }
+
+  function switchMainTab(tab) {
+    document.getElementById('tab-content-main').style.display = (tab === 'main') ? 'block' : 'none';
+    document.getElementById('tab-content-tochaku').style.display = (tab === 'tochaku') ? 'block' : 'none';
+    const calcTab = document.getElementById('tab-content-calc');
+    if (calcTab) calcTab.style.display = (tab === 'calc') ? 'block' : 'none';
+    document.getElementById('tab-nav-main').classList.toggle('active', tab === 'main');
+    document.getElementById('tab-nav-tochaku').classList.toggle('active', tab === 'tochaku');
+    const calcNav = document.getElementById('tab-nav-calc');
+    if (calcNav) calcNav.classList.toggle('active', tab === 'calc');
+  }
+
+  function toggleNGSection() {
+    const ngSec = document.getElementById('ng-section');
+    if (document.getElementById('status').value === 'NG') {
+      ngSec.classList.add('active'); updateNGOptions();
+    } else ngSec.classList.remove('active');
+  }
+
+  function updateNGOptions() {
+    const select = document.getElementById('ng_product_select');
+    if (!select) return;
+    select.innerHTML = '';
+    for (let i = 1; i <= 10; i++) {
+      const name = document.getElementById(`product${i}`).value.trim();
+      if (name) select.appendChild(new Option(name, name));
+    }
+    if (select.options.length === 0) select.appendChild(new Option("全品/特定なし", "全品"));
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    const today = getTodayString();
+    if (!document.getElementById('date').value) document.getElementById('date').value = today;
+    if (!document.getElementById('t_date').value) document.getElementById('t_date').value = today;
+    initCauseDropdowns(); updateOperatorSelect(); updateProductDatalist(); updateRealtimeClock(); fetchFukuyamaWeather(); startRealtimeSync(); runTochakuCalc();
+  }
+
+  window.onload = function() {
+    try { if (sessionStorage.getItem('authenticated') === 'true') showApp(); } catch (e) {}
+    if (typeof initCalcEvents === 'function') initCalcEvents();
+  };
+
+  function initCalcEvents() {
+    document.getElementById('c_work_type').addEventListener('change', function() {
+       document.querySelectorAll('.calc-work-section').forEach(el => el.style.display = 'none');
+       const target = document.getElementById('c_sec_' + this.value);
+       if (target) target.style.display = 'block';
+       runPaintCalc();
+    });
+
+    const calcTab = document.getElementById('tab-content-calc');
+    if (calcTab) {
+        calcTab.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', runPaintCalc);
+            el.addEventListener('change', runPaintCalc);
+        });
+    }
+    renderSubPartsUI(); runPaintCalc();
+  }
+
+  const subPartOptions = [
+    { value: 'door', label: '🚪 前面扉 / ドア (両面)' },
+    { value: 'plate', label: '🔲 内部中板 / 取付板 (両面)' },
+    { value: 'base', label: '🛞 基台 / チャンネルベース' },
+    { value: 'louver', label: '💨 ルーバー・換気カバー (約0.15m²)' },
+    { value: 'bracket', label: '🔩 ブラケット・Lアングル金物 (約0.05m²)' },
+    { value: 'din', label: '📏 DINレール・チャンネル支持 (約0.14m²)' },
+    { value: 'partition', label: '🪟 内部仕切板 / セパレーター' },
+    { value: 'cover', label: '📦 側面・背面カバー板' },
+    { value: 'box_lid', label: '🧰 スイッチBOX用防水蓋 (約0.08m²)' },
+    { value: 'custom', label: '✏️ その他 (手動指定平米)' }
+  ];
+
+  function renderSubPartsUI() {
+    const container = document.getElementById('sub-parts-list-container'), remainEl = document.getElementById('sub-parts-remain');
+    if (!container) return;
+    container.innerHTML = '';
+    if (remainEl) remainEl.textContent = Math.max(0, 5 - subPartsItems.length);
+
+    subPartsItems.forEach((part, index) => {
+      const row = document.createElement('div');
+      row.style.cssText = "display:grid; grid-template-columns: 2fr 1fr 1fr auto; gap:6px; align-items:center; background:#fff; padding:8px; border-radius:6px; border:1px solid #cbd5e1;";
+      let selectHtml = `<select onchange="updateSubPartType(${index}, this.value)" style="height:36px; font-size:12px;">`;
+      subPartOptions.forEach(opt => selectHtml += `<option value="${opt.value}" ${part.type === opt.value ? 'selected' : ''}>${opt.label}</option>`);
+      selectHtml += `</select>`;
+
+      row.innerHTML = `
+        ${selectHtml}
+        <div><input type="number" step="0.01" value="${part.area}" placeholder="平米(m²)" oninput="updateSubPartArea(${index}, this.value)" style="height:36px; font-size:12px;" ${!['custom','bracket','din','louver','box_lid'].includes(part.type) ? 'readonly title="寸法から自動算出中"' : ''}></div>
+        <div><input type="number" min="1" value="${part.qty}" placeholder="個数" oninput="updateSubPartQty(${index}, this.value)" style="height:36px; font-size:12px;"></div>
+        <button type="button" class="btn-del" onclick="removeSubPartRow(${index})" style="padding:6px 10px; height:36px; font-size:11px;">削除</button>
+      `;
+      container.appendChild(row);
+    });
+    calcSubPartAreasFromPanel();
+  }
+
+  function addSubPartRow() {
+    if (subPartsItems.length >= 5) return alert('子部品は最大5種まで選択可能です。');
+    subPartsItems.push({ type: 'bracket', qty: 1, area: 0.05 });
+    renderSubPartsUI(); runPaintCalc();
+  }
+
+  function removeSubPartRow(index) { subPartsItems.splice(index, 1); renderSubPartsUI(); runPaintCalc(); }
+  function updateSubPartType(index, val) { subPartsItems[index].type = val; calcSubPartAreasFromPanel(); renderSubPartsUI(); runPaintCalc(); }
+  function updateSubPartArea(index, val) { subPartsItems[index].area = parseFloat(val) || 0; runPaintCalc(); }
+  function updateSubPartQty(index, val) { subPartsItems[index].qty = parseInt(val) || 1; runPaintCalc(); }
+  function autoCalcSubParts() { calcSubPartAreasFromPanel(); renderSubPartsUI(); runPaintCalc(); }
+
+  function calcSubPartAreasFromPanel() {
+    let w = (parseFloat(document.getElementById('c_w')?.value) || 0) / 1000;
+    let h = (parseFloat(document.getElementById('c_h')?.value) || 0) / 1000;
+    let d = (parseFloat(document.getElementById('c_d')?.value) || 0) / 1000;
+
+    subPartsItems.forEach(part => {
+      if (part.type === 'door') part.area = parseFloat((w * h * 2).toFixed(3));
+      else if (part.type === 'plate') part.area = parseFloat((Math.max(0, w - 0.05) * Math.max(0, h - 0.05) * 2).toFixed(3));
+      else if (part.type === 'base') part.area = parseFloat((w * d * 4).toFixed(3));
+      else if (part.type === 'cover' || part.type === 'partition') part.area = parseFloat((w * h).toFixed(3));
+      else if (part.type === 'louver') part.area = 0.15;
+      else if (part.type === 'bracket') part.area = 0.05;
+      else if (part.type === 'din') part.area = 0.14;
+      else if (part.type === 'box_lid') part.area = 0.08;
+    });
+  }
+
+  function runPaintCalc() {
+      const film = parseFloat(document.getElementById('c_film').value) || 0;
+      const density = parseFloat(document.getElementById('c_density').value) || 1.4;
+      const loss = parseFloat(document.getElementById('c_loss').value) || 40;
+      const type = document.getElementById('c_work_type').value;
+      let totalAreaM2 = 0;
+
+      if (type === 'panel') {
+          let w = (parseFloat(document.getElementById('c_w').value) || 0) / 1000;
+          let h = (parseFloat(document.getElementById('c_h').value) || 0) / 1000;
+          let d = (parseFloat(document.getElementById('c_d').value) || 0) / 1000;
+          let qty = parseFloat(document.getElementById('c_qty').value) || 1;
+          let isDouble = document.getElementById('c_panel_double').checked; 
+          let mainArea = (w*h + w*d + h*d) * 2;
+          if (isDouble) mainArea *= 2; 
+          totalAreaM2 += mainArea * qty;
+
+          let subPartsTotalArea = 0;
+          subPartsItems.forEach(part => subPartsTotalArea += (part.area || 0) * (part.qty || 1));
+          totalAreaM2 += subPartsTotalArea * qty;
+      } else if (type === 'flat') {
+          let w = (parseFloat(document.getElementById('c_flat_w').value) || 0) / 1000;
+          let h = (parseFloat(document.getElementById('c_flat_h').value) || 0) / 1000;
+          let qty = parseFloat(document.getElementById('c_flat_qty').value) || 1;
+          totalAreaM2 += (w * h * (document.getElementById('c_flat_double').checked ? 2 : 1)) * qty;
+      } else if (type === 'angle') {
+          let shape = document.getElementById('c_angle_shape').value;
+          let a = (parseFloat(document.getElementById('c_angle_a').value) || 0) / 1000;
+          let b = (parseFloat(document.getElementById('c_angle_b').value) || 0) / 1000;
+          let l = (parseFloat(document.getElementById('c_angle_l').value) || 0) / 1000;
+          let qty = parseFloat(document.getElementById('c_angle_qty').value) || 1;
+          let surface = document.getElementById('c_angle_surface').value;
+          let perim = (shape === 'Box') ? (a + b) * 2 : (((shape === 'C' ? a + b * 2 : a + b)) * (surface === 'all' ? 2 : 1));
+          totalAreaM2 += perim * l * qty;
+      } else if (type === 'pipe') {
+          let d = (parseFloat(document.getElementById('c_pipe_d').value) || 0) / 1000;
+          let l = (parseFloat(document.getElementById('c_pipe_l').value) || 0) / 1000;
+          let qty = parseFloat(document.getElementById('c_pipe_qty').value) || 1;
+          totalAreaM2 += (Math.PI * d * l) * qty;
+      }
+
+      let theoryGram = totalAreaM2 * film * density;
+      let lossMultiplier = (100 - loss) / 100;
+      let actualGram = lossMultiplier > 0 ? theoryGram / lossMultiplier : 0;
+      document.getElementById('res_area').textContent = totalAreaM2.toFixed(2);
+      document.getElementById('res_actual_kg_display').innerHTML = formatWeight(actualGram / 1000);
+  }
+
+  function startRealtimeSync() {
+    if (!db) return;
+    db.collection('records').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+      globalRecords = snapshot.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
+      render();
+    });
+
+    db.collection('tochaku_records').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+      globalTochakuRecords = snapshot.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
+      renderTochakuLogs();
+    });
+  }
+
+  function onUserModifiedAttachedWeight() {
+    isAttachedUser = (document.getElementById('t_attached_weight_kg').value !== '');
+    runTochakuCalc();
+  }
+
+  function onUserModifiedArea() {
+    isAreaAuto = (document.getElementById('t_area').value === '');
+    document.getElementById('badge_area').style.display = 'none';
+    runTochakuCalc();
+  }
+
+  function onUserModifiedFilm() {
+    isFilmAuto = (document.getElementById('t_film').value === '');
+    document.getElementById('badge_film').style.display = 'none';
+    runTochakuCalc();
+  }
+
+  function onUserModifiedLoss() { runTochakuCalc(); }
+
+  function runTochakuCalc() {
+    const density = parseFloat(document.getElementById('t_density').value) || 1.40;
+    const usedPaintKg = parseFloat(document.getElementById('t_used_paint_kg').value) || 0;
+    const usedPaint = usedPaintKg * 1000;
+    
+    const attachedWeightKgInput = document.getElementById('t_attached_weight_kg').value;
+    const areaInput = document.getElementById('t_area').value;
+    const filmInput = document.getElementById('t_film').value;
+    const measuredLossInput = document.getElementById('t_measured_loss').value;
+
+    let attachedWeight = (attachedWeightKgInput !== '' && isAttachedUser) ? parseFloat(attachedWeightKgInput) * 1000 : null;
+    let area = areaInput !== '' ? parseFloat(areaInput) : null;
+    let film = filmInput !== '' ? parseFloat(filmInput) : null;
+    let measuredLoss = measuredLossInput !== '' ? parseFloat(measuredLossInput) : null;
+
+    const badge = document.getElementById('r_eval_badge');
+    const modeBadge = document.getElementById('r_mode_badge');
+    const elUsedPaint = document.getElementById('t_used_paint_kg'), elAttached = document.getElementById('t_attached_weight_kg');
+    const elArea = document.getElementById('t_area'), elFilm = document.getElementById('t_film'), elLoss = document.getElementById('t_measured_loss');
+    const guideText = document.getElementById('tochaku-guide-text'), badgeAttached = document.getElementById('badge_attached_weight');
+    const badgeArea = document.getElementById('badge_area'), badgeFilm = document.getElementById('badge_film');
+    const labelBoxArea = document.getElementById('label_box_area'), labelBoxFilm = document.getElementById('label_box_film');
+
+    [elUsedPaint, elAttached, elArea, elFilm, elLoss].forEach(el => el.classList.remove('input-highlight'));
+    if (labelBoxArea) labelBoxArea.textContent = '総表面積';
+    if (labelBoxFilm) labelBoxFilm.textContent = '平均膜厚';
+    if (badgeAttached) badgeAttached.style.display = 'none';
+    if (badgeArea) badgeArea.style.display = 'none';
+    if (badgeFilm) badgeFilm.style.display = 'none';
+
+    isAreaAuto = (areaInput === '');
+    isFilmAuto = (filmInput === '');
+
+    if (usedPaint <= 0) {
+      elUsedPaint.classList.add('input-highlight');
+      if (guideText) guideText.textContent = 'まず「使用した塗料量 (kg)」を入力してください。';
+      if (!isAttachedUser && elAttached) elAttached.value = '';
+      modeBadge.textContent = '未入力';
+      document.getElementById('r_rate').textContent = '0.0';
+      document.getElementById('r_loss_rate').textContent = '0.0 %';
+      document.getElementById('r_suikomi_loss').textContent = '0g (0.0%)';
+      document.getElementById('r_rakka_loss').textContent = '0g (0.0%)';
+      document.getElementById('r_theoretical').textContent = '-';
+      document.getElementById('r_expected_area').textContent = '-';
+      document.getElementById('r_expected_film').textContent = '-';
+      badge.className = 'eval-badge eval-good';
+      badge.textContent = '使用塗料量(kg)と、必要な計測項目を入力してください';
+      return;
+    }
+
+    let rate = 0, lossRate = 0, suikomiQtyKg = 0, rakkaQtyKg = 0, suikomiRate = 0, rakkaRate = 0;
+    let effectiveAttached = 0, effectiveFilm = 0, modeText = '', badgeText = '', badgeClass = 'eval-badge eval-good';
+
+    if (measuredLoss !== null) {
+      lossRate = measuredLoss; rate = 100 - lossRate;
+      effectiveAttached = usedPaint * (rate / 100);
+      const lossQty = usedPaint - effectiveAttached;
+      suikomiQtyKg = (lossQty * 0.70) / 1000; rakkaQtyKg = (lossQty * 0.30) / 1000;
+      suikomiRate = lossRate * 0.70; rakkaRate = lossRate * 0.30;
+      modeText = '📊 実測ロス率指定モード';
+      if (guideText) guideText.textContent = '✨ 実測ロス率から計算完了しています。保存ボタンを押すか他の数値を調整できます。';
+
+      if (!isAttachedUser && elAttached) {
+        elAttached.value = (effectiveAttached / 1000).toFixed(3);
+        if (badgeAttached) badgeAttached.style.display = 'inline-block';
+      }
+
+      if (area !== null && area > 0 && filmInput === '') {
+        effectiveFilm = effectiveAttached / (area * density); isFilmAuto = true;
+        if (badgeFilm) { badgeFilm.style.display = 'inline-block'; badgeFilm.textContent = '✨ 自動計算済'; }
+        if (labelBoxFilm) labelBoxFilm.textContent = '平均膜厚 [自動計算]';
+      } else if (film !== null && areaInput === '') {
+        area = effectiveAttached / (film * density); effectiveFilm = film; isAreaAuto = true;
+        if (badgeArea) { badgeArea.style.display = 'inline-block'; badgeArea.textContent = '✨ 自動計算済'; }
+        if (labelBoxArea) labelBoxArea.textContent = '総表面積 [自動計算]';
+      } else if (film !== null && area !== null && area > 0) {
+        effectiveFilm = film; isFilmAuto = false;
+      } else effectiveFilm = 0;
+    } else if (attachedWeight !== null) {
+      effectiveAttached = attachedWeight; rate = (effectiveAttached / usedPaint) * 100;
+      const lossQty = usedPaint - effectiveAttached;
+      lossRate = 100 - rate; suikomiQtyKg = (lossQty * 0.70) / 1000; rakkaQtyKg = (lossQty * 0.30) / 1000;
+      suikomiRate = lossRate * 0.70; rakkaRate = lossRate * 0.30;
+      modeText = '📊 実測値ベース (増量ベース)';
+
+      if (film !== null && areaInput === '') {
+        effectiveFilm = film; isFilmAuto = false; area = effectiveAttached / (effectiveFilm * density); isAreaAuto = true;
+        if (badgeArea) { badgeArea.style.display = 'inline-block'; badgeArea.textContent = '✨ 自動計算済'; }
+        if (labelBoxArea) labelBoxArea.textContent = '総表面積 [自動計算]';
+        if (guideText) guideText.textContent = '✨ 塗膜増量と膜厚から解析完了しました！';
+      } else if (area !== null && area > 0 && filmInput === '') {
+        effectiveFilm = effectiveAttached / (area * density); isFilmAuto = true;
+        if (badgeFilm) { badgeFilm.style.display = 'inline-block'; badgeFilm.textContent = '✨ 自動計算済'; }
+        if (labelBoxFilm) labelBoxFilm.textContent = '平均膜厚 [自動計算]';
+        if (guideText) guideText.textContent = '✨ 塗膜増量と表面積から解析完了しました！';
+      } else if (film !== null && area !== null && area > 0) {
+        effectiveFilm = film; isFilmAuto = false;
+      } else {
+        effectiveFilm = 0; elArea.classList.add('input-highlight'); elFilm.classList.add('input-highlight'); elLoss.classList.add('input-highlight');
+        if (guideText) guideText.textContent = '👉 続いて「ワーク総表面積」「平均膜厚」、または「実測ロス率 (%)」のいずれかを入力してください。';
+      }
+    } else if (film !== null) {
+      effectiveFilm = film; isFilmAuto = false;
+      if (area === null || area <= 0) {
+        elArea.classList.add('input-highlight'); elLoss.classList.add('input-highlight');
+        if (guideText) guideText.textContent = '👉 平均膜厚から計算するため、「ワーク総表面積 (m²)」または「実測ロス率 (%)」を入力してください。';
+        if (!isAttachedUser && elAttached) elAttached.value = '';
+        modeBadge.textContent = '要面積またはロス入力';
+        document.getElementById('r_rate').textContent = '0.0';
+        document.getElementById('r_loss_rate').textContent = '0.0 %';
+        document.getElementById('r_suikomi_loss').textContent = '-';
+        document.getElementById('r_rakka_loss').textContent = '-';
+        document.getElementById('r_theoretical').textContent = '-';
+        document.getElementById('r_expected_area').textContent = area !== null ? `${area.toFixed(2)} m²` : '未入力';
+        document.getElementById('r_expected_film').textContent = `${effectiveFilm.toFixed(1)} μm [指定]`;
+        badge.className = 'eval-badge eval-danger';
+        badge.textContent = '⚠️ 平均膜厚から計算するには、「ワーク総表面積」または「実測ロス率」を入力してください。';
+        return;
+      }
+
+      effectiveAttached = area * effectiveFilm * density; rate = (effectiveAttached / usedPaint) * 100;
+      const lossQty = usedPaint - effectiveAttached;
+      lossRate = 100 - rate; suikomiQtyKg = (lossQty * 0.70) / 1000; rakkaQtyKg = (lossQty * 0.30) / 1000;
+      suikomiRate = lossRate * 0.70; rakkaRate = lossRate * 0.30;
+      modeText = '📐 理論計算値 (膜厚・面積換算)';
+      if (guideText) guideText.textContent = '✨ 膜厚と表面積から理論塗着率の計算が完了しました！';
+
+      if (!isAttachedUser && elAttached) {
+        elAttached.value = (effectiveAttached / 1000).toFixed(3);
+        if (badgeAttached) badgeAttached.style.display = 'inline-block';
+      }
+    } else {
+      elAttached.classList.add('input-highlight'); elFilm.classList.add('input-highlight'); elLoss.classList.add('input-highlight');
+      if (guideText) guideText.textContent = '👉 次は「焼付後の塗膜増量 (kg)」「平均膜厚 (μm)」、または「実測ロス率 (%)」のいずれかを入力してください。';
+      if (!isAttachedUser && elAttached) elAttached.value = '';
+      modeBadge.textContent = '入力待ち';
+      document.getElementById('r_rate').textContent = '0.0';
+      document.getElementById('r_loss_rate').textContent = '0.0 %';
+      document.getElementById('r_suikomi_loss').textContent = '-';
+      document.getElementById('r_rakka_loss').textContent = '-';
+      document.getElementById('r_theoretical').textContent = '-';
+      document.getElementById('r_expected_area').textContent = area !== null ? `${area.toFixed(2)} m²` : '未入力';
+      document.getElementById('r_expected_film').textContent = '-';
+      badge.className = 'eval-badge eval-warn';
+      badge.textContent = '💡 「塗膜増量(kg)」「平均膜厚」「実測ロス率」のいずれかを入力してください。';
+      return;
+    }
+
+    if (rate >= 65) { badgeClass = 'eval-badge eval-good'; badgeText = '🟢 良好：高効率で吹き付けが行われています。'; }
+    else if (rate >= 45) { badgeClass = 'eval-badge eval-warn'; badgeText = '🟡 標準：アース環境やエア圧の調整でさらに向上可能です。'; }
+    else { badgeClass = 'eval-badge eval-danger'; badgeText = '🔴 要改善：ブースへの吸い込み・落下粉が多い状態です。'; }
+
+    document.getElementById('r_mode_badge').textContent = modeText;
+    document.getElementById('r_rate').textContent = rate.toFixed(1);
+    document.getElementById('r_loss_rate').textContent = lossRate.toFixed(1) + ' %';
+    document.getElementById('r_suikomi_loss').textContent = `${formatWeight(suikomiQtyKg)} (${suikomiRate.toFixed(1)}%)`;
+    document.getElementById('r_rakka_loss').textContent = `${formatWeight(rakkaQtyKg)} (${rakkaRate.toFixed(1)}%)`;
+    document.getElementById('r_theoretical').textContent = formatWeight(effectiveAttached / 1000);
+    document.getElementById('r_expected_area').textContent = area !== null ? `${area.toFixed(2)} m²` + (isAreaAuto ? ' [自動]' : '') : '自動計算値';
+    document.getElementById('r_expected_film').textContent = effectiveFilm > 0 ? `${effectiveFilm.toFixed(1)} μm` + (isFilmAuto ? ' [自動]' : '') : '未入力';
+    badge.className = badgeClass; badge.textContent = badgeText;
+  }
+
+  document.getElementById('tochaku-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!db) return alert('データベースに接続されていません');
+    
+    const usedPaintKg = parseFloat(document.getElementById('t_used_paint_kg').value) || 0;
+    const usedPaint = usedPaintKg * 1000;
+    const tItems = [];
+    for (let i = 1; i <= 5; i++) {
+      const pName = document.getElementById(`t_product${i}`).value.trim();
+      const pQty = parseInt(document.getElementById(`t_qty${i}`).value) || 0;
+      if (pName) tItems.push({ name: pName, qty: pQty > 0 ? pQty : 1 });
+    }
+
+    const attachedWeightKgInput = document.getElementById('t_attached_weight_kg').value;
+    const areaInput = document.getElementById('t_area').value;
+    const filmInput = document.getElementById('t_film').value;
+    const measuredLossInput = document.getElementById('t_measured_loss').value;
+    
+    let attachedWeight = attachedWeightKgInput !== '' ? parseFloat(attachedWeightKgInput) * 1000 : null;
+    let area = areaInput !== '' ? parseFloat(areaInput) : null;
+    let film = filmInput !== '' ? parseFloat(filmInput) : null;
+    let measuredLoss = measuredLossInput !== '' ? parseFloat(measuredLossInput) : null;
+    const density = parseFloat(document.getElementById('t_density').value) || 1.40;
+
+    if (attachedWeight === null && film === null && measuredLoss === null) {
+      return alert('「焼付後の塗膜増量(kg)」「平均膜厚」「実測ロス率」のいずれかを入力してください。');
+    }
+
+    isAreaAuto = (areaInput === ''); isFilmAuto = (filmInput === '');
+    let effAttached = 0, effFilm = 0, calcType = '', rate = 0, lossRate = 0;
+
+    if (measuredLoss !== null) {
+      lossRate = measuredLoss; rate = 100 - lossRate; effAttached = usedPaint * (rate / 100); calcType = '実測ロス率指定';
+      if (area !== null && area > 0 && filmInput === '') { effFilm = effAttached / (area * density); isFilmAuto = true; }
+      else if (film !== null && areaInput === '') { area = effAttached / (film * density); effFilm = film; isAreaAuto = true; }
+      else if (film !== null && area !== null && area > 0) { effFilm = film; isFilmAuto = false; }
+      else effFilm = 0;
+    } else if (attachedWeight !== null) {
+      effAttached = attachedWeight; calcType = '実測値(増量ベース)'; rate = (effAttached / usedPaint) * 100; lossRate = 100 - rate;
+      if (film !== null && areaInput === '') { effFilm = film; isFilmAuto = false; area = effAttached / (effFilm * density); isAreaAuto = true; }
+      else if (area !== null && area > 0 && filmInput === '') { effFilm = effAttached / (area * density); isFilmAuto = true; }
+      else if (film !== null && area !== null && area > 0) { effFilm = film; isFilmAuto = false; }
+      else effFilm = 0;
+    } else {
+      effFilm = film; isFilmAuto = false;
+      if (area === null || area <= 0) return alert('平均膜厚から計算するにはワーク総表面積を入力してください。');
+      effAttached = area * effFilm * density; calcType = '理論計算(膜厚換算)'; rate = (effAttached / usedPaint) * 100; lossRate = 100 - rate;
+    }
+
+    const lossQty = usedPaint - effAttached;
+    const record = {
+      timestamp: Date.now(),
+      date: document.getElementById('t_date').value,
+      work_items: tItems,
+      work_name: tItems.length > 0 ? tItems.map(i => `${i.name}(${i.qty}台)`).join('・') : '-',
+      operator: document.getElementById('t_operator').value || '-',
+      density: density,
+      area: area !== null ? parseFloat(area.toFixed(2)) : null,
+      area_is_auto: isAreaAuto,
+      film: parseFloat(effFilm.toFixed(1)),
+      film_is_auto: isFilmAuto,
+      used_paint_kg: parseFloat(usedPaintKg.toFixed(3)),
+      used_paint: usedPaint,
+      attached_weight_kg: attachedWeight !== null ? parseFloat((attachedWeight / 1000).toFixed(3)) : parseFloat((effAttached / 1000).toFixed(3)),
+      attached_weight: effAttached,
+      calc_type: calcType,
+      rate: parseFloat(rate.toFixed(1)),
+      loss_rate: parseFloat(lossRate.toFixed(1)),
+      loss_is_auto: (measuredLoss === null),
+      loss_qty_kg: parseFloat(((lossQty > 0 ? lossQty : 0) / 1000).toFixed(3)),
+      suikomi_loss_kg: parseFloat(((lossQty * 0.70) / 1000).toFixed(3)),
+      rakka_loss_kg: parseFloat(((lossQty * 0.30) / 1000).toFixed(3)),
+      suikomi_loss_rate: parseFloat((lossRate * 0.70).toFixed(1)),
+      rakka_loss_rate: parseFloat((lossRate * 0.30).toFixed(1)),
+      expected_amount_kg: parseFloat((effAttached / 1000).toFixed(3))
+    };
+
+    const savePromise = editingTochakuId
+      ? db.collection('tochaku_records').doc(editingTochakuId).set(record)
+      : db.collection('tochaku_records').add(record);
+
+    savePromise.then(() => {
+      alert(editingTochakuId ? '塗着率・歩留まり解析結果を更新しました！' : '塗着率・歩留まり解析結果をクラウドに保存しました！');
+      for (let i = 1; i <= 5; i++) { document.getElementById(`t_product${i}`).value = ''; document.getElementById(`t_qty${i}`).value = (i === 1 ? '1' : ''); }
+      document.getElementById('t_used_paint_kg').value = '';
+      document.getElementById('t_attached_weight_kg').value = '';
+      document.getElementById('t_area').value = '';
+      document.getElementById('t_film').value = '';
+      document.getElementById('t_measured_loss').value = '';
+      isAreaAuto = false; isFilmAuto = false; isAttachedUser = false;
+      document.getElementById('badge_attached_weight').style.display = 'none';
+      document.getElementById('badge_area').style.display = 'none';
+      document.getElementById('badge_film').style.display = 'none';
+      editingTochakuId = null;
+      document.querySelector('#tochaku-form .btn-submit').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> 解析結果をクラウドに保存';
+      currentTochakuPage = 1;
+      runTochakuCalc();
+    });
+  });
+
+  function editTochakuRec(docId) {
+    if (!verifyAdminPassword()) return;
+    const r = globalTochakuRecords.find(rec => rec.docId === docId);
+    if (!r) return;
+
+    switchMainTab('tochaku');
+    editingTochakuId = docId;
+    document.querySelector('#tochaku-form .btn-submit').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> 解析結果を更新・保存';
+    document.getElementById('t_date').value = r.date || getTodayString();
+    
+    for (let i = 1; i <= 5; i++) { document.getElementById(`t_product${i}`).value = ''; document.getElementById(`t_qty${i}`).value = ''; }
+    if (r.work_items && Array.isArray(r.work_items)) {
+      r.work_items.forEach((item, idx) => {
+        if (idx < 5) {
+          document.getElementById(`t_product${idx + 1}`).value = item.name || '';
+          document.getElementById(`t_qty${idx + 1}`).value = item.qty || 1;
+        }
+      });
+    } else if (r.work_name) {
+      document.getElementById('t_product1').value = r.work_name; document.getElementById('t_qty1').value = 1;
+    }
+
+    document.getElementById('t_operator').value = r.operator || '';
+    document.getElementById('t_density').value = r.density ? r.density.toFixed(2) : '1.40';
+    document.getElementById('t_used_paint_kg').value = r.used_paint_kg !== undefined ? r.used_paint_kg : (r.used_paint ? r.used_paint / 1000 : '');
+    
+    let restoredWeightKg = '';
+    if (r.attached_weight_kg != null) restoredWeightKg = r.attached_weight_kg;
+    else if (r.attached_weight != null) restoredWeightKg = r.attached_weight / 1000;
+    document.getElementById('t_attached_weight_kg').value = restoredWeightKg;
+    isAttachedUser = (restoredWeightKg !== '');
+
+    isAreaAuto = !!r.area_is_auto; isFilmAuto = !!r.film_is_auto;
+    document.getElementById('t_area').value = (r.area != null && !isAreaAuto) ? r.area : '';
+    document.getElementById('t_film').value = (r.film != null && !isFilmAuto) ? r.film : '';
+    document.getElementById('badge_area').style.display = isAreaAuto ? 'inline-block' : 'none';
+    document.getElementById('badge_film').style.display = isFilmAuto ? 'inline-block' : 'none';
+    document.getElementById('t_measured_loss').value = (r.calc_type === '実測ロス率指定' && r.loss_rate !== undefined) ? r.loss_rate : '';
+
+    runTochakuCalc();
+    document.getElementById('tochaku-form').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function delTochakuRec(docId) {
+    if (db && verifyAdminPassword() && confirm('この塗着率・歩留まり測定ログを削除しますか？')) db.collection('tochaku_records').doc(docId).delete();
+  }
+
+  function clearTochakuFilters() {
+    document.getElementById('tochaku-search-input').value = '';
+    document.getElementById('tochaku-filter-date').value = '';
+    resetTochakuPageAndRender();
+  }
+
+  function resetTochakuPageAndRender() { currentTochakuPage = 1; renderTochakuLogs(); }
+  function changeTochakuPage(delta) { currentTochakuPage += delta; renderTochakuLogs(); }
+
+  function renderTochakuLogs() {
+    const container = document.getElementById('tochaku-log-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    let filtered = globalTochakuRecords;
+    const keyword = (document.getElementById('tochaku-search-input')?.value || '').trim().toLowerCase();
+    const filterDate = document.getElementById('tochaku-filter-date')?.value || '';
+
+    if (keyword) {
+      filtered = filtered.filter(r => {
+        const itemStr = r.work_items ? r.work_items.map(i => i.name).join(' ') : (r.work_name || '');
+        return itemStr.toLowerCase().includes(keyword) || (r.operator && r.operator.toLowerCase().includes(keyword));
+      });
+    }
+
+    if (filterDate) filtered = filtered.filter(r => r.date === filterDate);
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty-msg">該当するログが見つかりません</div>';
+      document.getElementById('tochaku-page-info').textContent = '1 / 1 ページ (0件)';
+      document.getElementById('btn-tochaku-prev').disabled = true;
+      document.getElementById('btn-tochaku-next').disabled = true;
+      return;
+    }
+
+    const totalRecords = filtered.length, totalPages = Math.ceil(totalRecords / tochakuPageSize) || 1;
+    if (currentTochakuPage > totalPages) currentTochakuPage = totalPages;
+    const displayRecords = filtered.slice((currentTochakuPage - 1) * tochakuPageSize, currentTochakuPage * tochakuPageSize);
+
+    displayRecords.forEach(r => {
+      const item = document.createElement('div');
+      item.className = 'card-item';
+      const rateVal = Number(r.rate) || 0;
+      const lossRateVal = r.loss_rate !== undefined ? r.loss_rate : (100 - rateVal).toFixed(1);
+      
+      const workItemsHtml = (r.work_items && Array.isArray(r.work_items) && r.work_items.length > 0)
+        ? r.work_items.map(i => `<span style="background:rgba(2,132,199,0.08); color:var(--accent-cyan); padding:2px 8px; border-radius:6px; font-weight:700; display:inline-block; margin:2px 2px 2px 0; border:1px solid rgba(2,132,199,0.2); word-break:break-all;">${i.name} <span style="font-weight:normal; color:var(--text-dim);">(${i.qty}台)</span></span>`).join('')
+        : `<span style="background:rgba(2,132,199,0.08); color:var(--accent-cyan); padding:2px 8px; border-radius:6px; font-weight:700; display:inline-block; margin:2px; border:1px solid rgba(2,132,199,0.2);">${r.work_name || '-'}</span>`;
+
+      const suikomiKg = r.suikomi_loss_kg !== undefined ? r.suikomi_loss_kg : (((r.loss_qty_kg || (r.loss_qty/1000) || 0) * 0.70));
+      const rakkaKg = r.rakka_loss_kg !== undefined ? r.rakka_loss_kg : (((r.loss_qty_kg || (r.loss_qty/1000) || 0) * 0.30));
+      const suikomiRate = r.suikomi_loss_rate !== undefined ? r.suikomi_loss_rate : (lossRateVal * 0.70).toFixed(1);
+      const rakkaRate = r.rakka_loss_rate !== undefined ? r.rakka_loss_rate : (lossRateVal * 0.30).toFixed(1);
+      const totalLossKg = r.loss_qty_kg !== undefined ? r.loss_qty_kg : ((r.loss_qty / 1000) || 0);
+      const filmIsAuto = (r.film_is_auto != null) ? r.film_is_auto : (r.film != null && r.attached_weight != null && r.area == null);
+
+      const filmDisplay = r.film != null 
+        ? `${Number(r.film).toFixed(1)}μm ${filmIsAuto ? '<span style="font-size:9.5px; background:rgba(2,132,199,0.12); color:var(--accent-cyan); padding:1px 4px; border-radius:4px; font-weight:700;">✨自動</span>' : '<span style="font-size:9.5px; background:rgba(5,150,105,0.1); color:var(--accent-success); padding:1px 4px; border-radius:4px; font-weight:700;">📊実測</span>'}`
+        : '未入力';
+      
+      let finalArea = r.area;
+      if (finalArea == null && r.expected_amount_kg && r.film) finalArea = (r.expected_amount_kg * 1000) / (r.film * (r.density || 1.40));
+      const areaDisplay = finalArea != null 
+        ? `${Number(finalArea).toFixed(2)}m² ${r.area_is_auto ? '<span style="font-size:9.5px; background:rgba(2,132,199,0.12); color:var(--accent-cyan); padding:1px 4px; border-radius:4px; font-weight:700;">✨自動</span>' : '<span style="font-size:9.5px; background:rgba(5,150,105,0.1); color:var(--accent-success); padding:1px 4px; border-radius:4px; font-weight:700;">📊実測</span>'}`
+        : '<span style="color:var(--text-dim);">自動算出</span>';
+
+      const usedPaintKgVal = r.used_paint_kg !== undefined ? r.used_paint_kg : (r.used_paint / 1000);
+      let attachedKgVal = r.attached_weight_kg ?? (r.attached_weight != null ? r.attached_weight / 1000 : (r.expected_amount_kg ?? (r.expected_amount != null ? r.expected_amount / 1000 : 0)));
+      const isAttachedReal = (r.attached_weight_kg != null || r.attached_weight != null);
+
+      const attachedDisplay = isAttachedReal
+        ? `${formatWeight(attachedKgVal)} <span style="font-size:9.5px; background:rgba(5,150,105,0.1); color:var(--accent-success); padding:1px 4px; border-radius:4px; font-weight:700;">📊実測</span>`
+        : `${formatWeight(attachedKgVal)} <span style="font-size:9.5px; background:rgba(2,132,199,0.12); color:var(--accent-cyan); padding:1px 4px; border-radius:4px; font-weight:700;">✨自動</span>`;
+
+      const lossBadge = (r.loss_is_auto === false) 
+        ? '<span style="font-size:9.5px; background:rgba(5,150,105,0.1); color:var(--accent-success); padding:1px 4px; border-radius:4px; font-weight:700;">📊実測</span>' 
+        : '<span style="font-size:9.5px; background:rgba(2,132,199,0.12); color:var(--accent-cyan); padding:1px 4px; border-radius:4px; font-weight:700;">✨自動</span>';
+
+      item.innerHTML = `
+        <div class="card-header">
+          <span style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">📅 ${r.date}</span>
+          <span class="badge-tochaku">🎯 解析ログ ${r.calc_type ? `[${r.calc_type}]` : ''}</span>
+        </div>
+        <div style="margin-bottom: 8px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;"><span style="font-size:11px; color:var(--text-dim); font-weight:600; margin-right:2px;">品名:</span> ${workItemsHtml}</div>
+        <div class="card-data-grid">
+          <div class="card-data-row"><span class="card-label">担当者:</span><span class="card-value-text">${r.operator}</span></div>
+          <div class="card-data-row"><span class="card-label">塗着率:</span><span class="card-value-text" style="color:var(--accent-cyan); font-weight:800; font-size:14px;">${rateVal}% <span style="font-size:9.5px; color:var(--accent-cyan); font-weight:700;">✨自動</span></span></div>
+          <div class="card-data-row"><span class="card-label">使用塗料:</span><span class="card-value-text">${formatWeight(usedPaintKgVal)} <span style="font-size:9.5px; background:rgba(5,150,105,0.1); color:var(--accent-success); padding:1px 4px; border-radius:4px; font-weight:700;">📊実測</span></span></div>
+          <div class="card-data-row"><span class="card-label">塗着重量:</span><span class="card-value-text" style="color:var(--accent-success); font-weight:700;">${attachedDisplay}</span></div>
+          <div class="card-data-row"><span class="card-label">総表面積:</span><span class="card-value-text">${areaDisplay}</span></div>
+          <div class="card-data-row"><span class="card-label">平均膜厚:</span><span class="card-value-text">${filmDisplay}</span></div>
+          <div class="card-data-row full-row" style="background:#f8fafc; padding:10px 12px; border-radius:8px; margin-top:4px; border:1px solid var(--border-color);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:4px;">
+              <span style="color:var(--accent-warning); font-weight:700; font-size:12px;">💨 ロス率合計: ${lossRateVal}% ${lossBadge}</span>
+              <span style="color:var(--text-dim); font-size:11px;">(総ロス: <strong>${formatWeight(totalLossKg)}</strong>)</span>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px; font-size:11px; color:var(--text-muted); border-top:1px dashed var(--border-color); padding-top:6px;">
+              <div>🌀 吸い込みロス <span style="font-size:9px; background:#e2e8f0; padding:1px 3px; border-radius:3px; color:#475569;">予測</span>: <strong style="color:var(--text-main);">${formatWeight(suikomiKg)}</strong> (${suikomiRate}%)</div>
+              <div>📉 落下ロス <span style="font-size:9px; background:#e2e8f0; padding:1px 3px; border-radius:3px; color:#475569;">予測</span>: <strong style="color:var(--text-main);">${formatWeight(rakkaKg)}</strong> (${rakkaRate}%)</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer-actions">
+          <button type="button" class="btn-edit" onclick="editTochakuRec('${r.docId}')">編集</button>
+          <button type="button" class="btn-del" onclick="delTochakuRec('${r.docId}')">削除</button>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+
+    document.getElementById('tochaku-page-info').textContent = `${currentTochakuPage} / ${totalPages} ページ (全 ${totalRecords} 件)`;
+    document.getElementById('btn-tochaku-prev').disabled = (currentTochakuPage === 1);
+    document.getElementById('btn-tochaku-next').disabled = (currentTochakuPage === totalPages || totalPages === 0);
+  }
+
+  document.getElementById('p-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!db) return alert('データベースに接続されていません');
+    const selectedDate = document.getElementById('date').value;
+    const items = [];
+    let totalQty = 0;
+    for (let i = 1; i <= 10; i++) {
+      const p = document.getElementById(`product${i}`).value.trim();
+      const q = parseInt(document.getElementById(`quantity${i}`).value) || 0;
+      if (p) { items.push({ name: p, qty: q }); totalQty += q; }
+    }
+
+    const ops = [];
+    ['operator1', 'operator2', 'operator3'].forEach(id => {
+      const v = document.getElementById(id).value;
+      if (v && !ops.includes(v)) ops.push(v);
+    });
+
+    const macs = [];
+    ['machine1', 'machine2'].forEach(id => {
+      const v = document.getElementById(id).value;
+      if (v && !macs.includes(v)) macs.push(v);
+    });
+
+    const statusVal = document.getElementById('status').value;
+    let ngProduct = '', totalNgQty = 0, ngDetails = [], ngMemo = '';
+
+    if (statusVal === 'NG') {
+      ngProduct = document.getElementById('ng_product_select').value || '全品';
+      for (let i = 1; i <= 3; i++) {
+        const cause = document.getElementById(`ng_cause_select${i}`).value;
+        const qty = parseInt(document.getElementById(`ng_cause_qty${i}`).value) || 0;
+        if (cause && qty > 0) { ngDetails.push({ cause: cause, qty: qty }); totalNgQty += qty; }
+      }
+      if (ngDetails.length === 0) { ngDetails.push({ cause: 'その他', qty: 1 }); totalNgQty = 1; }
+      ngMemo = document.getElementById('ng_memo').value.trim();
+    }
+
+    const thicknessVal = document.getElementById('thickness').value;
+    const locKey = document.getElementById('location-select')?.value || 'fukuyama';
+    const locLabel = locationCoords[locKey] ? locationCoords[locKey].label : '福山市';
+
+    const rec = {
+      timestamp: Date.now(),
+      date: selectedDate,
+      items: items,
+      total_qty: totalQty,
+      operator: ops.length > 0 ? ops.join('・') : '-',
+      machine: macs.length > 0 ? macs.join('・') : '旭サナック',
+      weather: document.getElementById('weather').value,
+      location: locLabel,
+      temp: document.getElementById('temp').value || '-',
+      humidity: document.getElementById('humidity').value || '-',
+      paint_weight: parseFloat(document.getElementById('paint_weight').value) || 0,
+      thickness: thicknessVal !== '' ? parseFloat(thicknessVal) : null,
+      voltage: parseFloat(document.getElementById('voltage').value) || 50,
+      current: parseFloat(document.getElementById('current').value) || 20,
+      bake_temp: parseFloat(document.getElementById('bake_temp').value) || 200,
+      bake_time: parseFloat(document.getElementById('bake_time').value) || 20,
+      status: statusVal,
+      ng_product: ngProduct,
+      ng_qty: totalNgQty,
+      ng_details: ngDetails,
+      ng_memo: ngMemo,
+      memo: document.getElementById('memo').value || '-'
+    };
+
+    const savePromise = editingRecordId ? db.collection('records').doc(editingRecordId).set(rec) : db.collection('records').add(rec);
+    savePromise.then(() => {
+      for (let i = 1; i <= 10; i++) { document.getElementById(`product${i}`).value = ''; document.getElementById(`quantity${i}`).value = ''; }
+      for (let i = 1; i <= 3; i++) { document.getElementById(`ng_cause_qty${i}`).value = ''; }
+      document.getElementById('operator2').value = ''; document.getElementById('operator3').value = '';
+      document.getElementById('machine1').value = '旭サナック'; document.getElementById('machine2').value = '';
+      document.getElementById('ng_cause_qty1').value = '1'; document.getElementById('paint_weight').value = '';
+      document.getElementById('thickness').value = '50'; document.getElementById('ng_memo').value = '';
+      document.getElementById('memo').value = ''; document.getElementById('status').value = 'OK';
+      toggleNGSection(); document.getElementById('date').value = selectedDate; editingRecordId = null;
+      document.querySelector('#p-form .btn-submit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> 実績を登録・保存';
+      currentPage = 1;
+    });
+  });
+
+  function editRec(docId) {
+    if (!verifyAdminPassword()) return;
+    const rec = globalRecords.find(r => r.docId === docId);
+    if (!rec) return;
+
+    switchMainTab('main');
+    editingRecordId = docId;
+    document.querySelector('#p-form .btn-submit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> 実績を更新・保存';
+
+    const targetDate = rec.date || getTodayString();
+    document.getElementById('date').value = targetDate;
+    
+    fetchWeatherForDate(targetDate, (wData) => {
+      if (wData) {
+        document.getElementById('weather').value = wData.weather;
+        document.getElementById('temp').value = wData.temp;
+        document.getElementById('humidity').value = wData.humidity;
+      } else {
+        document.getElementById('weather').value = rec.weather || '晴れ';
+        document.getElementById('temp').value = rec.temp !== '-' ? rec.temp : '';
+        document.getElementById('humidity').value = rec.humidity !== '-' ? rec.humidity : '';
+      }
+    });
+    
+    for (let i = 1; i <= 10; i++) {
+      const item = rec.items && rec.items[i - 1];
+      document.getElementById(`product${i}`).value = item ? item.name : '';
+      document.getElementById(`quantity${i}`).value = item ? item.qty : '';
+    }
+
+    let opList = typeof rec.operator === 'string' ? rec.operator.split('・') : [];
+    document.getElementById('operator1').value = opList[0] || operatorsList[0] || '';
+    document.getElementById('operator2').value = opList[1] || '';
+    document.getElementById('operator3').value = opList[2] || '';
+
+    let macList = typeof rec.machine === 'string' ? rec.machine.split('・') : [];
+    document.getElementById('machine1').value = macList[0] || '旭サナック';
+    document.getElementById('machine2').value = macList[1] || '';
+
+    document.getElementById('paint_weight').value = rec.paint_weight || '';
+    document.getElementById('thickness').value = (rec.thickness != null) ? rec.thickness : '';
+    document.getElementById('voltage').value = rec.voltage || 50;
+    document.getElementById('current').value = rec.current || 20;
+    document.getElementById('bake_temp').value = rec.bake_temp || 200;
+    document.getElementById('bake_time').value = rec.bake_time || 20;
+    document.getElementById('status').value = rec.status || 'OK';
+
+    toggleNGSection();
+
+    if (rec.status === 'NG') {
+      updateNGOptions();
+      document.getElementById('ng_product_select').value = rec.ng_product || '全品';
+      const details = rec.ng_details || [];
+      for (let i = 1; i <= 3; i++) {
+        const d = details[i - 1];
+        document.getElementById(`ng_cause_select${i}`).value = d ? d.cause : '';
+        document.getElementById(`ng_cause_qty${i}`).value = d ? d.qty : '';
+      }
+      document.getElementById('ng_memo').value = rec.ng_memo || '';
+    }
+
+    document.getElementById('memo').value = rec.memo !== '-' ? rec.memo : '';
+    document.getElementById('p-form').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function delRec(docId) {
+    if (db && verifyAdminPassword() && confirm('このデータを削除しますか？')) db.collection('records').doc(docId).delete();
+  }
+
+  function setCauseRange(range) {
+    currentCauseRange = range;
+    document.getElementById('tab-week').classList.toggle('active', range === 'week');
+    document.getElementById('tab-month').classList.toggle('active', range === 'month');
+    document.getElementById('tab-year').classList.toggle('active', range === 'year');
+    render();
+  }
+
+  function filterNGOnly() { ngFilterActive = true; document.getElementById('search-input').value = ''; resetPageAndRender(); }
+  function clearFilters() { ngFilterActive = false; document.getElementById('search-input').value = ''; document.getElementById('filter-date').value = ''; resetPageAndRender(); }
+
+  function toggleSortOrder() {
+    sortByDate = !sortByDate;
+    const btn = document.getElementById('btn-sort-toggle');
+    if (btn) {
+      btn.style.background = sortByDate ? 'rgba(2, 132, 199, 0.08)' : '#ffffff';
+      btn.style.borderColor = sortByDate ? 'rgba(2, 132, 199, 0.3)' : 'var(--border-color)';
+      btn.style.color = sortByDate ? 'var(--accent-cyan)' : 'var(--text-muted)';
+      btn.textContent = sortByDate ? '📅 日付順 (有効)' : '📅 日付の最新順';
+    }
+    resetPageAndRender();
+  }
+
+  function resetPageAndRender() { currentPage = 1; render(); }
+  function changePage(delta) { currentPage += delta; render(); }
+
+  function render() {
+    const list = document.getElementById('record-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const now = new Date();
+    const currentYearStr = String(now.getFullYear());
+    const currentYM = currentYearStr + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    const oneWeekAgo = new Date(); oneWeekAgo.setDate(now.getDate() - 7);
+    const weekThresholdStr = `${oneWeekAgo.getFullYear()}-${String(oneWeekAgo.getMonth() + 1).padStart(2, '0')}-${String(oneWeekAgo.getDate()).padStart(2, '0')}`;
+
+    let weekWeight = 0, monthWeight = 0, yearWeight = 0;
+    let weekTotalPieces = 0, weekNgPieces = 0, monthTotalPieces = 0, monthNgPieces = 0, yearTotalPieces = 0, yearNgPieces = 0;
+    const causeCounts = {}, productStats = {}, productPaintStats = {};
+
+    globalRecords.forEach(r => {
+      const w = Number(r.paint_weight) || 0;
+      let recordTotalQty = r.total_qty || (r.items ? r.items.reduce((s, i) => s + (Number(i.qty) || 0), 0) : 0);
+
+      if (r.date && r.date >= weekThresholdStr) {
+        weekWeight += w; weekTotalPieces += recordTotalQty;
+        if (r.status === 'NG') weekNgPieces += (Number(r.ng_qty) || 1);
+      }
+      if (r.date && r.date.startsWith(currentYM)) {
+        monthWeight += w; monthTotalPieces += recordTotalQty;
+        if (r.status === 'NG') monthNgPieces += (Number(r.ng_qty) || 1);
+      }
+      if (r.date && r.date.startsWith(currentYearStr)) {
+        yearWeight += w; yearTotalPieces += recordTotalQty;
+        if (r.status === 'NG') yearNgPieces += (Number(r.ng_qty) || 1);
+      }
+
+      let isTargetRange = false;
+      if (currentCauseRange === 'week') isTargetRange = (r.date && r.date >= weekThresholdStr);
+      else if (currentCauseRange === 'month') isTargetRange = (r.date && r.date.startsWith(currentYM));
+      else if (currentCauseRange === 'year') isTargetRange = (r.date && r.date.startsWith(currentYearStr));
+
+      if (isTargetRange) {
+        if (r.status === 'NG') {
+          if (r.ng_details && Array.isArray(r.ng_details) && r.ng_details.length > 0) {
+            r.ng_details.forEach(d => {
+              const cause = d.cause || 'その他', qty = Number(d.qty) || 1;
+              causeCounts[cause] = (causeCounts[cause] || 0) + qty;
+            });
+          } else {
+            const cause = r.ng_cause || (r.ng_causes ? r.ng_causes[0] : 'その他'), qty = Number(r.ng_qty) || 1;
+            causeCounts[cause] = (causeCounts[cause] || 0) + qty;
+          }
+        }
+
+        if (r.items && Array.isArray(r.items)) {
+          r.items.forEach(item => {
+            const pName = item.name, pQty = Number(item.qty) || 0;
+            if (!productStats[pName]) productStats[pName] = { total: 0, ng: 0 };
+            productStats[pName].total += pQty;
+          });
+        }
+        if (r.status === 'NG') {
+          const ngP = r.ng_product || '不明', ngQ = Number(r.ng_qty) || 1;
+          if (!productStats[ngP]) productStats[ngP] = { total: 0, ng: 0 };
+          productStats[ngP].ng += ngQ;
+        }
+
+        if (w > 0 && recordTotalQty > 0 && r.items) {
+          r.items.forEach(item => {
+            const pName = item.name, pQty = Number(item.qty) || 0;
+            productPaintStats[pName] = (productPaintStats[pName] || 0) + ((w * pQty) / recordTotalQty);
+          });
+        }
+      }
+    });
+
+    document.getElementById('s-week-weight').innerHTML = formatWeight(weekWeight);
+    document.getElementById('s-month-weight').innerHTML = formatWeight(monthWeight);
+    document.getElementById('s-year-weight').innerHTML = formatWeight(yearWeight);
+    document.getElementById('s-week-ng').innerHTML = (weekTotalPieces > 0 ? ((weekNgPieces / weekTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
+    document.getElementById('s-month-ng').innerHTML = (monthTotalPieces > 0 ? ((monthNgPieces / monthTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
+    document.getElementById('s-year-ng').innerHTML = (yearTotalPieces > 0 ? ((yearNgPieces / yearTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
+
+    const causeListEl = document.getElementById('cause-analysis-list');
+    causeListEl.innerHTML = '';
+    const totalNgRangePieces = Object.values(causeCounts).reduce((a, b) => a + b, 0);
+
+    if (totalNgRangePieces === 0) {
+      causeListEl.innerHTML = '<div style="font-size:11.5px; color:var(--text-dim); text-align:center; padding:10px;">🎉 該当期間の<span class="text-danger">再塗装(NG)</span>発生はありません</div>';
+    } else {
+      Object.entries(causeCounts).sort((a, b) => b[1] - a[1]).forEach(([cause, count], idx) => {
+        let rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+        const pct = ((count / totalNgRangePieces) * 100).toFixed(1);
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cause-item';
+        itemEl.innerHTML = `
+          <div class="cause-header"><span style="display:flex; align-items:center; word-break:break-all;"><span class="rank-badge ${rankClass}">${idx + 1}</span><strong>${cause}</strong> (${count}個)</span><span><strong>${pct}%</strong></span></div>
+          <div class="cause-bar-bg"><div class="cause-bar-fill" style="width: ${pct}%;"></div></div>
+        `;
+        causeListEl.appendChild(itemEl);
+      });
+    }
+
+    const productListEl = document.getElementById('product-analysis-list');
+    if (productListEl) {
+      productListEl.innerHTML = '';
+      const pStatsArray = Object.keys(productStats).map(name => {
+        const d = productStats[name];
+        return { name, total: d.total, ng: d.ng, rate: d.total > 0 ? (d.ng / d.total) * 100 : 0 };
+      }).filter(p => p.ng > 0); 
+      
+      if (pStatsArray.length === 0) {
+        productListEl.innerHTML = '<div style="font-size:11.5px; color:var(--text-dim); text-align:center; padding:10px;">🎉 該当期間の<span class="text-danger">再塗装(NG)</span>発生はありません</div>';
+      } else {
+        pStatsArray.sort((a, b) => b.ng - a.ng || b.rate - a.rate).forEach((p, idx) => {
+          let rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+          const itemEl = document.createElement('div');
+          itemEl.className = 'cause-item';
+          itemEl.innerHTML = `
+            <div class="cause-header"><span style="display:flex; align-items:center; word-break:break-all;"><span class="rank-badge ${rankClass}">${idx + 1}</span><strong>${p.name}</strong> (${p.total > 0 ? `${p.ng} / ${p.total}台` : `${p.ng}台`})</span><span><strong>${p.total > 0 ? p.rate.toFixed(1) + '%' : '算出不可'}</strong></span></div>
+            <div class="cause-bar-bg"><div class="cause-bar-fill" style="width: ${p.total > 0 ? p.rate.toFixed(1) : 0}%; background: linear-gradient(90deg, #d97706, #f59e0b);"></div></div>
+          `;
+          productListEl.appendChild(itemEl);
+        });
+      }
+    }
+
+    const paintUsageListEl = document.getElementById('paint-usage-analysis-list');
+    if (paintUsageListEl) {
+      paintUsageListEl.innerHTML = '';
+      const pPaintArray = Object.entries(productPaintStats).map(([name, weight]) => ({ name, weight })).sort((a, b) => b.weight - a.weight);
+
+      if (pPaintArray.length === 0) {
+        paintUsageListEl.innerHTML = '<div style="font-size:11.5px; color:var(--text-dim); text-align:center; padding:10px;">データがありません</div>';
+      } else {
+        const maxWeight = pPaintArray[0].weight;
+        pPaintArray.forEach((p, idx) => {
+          let rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+          const itemEl = document.createElement('div');
+          itemEl.className = 'cause-item';
+          itemEl.innerHTML = `
+            <div class="cause-header"><span style="display:flex; align-items:center; word-break:break-all;"><span class="rank-badge ${rankClass}">${idx + 1}</span><strong>${p.name}</strong></span><span><strong>${formatWeight(p.weight)}</strong></span></div>
+            <div class="cause-bar-bg"><div class="cause-bar-fill" style="width: ${maxWeight > 0 ? (p.weight / maxWeight) * 100 : 0}%; background: linear-gradient(90deg, #0ea5e9, #38bdf8);"></div></div>
+          `;
+          paintUsageListEl.appendChild(itemEl);
+        });
+      }
+    }
+
+    let filtered = [...globalRecords];
+    if (ngFilterActive) filtered = filtered.filter(r => r.status === 'NG');
+
+    const keyword = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+    const filterDate = document.getElementById('filter-date')?.value || '';
+
+    if (keyword) {
+      filtered = filtered.filter(r => {
+        const itemStr = r.items ? r.items.map(i => i.name).join(' ') : '';
+        const causeStr = r.ng_details ? r.ng_details.map(d => d.cause).join(' ') : (r.ng_cause || '');
+        return itemStr.toLowerCase().includes(keyword) ||
+          (r.operator && r.operator.toLowerCase().includes(keyword)) ||
+          (r.machine && r.machine.toLowerCase().includes(keyword)) ||
+          causeStr.toLowerCase().includes(keyword) ||
+          (r.ng_memo && r.ng_memo.toLowerCase().includes(keyword)) ||
+          (r.memo && r.memo.toLowerCase().includes(keyword));
+      });
+    }
+
+    if (filterDate) filtered = filtered.filter(r => r.date === filterDate);
+
+    if (sortByDate) {
+      filtered.sort((a, b) => {
+        const dateA = a.date || '', dateB = b.date || '';
+        return dateB !== dateA ? dateB.localeCompare(dateA) : (b.timestamp || 0) - (a.timestamp || 0);
+      });
+    }
+
+    const totalRecords = filtered.length, totalPages = Math.ceil(totalRecords / pageSize) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const displayRecords = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    if (displayRecords.length === 0) {
+      list.innerHTML = '<div class="empty-msg">該当する実績が見つかりません</div>';
+    } else {
+      displayRecords.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'card-item' + (r.status === 'NG' ? ' ng-item' : '');
+        
+        const itemsHtml = (r.items && r.items.length > 0)
+          ? r.items.map(i => `<span style="background:rgba(2,132,199,0.08); color:var(--accent-cyan); padding:2px 8px; border-radius:6px; font-weight:700; display:inline-block; margin:2px 2px 2px 0; border:1px solid rgba(2,132,199,0.2); word-break:break-all;">${i.name} <span style="font-weight:normal; color:var(--text-dim);">(${i.qty}台)</span></span>`).join('') 
+          : '-';
+        
+        const causesText = (r.ng_details && Array.isArray(r.ng_details) && r.ng_details.length > 0)
+          ? r.ng_details.map(d => `${d.cause}: ${d.qty}個`).join(' / ')
+          : `${r.ng_cause || 'その他'}: ${r.ng_qty || 1}個`;
+
+        const thicknessText = (r.thickness != null && r.thickness !== '') ? `${Number(r.thickness).toFixed(1)}μm` : '未入力';
+
+        item.innerHTML = `
+          <div class="card-header">
+            <span>📅 ${r.date}</span>
+            <span class="${r.status === 'OK' ? 'badge-ok' : 'badge-ng'}">${r.status === 'NG' ? '⚠️ <span class="text-danger">再塗装(NG)</span>' : 'OK'}</span>
+          </div>
+          <div style="margin-bottom: 10px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;"><span style="font-size:11px; color:var(--text-dim); font-weight:600; margin-right:2px;">品名:</span> ${itemsHtml}</div>
+          <div class="card-data-grid">
+            <div class="card-data-row"><span class="card-label">塗装者:</span><span class="card-value-text">${r.operator}</span></div>
+            <div class="card-data-row"><span class="card-label">塗装機:</span><span class="card-value-text">${r.machine || '旭サナック'}</span></div>
+            <div class="card-data-row"><span class="card-label">天候${r.location ? `(${r.location})` : '(福山市)'}:</span><span class="card-value-text">${r.weather} (${r.temp}℃ / ${r.humidity}%)</span></div>
+            <div class="card-data-row"><span class="card-label">塗料:</span><span class="card-value-text">${formatWeight(r.paint_weight)}</span></div>
+            <div class="card-data-row"><span class="card-label">膜厚:</span><span class="card-value-text">${thicknessText}</span></div>
+            <div class="card-data-row"><span class="card-label">電気条件:</span><span class="card-value-text">${r.voltage}kV / ${r.current}μA</span></div>
+            <div class="card-data-row full-row"><span class="card-label">焼付条件:</span><span class="card-value-text">${r.bake_temp || 200}℃ / ${r.bake_time || 20}分</span></div>
+          </div>
+          ${r.status === 'NG' ? `
+            <div class="ng-memo-box">
+              🚨 <strong class="text-danger">再塗装(NG)発生:</strong> ${r.ng_product || '不明'}（合計 ${r.ng_qty || 1}個）<br>
+              📌 <strong>内訳:</strong> ${causesText} ${r.ng_memo ? `(${r.ng_memo})` : ''}
+            </div>
+          ` : ''}
+          <div class="card-data-row full-row" style="margin-top:2px;"><span class="card-label">メモ:</span><span class="card-value-text">${r.memo}</span></div>
+          <div class="card-footer-actions">
+            <button type="button" class="btn-edit" onclick="editRec('${r.docId}')">編集</button>
+            <button type="button" class="btn-del" onclick="delRec('${r.docId}')">削除</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    document.getElementById('page-info').textContent = `${currentPage} / ${totalPages} ページ (全 ${totalRecords} 件)`;
+    document.getElementById('btn-prev').disabled = (currentPage === 1);
+    document.getElementById('btn-next').disabled = (currentPage === totalPages || totalPages === 0);
+  }
+
+  let troubleDbReactRoot = null;
+  function openTroubleModal() {
+    const modal = document.getElementById('trouble-db-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      if (!troubleDbReactRoot) {
+        const rootEl = document.getElementById('trouble-db-root');
+        if (rootEl) {
+          troubleDbReactRoot = ReactDOM.createRoot(rootEl);
+          troubleDbReactRoot.render(React.createElement(TroubleDbApp));
+        }
+      }
+    }
+  }
+
+  function closeTroubleModal() {
+    const modal = document.getElementById('trouble-db-modal');
+    if (modal) modal.style.display = 'none';
+  }
+</script>
+
+<script type="text/babel">
+  const { useState, useEffect, useMemo } = React;
+
+  const initialData = [
+      { id: "1", title: "ハジキ（クレーター）", category: "表面異常", description: "塗膜表面にすり鉢状のくぼみができる", cause: "油分・シリコン等の付着、エアーへの水分混入", countermeasure: "脱脂工程の強化、フィルター清掃", consideration: "シリコンは極微量でも発生。ハンドクリームにも注意。", icon: "fa-droplet", color: "blue" },
+      { id: "3", title: "ブツ（異物混入）", category: "表面異常", description: "塗膜表面に小さな突起物が発生", cause: "空気中のゴミ、回収粉のメッシュ抜け", countermeasure: "塗装室の清掃、シフターの点検", consideration: "発生箇所（表面か層間か）の観察で原因特定を。", icon: "fa-bug", color: "yellow" },
+      { id: "7", title: "ピンホール", category: "表面異常", description: "塗膜を貫通する微細な穴が開く", cause: "素地の巣穴からの空気膨張、粉体の吸湿", countermeasure: "プレヒートの実施、脱ガス性パウダーの使用", consideration: "鋳物で特に発生しやすい。素材側のガス抜け対策が必須。", icon: "fa-circle-dot", color: "indigo" },
+      { id: "19", title: "ガスピン（ブリスター）", category: "表面異常", description: "塗膜内部に気泡が残り、膨らむ", cause: "厚塗りによるガス抜け不良", countermeasure: "適正膜厚の維持、昇温プロファイルの見直し", consideration: "硬化反応が早すぎる粉体でも発生。ゆっくり昇温させるのが吉。", icon: "fa-bubbles", color: "cyan" },
+      { id: "25", title: "リコート時のピンホール", category: "表面異常", description: "再塗装後、水疱のような穴が無数に開く", cause: "水拭き後の乾燥不足による水蒸気爆発", countermeasure: "エアブローの徹底と完全自然乾燥後の塗装", consideration: "水分が少しでも残ると確実に発生する。焦りは禁物。", icon: "fa-droplet-slash", color: "blue" },
+      { id: "26", title: "ケバ混入", category: "表面異常", description: "糸状のゴミが塗膜に埋まる", cause: "水拭き用タオルの繊維落ち、作業着の糸くず", countermeasure: "工業用マイクロファイバークロスの使用", consideration: "エッジ部に引っ掛かった繊維が原因になりやすい。", icon: "fa-lines-leaning", color: "slate" },
+      { id: "27", title: "溶接部のワキ", category: "表面異常", description: "溶接ビード周辺に気泡やピンホールが集中", cause: "溶接フラックスの残渣、溶接内部の空気膨張", countermeasure: "スラグの完全除去、サンダー掛け、プレヒート", consideration: "溶接部のピンホールは錆の起点になるため厳格な対処が必要。", icon: "fa-fire-flame-simple", color: "red" },
+      { id: "51", title: "リコート時の拭き跡・手形", category: "外観異常", description: "再塗装後に拭き跡や手形が模様として浮き出る", cause: "素手での接触による皮脂付着、不適切なウエスによる汚れの引き伸ばし", countermeasure: "ニトリル手袋の着用、脱脂専用クロスでの清掃", consideration: "リコート時は下地が仕上がっているため、わずかな汚れでも上塗りにダイレクトに影響する。", icon: "fa-hand", color: "pink" },
+      { id: "52", title: "水拭き後の拭き跡（ウォーターマーク）", category: "外観異常", description: "再塗装時に水拭きした跡がそのまま残る", cause: "水道水に含まれるカルキや不純物の残留、拭き取り不足", countermeasure: "純水・脱イオン水の使用、乾いた綺麗なクロスでの乾拭き徹底", consideration: "水道水での拭き取りは不純物が残るため、最終仕上げ前の清掃には不向き。", icon: "fa-water", color: "blue" },
+      { id: "53", title: "ハンガー塗膜の弾け飛散", category: "表面異常", description: "焼き付け中にハンガーの古い塗膜が弾けてワークに付着する", cause: "ハンガーに蓄積した厚塗り塗膜の内部ガス膨張や熱収縮による剥離", countermeasure: "ハンガーの定期的な剥離清掃（ショットブラストや加熱剥離）", consideration: "厚く堆積した塗膜はアース不良だけでなく、熱で爆ぜる原因にもなる。", icon: "fa-bomb", color: "red" },
+      { id: "54", title: "搬入時の台車からのゴミ落下", category: "表面異常", description: "窯への搬入時、振動で台車からゴミや塗料がワークに落ちる", cause: "台車上の清掃不足、キャスターの振動による堆積物の落下", countermeasure: "窯入れ前の台車エアブロー清掃、キャスターのメンテナンス", consideration: "台車の下部やフレームの裏側など、普段見えない部分に溜まった塗料粉が原因になりやすい。", icon: "fa-truck-ramp-box", color: "stone" },
+      { id: "55", title: "炉内ポールからのゴミ落下", category: "表面異常", description: "窯内のポールにハンガーを掛ける際、ポール上のゴミが落ちて付着", cause: "炉内ポール上部に堆積したススや焼き付いた塗料の粉末", countermeasure: "炉内ポールの定期的な拭き取り・空焼き清掃", consideration: "製品の真上に位置するポールやレールは、最もクリティカルなゴミの発生源となる。", icon: "fa-lines-leaning", color: "gray" },
+      { id: "4", title: "ゆず肌", category: "外観異常", description: "みかんの皮のような細かい凹凸", cause: "膜厚不適正、昇温速度が遅い", countermeasure: "適正膜厚の管理、昇温速度アップ", consideration: "意匠として許容される場合もあるが、平滑性重視なら膜厚管理。", icon: "fa-lemon", color: "orange" },
+      { id: "6", title: "逆電離現象", category: "外観異常", description: "表面に微小なクレーターや星状の模様", cause: "過電圧により蓄積電荷が放電し塗膜破壊", countermeasure: "電圧・電流を下げる、ガン距離を離す", consideration: "厚塗り時に発生しやすい。電流制御（AFC）機能が有効。", icon: "fa-bolt", color: "red" },
+      { id: "8", title: "色ムラ", category: "外観異常", description: "濃淡や色調の違いが発生", cause: "膜厚ばらつき、メタリックの配向不良", countermeasure: "均一な膜厚管理、メタリック専用ノズル使用", consideration: "回収粉の混入比率で色が変わるため、一定比率の維持を。", icon: "fa-palette", color: "pink" },
+      { id: "10", title: "光沢不良", category: "外観異常", description: "指定されたツヤが出ない", cause: "異種粉体の混入、オーバーベイク", countermeasure: "色替え清掃徹底、設定温度の厳守", consideration: "アクリルとエポキシが微量混ざるだけで著しい光沢低下。", icon: "fa-sun", color: "yellow" },
+      { id: "11", title: "黄変（変色）", category: "外観異常", description: "加熱により黄色く変色する", cause: "オーバーベイク、燃焼ガスの直接接触", countermeasure: "焼き付け条件の適正化、耐熱樹脂への変更", consideration: "エポキシ系は熱や紫外線で黄変しやすい。", icon: "fa-triangle-exclamation", color: "orange" },
+      { id: "16", title: "隠蔽不良（透け）", category: "外観異常", description: "下地の色が透けて見える", cause: "膜厚不足、顔料分が少ない（赤・黄系）", countermeasure: "規定膜厚の確保、下塗りの実施", consideration: "鮮やかな色は隠蔽性が低い。テスト塗りが必須。", icon: "fa-eye-slash", color: "emerald" },
+      { id: "17", title: "糸引き", category: "外観異常", description: "クモの糸のように塗料が飛んで付着", cause: "粉体の過剰帯電、微粉の多さ", countermeasure: "ガン先端清掃、電圧低下、回収粉の微粉カット", consideration: "新粉と回収粉の適正比率（例: 7:3）の維持を。", icon: "fa-spider", color: "gray" },
+      { id: "18", title: "ウォータースポット", category: "外観異常", description: "水滴の跡が白く残る", cause: "冷却不足状態で水滴が付着", countermeasure: "梱包前の完全冷却", consideration: "梅雨時期に屋外放置すると発生。結露にも注意。", icon: "fa-water", color: "blue" },
+      { id: "20", title: "コンタミネーション", category: "外観異常", description: "異なる色のパウダーが混入", cause: "色替え時の清掃不足", countermeasure: "専用ホースの用意、清掃手順の標準化", consideration: "白系に黒系が1粒混ざるだけで不良。サイクロン内部の確認も。", icon: "fa-recycle", color: "rose" },
+      { id: "28", title: "リコート時の逆電離", category: "外観異常", description: "再塗装時、瞬時に星状の模様やハジキが発生", cause: "下地塗膜が絶縁体となり、表面に異常に電荷が蓄積", countermeasure: "ガン電圧・電流を極限まで下げる、ガン距離を離す、水拭きによる除電", consideration: "リコート時は通常の半分以下の電圧・電流設定が基本。", icon: "fa-bolt-lightning", color: "red" },
+      { id: "29", title: "パッチワークムラ", category: "外観異常", description: "帯電ムラにより斑模様になる", cause: "ガンのアース不良、被塗物のアース不良", countermeasure: "ハンガーの接点清掃、アース線の確認", consideration: "アースが取れていないと粉が不規則に乗り、ムラになる。", icon: "fa-chess-board", color: "slate" },
+      { id: "30", title: "メタリックの黒ずみ", category: "外観異常", description: "メタリック色が暗く、濁って見える", cause: "回収粉の過剰使用によるアルミ顔料の破壊・劣化", countermeasure: "回収粉の比率を下げる、新品パウダーのみを使用", consideration: "メタリック粉は回収サイクロンでアルミ片が変形し輝度を失う。", icon: "fa-gem", color: "slate" },
+      { id: "31", title: "塗り継ぎムラ", category: "外観異常", description: "手吹き作業の重なり部分が目立つ", cause: "ガンの動かし方の不均一、塗布量過多", countermeasure: "ロボット塗装の導入、ガン運びのトレーニング", consideration: "特にメタリックやクリアー塗装で目立ちやすい。", icon: "fa-paintbrush", color: "pink" },
+      { id: "32", title: "ガス焼け（ブラッシング）", category: "外観異常", description: "直火オーブン内で塗膜が曇る、艶が落ちる", cause: "バーナーの不完全燃焼によるNOxガス等の影響", countermeasure: "バーナーの燃焼調整、間接加熱オーブンへの変更", consideration: "冬場など、オーブンの吸気口付近の環境変化でも発生する。", icon: "fa-smog", color: "gray" },
+      { id: "2", title: "タレ", category: "膜厚異常", description: "塗膜が重力により下方に流れ落ちる", cause: "塗布量過多、昇温が早すぎる", countermeasure: "吐出量適正化、昇温プロファイル調整", consideration: "粉体は溶剤に比べタレにくいがエッジ部過剰付着に注意。", icon: "fa-arrow-down", color: "red" },
+      { id: "33", title: "昇温遅れによるタレ", category: "膜厚異常", description: "厚肉品でゆっくりタレが発生", cause: "肉厚のため熱が伝わらず、溶融状態が長く続きすぎる", countermeasure: "プレヒートの実施、設定温度の初期引き上げ", consideration: "薄板と同じ条件で分厚い鉄板を焼くと発生しやすい。", icon: "fa-temperature-arrow-down", color: "orange" },
+      { id: "5", title: "ファラデーケージ現象", category: "塗着不良", description: "入り組んだコーナー部に粉が入らない", cause: "静電反発による電気力線の集中", countermeasure: "電圧・エアー圧を下げる", consideration: "トリボガン（摩擦帯電）の使用で大幅改善する場合がある。", icon: "fa-magnet", color: "purple" },
+      { id: "34", title: "アース不良による薄膜", category: "塗着不良", description: "設定通り吹いても膜厚が乗らない", cause: "ハンガーへの塗膜堆積による絶縁", countermeasure: "定期的なハンガーの剥離・空焼き", consideration: "「粉が乗らない」時の原因の8割はアース不良。", icon: "fa-plug-circle-xmark", color: "stone" },
+      { id: "35", title: "突き抜け現象", category: "塗着不良", description: "網目や細かい隙間を粉が通り抜けてしまう", cause: "エアー圧（搬送エアー）が強すぎる", countermeasure: "吐出エアーを下げ、パターンエアーを広げる", consideration: "エキスパンドメタル等ではフワッと乗せる感覚が必要。", icon: "fa-wind", color: "teal" },
+      { id: "9", title: "密着不良", category: "性能不良", description: "塗膜が素地から容易に剥がれる", cause: "前処理不良、焼き付け不足", countermeasure: "前処理液の管理、オーブン条件の再確認", consideration: "クロスカット試験で評価。炉内温度プロファイラーでの確認が吉。", icon: "fa-layer-group", color: "slate" },
+      { id: "12", title: "エッジカバー性不良", category: "性能不良", description: "角の塗膜が薄く錆が発生しやすい", cause: "溶融時の表面張力によるエッジからの逃げ", countermeasure: "角のR面取り加工", consideration: "設計段階での角R（1R以上）指示が効果的。", icon: "fa-square", color: "gray" },
+      { id: "22", title: "硬度不足", category: "性能不良", description: "塗膜が柔らかく、傷がつきやすい", cause: "焼き付け不足（温度低い、時間短い）", countermeasure: "被塗物自体の温度（PMT）を測定", consideration: "データロガーによる実体温測定が不可不可欠。", icon: "fa-hammer", color: "orange" },
+      { id: "36", title: "リコート時の層間剥離", category: "性能不良", description: "2回目に塗った塗膜だけがペリッと剥がれる", cause: "1回目塗膜の過剰焼き付け（オーバーベイク）、足付け不足", countermeasure: "1回目の焼き付けをハーフベイク（仮焼き）にする、サンディング", consideration: "層間密着は粉体塗装の弱点。連続塗装の設計が重要。", icon: "fa-layer-group", color: "red" },
+      { id: "37", title: "素地の発錆（フラッシュルスト）", category: "性能不良", description: "塗装下で錆が発生し塗膜を押し上げる", cause: "水洗後の乾燥遅れ、工場内の湿度過多", countermeasure: "水切り乾燥炉の温度アップ、防錆剤の添加", consideration: "梅雨時期に前処理後放置するとすぐ錆びる。", icon: "fa-disease", color: "amber" },
+      { id: "38", title: "レーザー酸化スケール剥がれ", category: "性能不良", description: "レーザー切断面の塗膜がスケールごと剥離", cause: "レーザー切断時の黒皮（酸化被膜）の除去不足", countermeasure: "酸洗い、ショットブラスト、サンダー掛け", consideration: "黒皮の上に乗った塗膜は密着ゼロに等しい。", icon: "fa-scissors", color: "slate" },
+      { id: "39", title: "耐食性不良（早期発錆）", category: "性能不良", description: "塩水噴霧試験等で早期に錆が発生", cause: "化成皮膜（リン酸亜鉛・ジルコニウム）の形成不足", countermeasure: "化成処理液の濃度・pH管理、更新", consideration: "塗装の防錆力の7割は前処理で決まる。", icon: "fa-shield-virus", color: "emerald" },
+      { id: "13", title: "吐出ムラ（息継ぎ）", category: "作業性不良", description: "粉の出が不安定になる", cause: "インジェクター摩耗、流動性不良", countermeasure: "スリーブ交換、流動化エアー調整", consideration: "ホース内の粉だまりやレイアウトの見直しを。", icon: "fa-wind", color: "teal" },
+      { id: "21", title: "粉落ち", category: "作業性不良", description: "焼き付け前に粉が落下する", cause: "帯電不良、膜厚付けすぎ、振動", countermeasure: "ハンガー接点清掃、コンベア段差修正", consideration: "アース確保が全ての基本。", icon: "fa-arrow-down-short-wide", color: "stone" },
+      { id: "40", title: "ガン先のスピット", category: "作業性不良", description: "ガン先端に溜まった粉が塊で吐出される", cause: "電極ピンへの粉の融着、エアー圧不足", countermeasure: "清掃エアーの増圧、定期的なガン先拭き取り", consideration: "放置すると大きな「ブツ」として製品に付着する。", icon: "fa-gun", color: "gray" },
+      { id: "41", title: "ホース内の閉塞", category: "設備異常", description: "塗料ホース内で粉が詰まる", cause: "ホースのたるみ、搬送エアー不足", countermeasure: "ホースを最短距離で張る、内径の適正化", consideration: "床に這わせた長いホースは閉塞の温床。", icon: "fa-hose", color: "blue" },
+      { id: "42", title: "エアのオイルミスト混入", category: "設備異常", description: "吐出エアに油分が混ざりハジキを誘発", cause: "コンプレッサーのオイルフィルター寿命", countermeasure: "オイルフリーコンプへの変更、ラインフィルター交換", consideration: "末端でのエアチェック（白い紙に吹いてシミを見ること）を習慣化。", icon: "fa-oil-can", color: "amber" },
+      { id: "43", title: "オーブン内のヤニ落下", category: "設備異常", description: "炉内の天井から茶色い塊が落ちてくる", cause: "昇華した樹脂成分が冷えて固まり落下", countermeasure: "定期的なオーブン内部の空焼き・清掃", consideration: "製品の真上にレールがある構造だと致命的。", icon: "fa-fire-burner", color: "red" },
+      { id: "44", title: "コンベアからのゴミ落下", category: "設備異常", description: "チェーンの鉄粉や油が落ちてくる", cause: "コンベアの摩耗、過剰な注油", countermeasure: "耐熱グリスの適量塗布、ゴミ受けパンの設置", consideration: "C型レール内部の清掃は怠りがちだが重要。", icon: "fa-industry", color: "slate" },
+      { id: "15", title: "パウダーのダマ（凝集）", category: "材料不良", description: "粉体が固まってダマになる", cause: "高温・多湿保管、古い塗料", countermeasure: "恒温恒湿（25℃以下）保管、シフター通し", consideration: "在庫管理（先入れ先出し）の徹底。", icon: "fa-cubes", color: "amber" },
+      { id: "45", title: "ブロッキング（箱内固着）", category: "材料不良", description: "未開封の箱の中で粉がブロック状に固まる", cause: "輸送時の高温曝露（夏場のトラック等）、荷重", countermeasure: "クール便指定、積み上げ段数の制限", consideration: "手で崩れないレベルのブロッキングは廃棄対象。", icon: "fa-box", color: "orange" },
+      { id: "46", title: "回収粉の劣化", category: "材料不良", description: "回収粉ばかり使うと塗着効率が落ちる", cause: "粉の帯電剤の枯渇、粒子形状の丸まり", countermeasure: "新粉と回収粉を自動混合するシステムの導入", consideration: "古い回収粉は潔く廃棄することもコスト削減に繋がる。", icon: "fa-trash-can", color: "gray" },
+      { id: "47", title: "ロット間色ブレ", category: "材料不良", description: "塗料のロットが変わると色が合わない", cause: "メーカーの製造ブレ", countermeasure: "同一現場には同一ロットを割り当てる", consideration: "特にパステルカラーやグレー系で目立ちやすい。", icon: "fa-swatchbook", color: "pink" },
+      { id: "14", title: "チョーキング（白亜化）", category: "経年劣化", description: "屋外暴露で表面が粉状に劣化", cause: "紫外線による樹脂分解", countermeasure: "高耐候性樹脂への変更", consideration: "屋外製品にエポキシ混合を使用するとすぐ発生。", icon: "fa-cloud", color: "slate" },
+      { id: "48", title: "梱包材の跡", category: "その他", description: "製品にプチプチや段ボールの跡がつく", cause: "塗膜が完全に冷め切る前（約40℃以上）での梱包", countermeasure: "強制冷却ファン設置、手で触って完全に冷たいことの確認", consideration: "夏場は特に冷めにくい。焦って出荷するとクレーム直結。", icon: "fa-box-open", color: "orange" },
+      { id: "49", title: "水切り乾燥不良によるシミ", category: "その他", description: "化成処理後の水滴跡がそのまま残る", cause: "水切りエアブロー不足、乾燥炉の温度不足", countermeasure: "エアブロー工程の人員増、純水リンス", consideration: "水滴跡の上は塗着が悪く、防錆力も落ちる。", icon: "fa-droplet", color: "cyan" },
+      { id: "50", title: "シルク印刷の密着不良", category: "その他", description: "後工程で印刷した文字が剥がれる", cause: "塗料に含まれるレベリング剤（シリコンやワックス）の影響", countermeasure: "印刷対応（ワックスフリー）粉体の指定", consideration: "通常の粉体塗装は表面がツルツル弾くよう設計されているため注意。", icon: "fa-print", color: "indigo" }
+  ].map(item => ({ ...item, author: "システム", date: new Date().toISOString() }));
+
+  const icons = ["fa-droplet","fa-droplet-slash","fa-bug","fa-lemon","fa-magnet","fa-bolt","fa-bolt-lightning","fa-circle-dot","fa-palette","fa-layer-group","fa-sun","fa-triangle-exclamation","fa-square","fa-wind","fa-cloud","fa-cubes","fa-eye-slash","fa-spider","fa-water","fa-bubbles","fa-recycle","fa-hammer","fa-lines-leaning","fa-fire-flame-simple","fa-chess-board","fa-gem","fa-paintbrush","fa-smog","fa-temperature-arrow-down","fa-plug-circle-xmark","fa-disease","fa-scissors","fa-shield-virus","fa-gun","fa-hose","fa-oil-can","fa-fire-burner","fa-industry","fa-box","fa-trash-can","fa-swatchbook","fa-box-open","fa-print","fa-hand","fa-bomb","fa-truck-ramp-box"];
+  const colors = ["blue", "red", "yellow", "orange", "purple", "indigo", "pink", "slate", "teal", "emerald", "cyan", "amber", "rose", "stone", "gray"];
+  const categories = ["すべて", "表面異常", "外観異常", "膜厚異常", "塗着不良", "性能不良", "作業性不良", "設備異常", "材料不良", "経年劣化", "その他"];
+
+  const TroubleDbApp = () => {
+      const [reports, setReports] = useState([]);
+      const [searchQuery, setSearchQuery] = useState("");
+      const [selectedCategory, setSelectedCategory] = useState("すべて");
+      const [selectedReport, setSelectedReport] = useState(null);
+      const [isFormOpen, setIsFormOpen] = useState(false);
+      const [editingReport, setEditingReport] = useState(null);
+
+      useEffect(() => {
+          if (!db) { setReports(initialData); return; }
+          const unsubscribe = db.collection('trouble_reports').onSnapshot(snapshot => {
+              if (!snapshot.empty) {
+                  setReports(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+              } else {
+                  setReports(initialData);
+                  initialData.forEach(item => db.collection('trouble_reports').doc(item.id).set(item));
+              }
+          }, () => setReports(initialData));
+          return () => unsubscribe();
+      }, []);
+
+      const filteredReports = useMemo(() => {
+          return reports.filter(r => {
+              const matchQuery = (r.title||'').includes(searchQuery) || (r.cause||'').includes(searchQuery) || (r.category||'').includes(searchQuery);
+              const matchCategory = selectedCategory === "すべて" || r.category === selectedCategory;
+              return matchQuery && matchCategory;
+          });
+      }, [reports, searchQuery, selectedCategory]);
+
+      const handleSaveReport = (data) => {
+          localStorage.setItem('powderCoatingUser', data.author);
+          const docId = editingReport ? editingReport.id : (data.id || Date.now().toString());
+          const payload = { ...data, id: docId, date: new Date().toISOString() };
+          
+          if (db) {
+              db.collection('trouble_reports').doc(docId).set(payload, { merge: true })
+                  .then(() => { setIsFormOpen(false); setEditingReport(null); })
+                  .catch(err => alert("保存エラー: " + err.message));
+          } else {
+              setReports(editingReport ? reports.map(r => r.id === docId ? payload : r) : [...reports, payload]);
+              setIsFormOpen(false); setEditingReport(null);
+          }
+      };
+
+      const handleDelete = (id) => {
+          if (!verifyAdminPassword()) return;
+          if (confirm("このレポートを削除しますか？")) {
+              if (db) {
+                  db.collection('trouble_reports').doc(id).delete()
+                      .then(() => setSelectedReport(null))
+                      .catch(err => alert("削除エラー: " + err.message));
+              } else {
+                  setReports(reports.filter(r => r.id !== id));
+                  setSelectedReport(null);
+              }
+          }
+      };
+
+      return (
+          <div className="min-h-full bg-slate-50 pb-24 text-slate-800" style={{ padding: '16px' }}>
+              <header className="bg-slate-900 text-white shadow-md rounded-xl p-4 mb-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+                      <div className="flex items-center gap-2">
+                          <i className="fa-solid fa-spray-can-sparkles text-xl text-blue-400"></i>
+                          <h1 className="text-lg font-bold">粉体塗装 不具合DB</h1>
+                      </div>
+                      <div className="relative w-full sm:w-72">
+                          <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                          <input type="text" placeholder="不具合・原因を検索..." style={{ color: '#ffffff', backgroundColor: '#1e293b' }}
+                              className="w-full pl-9 pr-3 py-1.5 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 placeholder-slate-400"
+                              value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                      </div>
+                  </div>
+                  <div className="mt-3">
+                      <div className="flex gap-2 overflow-x-auto hide-scrollbar py-1">
+                          {categories.map(cat => (
+                              <button key={cat} onClick={() => setSelectedCategory(cat)}
+                                  className={`shrink-0 px-3 py-1 text-xs font-semibold rounded-full transition-colors ${selectedCategory === cat ? 'bg-blue-500 text-white shadow' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>
+                                  {cat}
+                              </button>
+                          ))}
+                      </div>
+                  </div>
+              </header>
+
+              <main>
+                  <div className="flex flex-col gap-2">
+                      {filteredReports.map(report => (
+                          <div key={report.id} onClick={() => setSelectedReport(report)}
+                              className={`bg-white rounded-lg shadow-sm border-l-4 border-${report.color||'blue'}-500 cursor-pointer p-3 flex items-center justify-between hover:bg-slate-50 transition-colors`}>
+                              <div className="flex items-center gap-3 overflow-hidden">
+                                  <div className={`w-10 h-10 rounded-md shrink-0 flex items-center justify-center bg-${report.color||'blue'}-50 text-${report.color||'blue'}-600`}>
+                                      <i className={`fa-solid ${report.icon||'fa-bug'} text-lg`}></i>
+                                  </div>
+                                  <div className="truncate">
+                                      <div className="flex items-center gap-2 mb-0.5">
+                                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 shrink-0">{report.category}</span>
+                                          <h3 className="font-bold text-sm truncate">{report.title}</h3>
+                                      </div>
+                                      <p className="text-xs text-slate-500 truncate">{report.description}</p>
+                                  </div>
+                              </div>
+                              <i className="fa-solid fa-chevron-right text-slate-300 text-xs ml-2 shrink-0"></i>
+                          </div>
+                      ))}
+                  </div>
+                  {filteredReports.length === 0 && (
+                      <div className="text-center py-12 text-slate-400">
+                          <i className="fa-solid fa-box-open text-3xl mb-2"></i>
+                          <p className="text-sm">見つかりませんでした。</p>
+                      </div>
+                  )}
+              </main>
+
+              <button onClick={() => { if(verifyAdminPassword()) { setEditingReport(null); setIsFormOpen(true); } }}
+                  className="fixed bottom-8 right-8 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 z-10" style={{ border: 'none', cursor: 'pointer' }}>
+                  <i className="fa-solid fa-plus text-xl"></i>
+              </button>
+
+              {selectedReport && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-3 modal-overlay" onClick={() => setSelectedReport(null)}>
+                      <div className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+                          <div className={`h-1.5 w-full bg-${selectedReport.color||'blue'}-500`}></div>
+                          <div className="p-5">
+                              <div className="flex justify-between items-start mb-4">
+                                  <div className="flex items-center gap-3">
+                                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center bg-${selectedReport.color||'blue'}-100 text-${selectedReport.color||'blue'}-600`}>
+                                          <i className={`fa-solid ${selectedReport.icon||'fa-bug'} text-xl`}></i>
+                                      </div>
+                                      <div>
+                                          <span className="text-[10px] font-bold text-slate-400">{selectedReport.category}</span>
+                                          <h2 className="text-lg font-bold">{selectedReport.title}</h2>
+                                      </div>
+                                  </div>
+                                  <button onClick={() => setSelectedReport(null)} className="text-slate-400 hover:text-slate-600" style={{ border: 'none', background: 'none', cursor: 'pointer' }}><i className="fa-solid fa-xmark text-lg"></i></button>
+                              </div>
+
+                              <div className="space-y-3">
+                                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                      <h4 className="text-xs font-bold text-slate-700 mb-1 flex items-center gap-1"><i className="fa-solid fa-circle-info text-blue-500"></i> 現象</h4>
+                                      <p className="text-sm text-slate-600">{selectedReport.description}</p>
+                                  </div>
+                                  <div className="bg-red-50 p-3 rounded-lg border border-red-100">
+                                      <h4 className="text-xs font-bold text-red-700 mb-1 flex items-center gap-1"><i className="fa-solid fa-magnifying-glass text-red-500"></i> 原因</h4>
+                                      <p className="text-sm text-red-900">{selectedReport.cause}</p>
+                                  </div>
+                                  <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                                      <h4 className="text-xs font-bold text-emerald-700 mb-1 flex items-center gap-1"><i className="fa-solid fa-shield-halved text-emerald-500"></i> 対策案</h4>
+                                      <p className="text-sm text-emerald-900">{selectedReport.countermeasure}</p>
+                                  </div>
+                                  <div className="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                                      <h4 className="text-xs font-bold text-amber-700 mb-1 flex items-center gap-1"><i className="fa-solid fa-lightbulb text-amber-500"></i> 考察・ポイント</h4>
+                                      <p className="text-sm text-amber-900">{selectedReport.consideration}</p>
+                                  </div>
+                              </div>
+
+                              <div className="mt-5 pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400">
+                                  <div><i className="fa-solid fa-user-pen"></i> {selectedReport.author}</div>
+                                  <div className="flex gap-2">
+                                      <button onClick={() => { if(verifyAdminPassword()) { setSelectedReport(null); setEditingReport(selectedReport); setIsFormOpen(true); } }} className="px-3 py-1.5 font-bold text-blue-600 bg-blue-50 rounded" style={{ border: 'none', cursor: 'pointer' }}>編集</button>
+                                      <button onClick={() => handleDelete(selectedReport.id)} className="px-3 py-1.5 font-bold text-red-600 bg-red-50 rounded" style={{ border: 'none', cursor: 'pointer' }}>削除</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {isFormOpen && (
+                  <TroubleFormModal 
+                      onClose={() => { setIsFormOpen(false); setEditingReport(null); }} 
+                      onSave={handleSaveReport} 
+                      initialData={editingReport} 
+                  />
+              )}
+          </div>
+      );
+  };
+
+  const TroubleFormModal = ({ onClose, onSave, initialData }) => {
+      const [formData, setFormData] = useState(initialData || {
+          title: "", category: "表面異常", description: "", cause: "", countermeasure: "", consideration: "", icon: "fa-bug", color: "slate",
+          author: localStorage.getItem('powderCoatingUser') || ""
+      });
+
+      const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+      return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 modal-overlay" onClick={onClose}>
+              <div className="bg-white rounded-xl w-full max-w-2xl max-h-[95vh] overflow-hidden shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+                  <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                      <h2 className="text-md font-bold flex items-center gap-2">
+                          <i className={`fa-solid ${initialData ? 'fa-pen' : 'fa-plus'} text-blue-500`}></i>
+                          {initialData ? "レポート編集" : "新規不具合レポート"}
+                      </h2>
+                      <button onClick={onClose} className="text-slate-400" style={{ border: 'none', background: 'none', cursor: 'pointer' }}><i className="fa-solid fa-xmark text-lg"></i></button>
+                  </div>
+                  
+                  <div className="p-4 overflow-y-auto flex-1 hide-scrollbar space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                              <label className="block text-xs font-bold text-slate-700 mb-1">タイトル</label>
+                              <input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full px-3 py-1.5 border rounded text-sm focus:outline-none focus:border-blue-400" required />
+                          </div>
+                          <div>
+                              <label className="block text-xs font-bold text-slate-700 mb-1">カテゴリ</label>
+                              <select name="category" value={formData.category} onChange={handleChange} className="w-full px-3 py-1.5 border rounded text-sm focus:outline-none focus:border-blue-400">
+                                  {categories.filter(c => c !== "すべて").map(c => <option key={c} value={c}>{c}</option>)}
+                              </select>
+                          </div>
+                      </div>
+
+                      <div className="space-y-3">
+                          <div><label className="block text-xs font-bold text-slate-700 mb-1">現象</label><textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full px-3 py-1.5 border rounded text-sm focus:outline-none focus:border-blue-400"></textarea></div>
+                          <div><label className="block text-xs font-bold text-red-700 mb-1">原因</label><textarea name="cause" value={formData.cause} onChange={handleChange} rows="2" className="w-full px-3 py-1.5 border bg-red-50 rounded text-sm focus:outline-none focus:border-red-400"></textarea></div>
+                          <div><label className="block text-xs font-bold text-emerald-700 mb-1">対策案</label><textarea name="countermeasure" value={formData.countermeasure} onChange={handleChange} rows="2" className="w-full px-3 py-1.5 border bg-emerald-50 rounded text-sm focus:outline-none focus:border-emerald-400"></textarea></div>
+                          <div><label className="block text-xs font-bold text-amber-700 mb-1">考察・ポイント</label><textarea name="consideration" value={formData.consideration} onChange={handleChange} rows="2" className="w-full px-3 py-1.5 border bg-amber-50 rounded text-sm focus:outline-none focus:border-amber-400"></textarea></div>
+                      </div>
+
+                      <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                          <label className="block text-xs font-bold text-blue-800 mb-1"><i className="fa-solid fa-user-pen"></i> レポート者</label>
+                          <input type="text" name="author" value={formData.author} onChange={handleChange} placeholder="例: 山田太郎 (次回以降自動入力)" className="w-full px-3 py-1.5 border border-blue-200 rounded text-sm focus:outline-none focus:border-blue-400" required />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 pt-2">
+                          <div>
+                              <label className="block text-xs font-bold text-slate-700 mb-1">アイコン</label>
+                              <div className="flex flex-wrap gap-1">
+                                  {icons.slice(0, 15).map(icon => (
+                                      <button key={icon} type="button" onClick={() => setFormData({...formData, icon})} className={`w-7 h-7 rounded text-xs flex items-center justify-center ${formData.icon === icon ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-500'}`} style={{ border: 'none', cursor: 'pointer' }}><i className={`fa-solid ${icon}`}></i></button>
+                                  ))}
+                              </div>
+                          </div>
+                          <div>
+                              <label className="block text-xs font-bold text-slate-700 mb-1">カラー</label>
+                              <div className="flex flex-wrap gap-1">
+                                  {colors.map(c => (
+                                      <button key={c} type="button" onClick={() => setFormData({...formData, color: c})} className={`w-5 h-5 rounded-full bg-${c}-500 border-2 ${formData.color === c ? 'border-slate-800' : 'border-transparent'}`} style={{ cursor: 'pointer' }}/>
+                                  ))}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+                      <button onClick={onClose} className="px-4 py-2 rounded text-sm font-bold text-slate-600 bg-white border border-slate-200" style={{ cursor: 'pointer' }}>キャンセル</button>
+                      <button onClick={() => onSave(formData)} disabled={!formData.title || !formData.author} className="px-4 py-2 rounded text-sm font-bold text-white bg-blue-600 disabled:opacity-50" style={{ border: 'none', cursor: 'pointer' }}>保存</button>
+                  </div>
+              </div>
+          </div>
+      );
+  };
+</script>
+
+</body>
+</html>
