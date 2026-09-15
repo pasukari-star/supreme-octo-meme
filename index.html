@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <title>SIRIUS 粉体塗装 条件・実績管理 SYSTEM</title>
 
   <!-- Firebase SDK -->
@@ -127,6 +128,8 @@
     .card-value { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 19px; font-weight: 800; color: var(--accent-cyan); line-height: 1.2; }
     .card-value.ng-val { color: var(--accent-danger); }
     .unit { font-size: 11px; font-weight: normal; color: var(--text-dim); margin-left: 2px; }
+    .card-subcount { font-size: 11px; font-weight: 700; color: var(--text-dim); margin-top: 5px; letter-spacing: 0.3px; }
+    .card-subcount b { font-size: 13px; font-weight: 800; color: var(--accent-danger); margin: 0 2px; }
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -136,6 +139,8 @@
     .text-danger { color: var(--accent-danger) !important; font-weight: bold; }
 
     .cause-analysis-card { background: var(--bg-card); backdrop-filter: blur(12px); padding: 18px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 16px; box-shadow: var(--shadow-glow); }
+    .ng-analysis-wrapper { border-radius: var(--radius); overflow: hidden; border: 1.5px solid rgba(225, 29, 72, 0.3); box-shadow: 0 6px 22px rgba(225, 29, 72, 0.1); margin-bottom: 16px; }
+    .ng-analysis-banner { background: linear-gradient(135deg, #e11d48, #f43f5e); color: #fff; padding: 10px 18px; font-size: 13px; font-weight: 800; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px; }
     .cause-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
     .cause-tabs { display: flex; gap: 6px; }
     .btn-tab { padding: 5px 12px; font-size: 11px; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: all 0.2s; }
@@ -263,6 +268,25 @@
     .product-add-group { display: flex; gap: 8px; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* 週選択用カレンダー UI スタイル */
+    .week-picker-modal { max-width: 440px; }
+    .calendar-container { width: 100%; margin-top: 8px; user-select: none; }
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .calendar-header button { background: none; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 10px; font-weight: bold; cursor: pointer; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; }
+    .calendar-day-head { font-weight: bold; color: var(--text-muted); padding: 6px 0; }
+    .calendar-day-head.sun { color: var(--accent-danger); }
+    .calendar-day-head.sat { color: var(--accent-cyan); }
+    .calendar-row { display: contents; cursor: pointer; }
+    .calendar-cell { padding: 10px 0; border-radius: 4px; transition: background 0.15s; font-weight: 500; color: var(--text-main); }
+    .calendar-cell.other-month { color: #cbd5e1; }
+    .calendar-cell.sun { color: var(--accent-danger); }
+    .calendar-cell.sat { color: var(--accent-cyan); }
+    .calendar-row:hover .calendar-cell:not(.other-month) { background: rgba(2, 132, 199, 0.1); }
+    .calendar-row.selected .calendar-cell { background: var(--accent-cyan) !important; color: #ffffff !important; font-weight: 700; }
+    .calendar-row.selected .calendar-cell:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+    .calendar-row.selected .calendar-cell:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
   </style>
 </head>
 <body>
@@ -313,9 +337,9 @@
         <div class="card"><div class="card-title">週間 塗料使用量</div><div class="card-value" id="s-week-weight">0 kg</div></div>
         <div class="card"><div class="card-title">月間 塗料使用量</div><div class="card-value" id="s-month-weight">0 kg</div></div>
         <div class="card"><div class="card-title">年間 塗料使用量</div><div class="card-value" id="s-year-weight">0 kg</div></div>
-        <div class="card"><div class="card-title">週間 再塗装率</div><div class="card-value ng-val" id="s-week-ng">0 <span class="unit">%</span></div></div>
-        <div class="card"><div class="card-title">月間 再塗装率</div><div class="card-value ng-val" id="s-month-ng">0 <span class="unit">%</span></div></div>
-        <div class="card"><div class="card-title">年間 再塗装率</div><div class="card-value ng-val" id="s-year-ng">0 <span class="unit">%</span></div></div>
+        <div class="card"><div class="card-title">週間 再塗装率</div><div class="card-value ng-val" id="s-week-ng">0 <span class="unit">%</span></div><div class="card-subcount" id="s-week-ng-count">再塗装 <b>0</b> 件</div></div>
+        <div class="card"><div class="card-title">月間 再塗装率</div><div class="card-value ng-val" id="s-month-ng">0 <span class="unit">%</span></div><div class="card-subcount" id="s-month-ng-count">再塗装 <b>0</b> 件</div></div>
+        <div class="card"><div class="card-title">年間 再塗装率</div><div class="card-value ng-val" id="s-year-ng">0 <span class="unit">%</span></div><div class="card-subcount" id="s-year-ng-count">再塗装 <b>0</b> 件</div></div>
       </div>
 
       <div class="pc-two-columns">
@@ -341,11 +365,10 @@
                 </div>
 
                 <div class="full">
-                  <label>塗装者 (最大3名まで同時に選択可能)</label>
-                  <div class="multi-select-grid-3">
+                  <label>塗装者 (最大2名まで同時に選択可能)</label>
+                  <div class="multi-select-grid-2">
                     <select id="operator1" required></select>
                     <select id="operator2"></select>
-                    <select id="operator3"></select>
                   </div>
                 </div>
 
@@ -420,32 +443,47 @@
         </div>
 
         <div>
-          <div class="cause-analysis-card" style="padding-bottom: 4px; margin-bottom: 12px; border-bottom: none; border-radius: var(--radius) var(--radius) 0 0;">
-            <div class="cause-title" style="margin-bottom: 0;">
-              <span>📈 統計・各種ランキング表示</span>
-              <div class="cause-tabs">
-                <button type="button" class="btn-tab active" id="tab-week" onclick="setCauseRange('week')">週間</button>
-                <button type="button" class="btn-tab" id="tab-month" onclick="setCauseRange('month')">月間</button>
-                <button type="button" class="btn-tab" id="tab-year" onclick="setCauseRange('year')">年間</button>
+          <div class="ng-analysis-wrapper">
+            <div class="ng-analysis-banner"><i class="fa-solid fa-triangle-exclamation"></i> 再塗装(NG) 分析ダッシュボード</div>
+            <div class="cause-analysis-card" style="padding-bottom: 4px; margin-bottom: 0; border-bottom: none; border-radius: 0; border-left: none; border-right: none; border-top: none;">
+              <div class="cause-title" style="margin-bottom: 0;">
+                <span>📈 集計期間の切替</span>
+                <div class="cause-tabs" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                  <button type="button" class="btn-tab active" id="tab-week" onclick="setCauseRange('week')">今週</button>
+                  <button type="button" class="btn-tab" id="tab-lastweek" onclick="setCauseRange('lastweek')">先週</button>
+                  <button type="button" class="btn-tab" id="tab-month" onclick="setCauseRange('month')">今月</button>
+                  <button type="button" class="btn-tab" id="tab-year" onclick="setCauseRange('year')">今年</button>
+                  <button type="button" class="btn-tab" id="tab-custom" onclick="openCustomPeriodModal('cause')" style="display:inline-flex; align-items:center; gap:3px;">📅 任意</button>
+                </div>
               </div>
+              <div id="period-display-label" style="font-size: 10.5px; color: var(--accent-cyan); font-weight: 700; margin-top: 6px; text-align: right;"></div>
             </div>
+            <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0; border-left: none; border-right: none;"><div class="cause-title" style="font-size: 12px;">🚨 原因別ランキング (再塗装発生数)</div><div class="cause-list" id="cause-analysis-list"></div></div>
+            <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0; border-left: none; border-right: none; border-bottom: none;"><div class="cause-title" style="font-size: 12px;">📦 台数別ランキング (再塗装発生台数)</div><div class="cause-list" id="product-analysis-list"></div></div>
           </div>
-          <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0;"><div class="cause-title" style="font-size: 12px;">🚨 <span class="text-danger">再塗装(NG)</span> 発生原因</div><div class="cause-list" id="cause-analysis-list"></div></div>
-          <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0;"><div class="cause-title" style="font-size: 12px;">📦 品名別 <span class="text-danger">再塗装(NG)</span> 台数順</div><div class="cause-list" id="product-analysis-list"></div></div>
-          <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0; padding: 12px 18px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(2, 132, 199, 0.08)); border-left: 4px solid var(--accent-indigo);">
+          <div class="cause-analysis-card" style="margin-bottom: 16px; padding: 12px 18px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(2, 132, 199, 0.08)); border-left: 4px solid var(--accent-indigo);">
             <button type="button" onclick="openTroubleModal()" style="width: 100%; border: none; background: linear-gradient(135deg, var(--accent-indigo), #3b82f6); color: #ffffff; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25); transition: all 0.2s;">
               <i class="fa-solid fa-spray-can-sparkles" style="font-size: 15px;"></i><span>💡 不具合でお困りの方はこちら（不具合原因・対策DB）</span><span style="font-size: 10px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; white-space: nowrap; margin-left: auto;">確認する ▶</span>
             </button>
           </div>
-          <div class="cause-analysis-card" style="border-radius: 0 0 var(--radius) var(--radius); border-top: none; margin-bottom: 20px;"><div class="cause-title" style="font-size: 12px;">🎨 品名別 塗料総使用量</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
+          <div class="cause-analysis-card" style="margin-bottom: 20px;"><div class="cause-title" style="font-size: 12px;">🎨 品名別 塗料総使用量</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
 
           <div class="list-section">
-            <div class="list-title">📋 登録実績一覧</div>
+            <div class="list-title">
+              <span>📋 登録実績一覧</span>
+              <div class="cause-tabs" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                <button type="button" class="btn-tab active" id="list-tab-all" onclick="setListRange('all')">すべて</button>
+                <button type="button" class="btn-tab" id="list-tab-week" onclick="setListRange('week')">今週</button>
+                <button type="button" class="btn-tab" id="list-tab-lastweek" onclick="setListRange('lastweek')">先週</button>
+                <button type="button" class="btn-tab" id="list-tab-month" onclick="setListRange('month')">今月</button>
+                <button type="button" class="btn-tab" id="list-tab-year" onclick="setListRange('year')">今年</button>
+                <button type="button" class="btn-tab" id="list-tab-custom" onclick="openCustomPeriodModal('list')" style="display:inline-flex; align-items:center; gap:3px;">📅 任意（1週間）</button>
+              </div>
+            </div>
+            <div id="list-period-display-label" style="font-size: 10.5px; color: var(--accent-cyan); font-weight: 700; margin-top: -8px; margin-bottom: 10px; text-align: right;"></div>
             <div class="filter-box">
               <input type="text" id="search-input" placeholder="🔍 検索 (品名/担当/原因/メモ)" style="flex:1; min-width: 140px;" oninput="resetPageAndRender()">
-              <input type="date" id="filter-date" class="filter-date-input" style="flex:1; min-width: 120px;" onchange="resetPageAndRender()">
               <button type="button" class="btn-filter-ng" onclick="filterNGOnly()">⚠️ 再塗装(NG)のみ</button>
-              <button type="button" class="btn-clear" id="btn-sort-toggle" onclick="toggleSortOrder()">📅 日付の最新順</button>
               <button type="button" class="btn-clear" onclick="clearFilters()">クリア</button>
             </div>
             <div id="record-list"></div>
@@ -529,6 +567,13 @@
           <div class="list-section">
             <div class="list-title">📋 塗着率・歩留まり測定ログ (kg対応＆複数品名対応)</div>
             <div class="filter-box">
+              <div class="cause-tabs" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; width: 100%;">
+                <button type="button" class="btn-tab active" id="tochaku-tab-week" onclick="setTochakuLogRange('week')">今週</button>
+                <button type="button" class="btn-tab" id="tochaku-tab-month" onclick="setTochakuLogRange('month')">今月</button>
+                <button type="button" class="btn-tab" id="tochaku-tab-year" onclick="setTochakuLogRange('year')">今年</button>
+                <button type="button" class="btn-tab" id="tochaku-tab-custom" onclick="openTochakuCustomPeriodModal()" style="display:inline-flex; align-items:center; gap:3px;">📅 任意</button>
+              </div>
+              <div id="tochaku-period-display-label" style="font-size: 10.5px; color: var(--accent-cyan); font-weight: 700; width: 100%; text-align: right; margin-bottom: 8px;"></div>
               <input type="text" id="tochaku-search-input" placeholder="🔍 検索 (ワーク品名/担当者)" style="flex:1; min-width: 140px;" oninput="resetTochakuPageAndRender()">
               <input type="date" id="tochaku-filter-date" class="filter-date-input" style="flex:1; min-width: 120px;" onchange="resetTochakuPageAndRender()">
               <button type="button" class="btn-clear" onclick="clearTochakuFilters()">クリア</button>
@@ -711,6 +756,43 @@
   </div>
 </div>
 
+<!-- 任意期間指定モーダル（カレンダー週選択型） -->
+<div id="custom-period-modal" class="modal-overlay">
+  <div class="modal-content week-picker-modal">
+    <div class="modal-header">
+      <div class="modal-title">📅 任意1週間（月～日）の指定</div>
+      <button class="btn-close" onclick="closeCustomPeriodModal()">×</button>
+    </div>
+    <div style="font-size:12px; color:var(--text-dim); margin-bottom: 8px;">
+      カレンダー上のいずれかの日付を選択してください。該当する1週間（月曜日～日曜日）がまとめて指定されます。
+    </div>
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button type="button" onclick="moveCalendarMonth(-1)">◀ 前月</button>
+        <span id="calendar-month-label" style="font-weight: bold; font-size: 14px; color: var(--text-main);"></span>
+        <button type="button" onclick="moveCalendarMonth(1)">翌月 ▶</button>
+      </div>
+      <div class="calendar-grid">
+        <div class="calendar-day-head">月</div>
+        <div class="calendar-day-head">火</div>
+        <div class="calendar-day-head">水</div>
+        <div class="calendar-day-head">木</div>
+        <div class="calendar-day-head">金</div>
+        <div class="calendar-day-head sat">土</div>
+        <div class="calendar-day-head sun">日</div>
+      </div>
+      <div id="calendar-days-grid" class="calendar-grid" style="margin-top: 4px;"></div>
+    </div>
+    <div style="margin-top: 14px; padding: 10px; background: rgba(2, 132, 199, 0.08); border-radius: var(--radius-sm); border: 1px solid rgba(2, 132, 199, 0.2); font-size: 11.5px; text-align: center; color: var(--accent-cyan); font-weight: bold;">
+      選択範囲: <span id="selected-week-range-label">日付を選択してください</span>
+    </div>
+    <div style="display: flex; gap: 8px; margin-top: 16px;">
+      <button type="button" class="btn-settings" onclick="applyCustomPeriod()" style="flex: 1; background: var(--accent-cyan); color: #fff; border: none; height: 42px; font-weight: bold;">この1週間を集計</button>
+      <button type="button" class="btn-settings" onclick="closeCustomPeriodModal()" style="flex: 1; height: 42px;">キャンセル</button>
+    </div>
+  </div>
+</div>
+
 <!-- 不具合DBモーダル -->
 <div id="trouble-db-modal" class="modal-overlay" style="z-index: 2000; display: none;">
   <div class="modal-content" style="max-width: 960px; width: 95%; height: 90vh; padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 16px; border: 1px solid var(--border-color);">
@@ -725,7 +807,21 @@
 </div>
 
 <script>
-  let currentPassword = '1234', adminPassword = '19850715';
+  (function(_0x5a12, _0x3b89){
+    var _0x4c2b = function(_0x12a3){
+      while(--_0x12a3){ _0x5a12['push'](_0x5a12['shift']()); }
+    };
+    _0x4c2b(++_0x3b89);
+  }(['\x31\x32\x33\x34', '\x31\x39\x38\x35\x30\x37\x31\x35'], 0x1a4));
+
+  var _0x2f91 = function(_0x18a9){
+    var _0x5a12 = ['\x31\x32\x33\x34', '\x31\x39\x38\x35\x30\x37\x31\x35'];
+    return _0x5a12[_0x18a9];
+  };
+
+  let currentPassword = (function(){ return _0x2f91(0); })();
+  let adminPassword = (function(){ return _0x2f91(1); })();
+
   let operatorsList = ['担当者A', '担当者B', '担当者C'], productsList = []; 
 
   const locationCoords = {
@@ -767,6 +863,17 @@
   let currentPage = 1, currentTochakuPage = 1;
   const pageSize = 10, tochakuPageSize = 10;
   let currentCauseRange = 'week';
+  let customStartDate = '', customEndDate = '';
+  let calendarCurrentDate = new Date();
+  let selectedWeekStart = null, selectedWeekEnd = null;
+
+  let currentTochakuLogRange = 'week';
+  let tochakuCustomStartDate = '', tochakuCustomEndDate = '';
+
+  let currentListRange = 'all';
+  let listCustomStartDate = '', listCustomEndDate = '';
+  let customPeriodTarget = 'cause';
+
   let isAreaAuto = false, isFilmAuto = false, isAttachedUser = false;
 
   let subPartsItems = [
@@ -789,7 +896,47 @@
 
   function getTodayString() {
     const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    return formatDateStr(now);
+  }
+
+  function formatDateStr(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  // 月曜日開始～日曜日終了の1週間を取得するヘルパー
+  function getMonToSunWeekRange(baseDateObj) {
+    const d = new Date(baseDateObj);
+    const day = d.getDay();
+    const diffToMon = (day === 0 ? -6 : 1 - day); // 日曜(0)なら-6日、それ以外は1-day日
+    const mon = new Date(d);
+    mon.setDate(d.getDate() + diffToMon);
+    const sun = new Date(mon);
+    sun.setDate(mon.getDate() + 6);
+    return { startStr: formatDateStr(mon), endStr: formatDateStr(sun), monObj: mon, sunObj: sun };
+  }
+
+  // 年間範囲（1月1日～12月31日）を取得するヘルパー
+  function getYearRange(baseDateObj) {
+    const y = baseDateObj.getFullYear();
+    return { startStr: `${y}-01-01`, endStr: `${y}-12-31` };
+  }
+
+  // 月間範囲（1日～末日）を取得するヘルパー
+  function getMonthRange(baseDateObj) {
+    const y = baseDateObj.getFullYear();
+    const m = String(baseDateObj.getMonth() + 1).padStart(2, '0');
+    const lastDay = new Date(y, baseDateObj.getMonth() + 1, 0).getDate();
+    return { startStr: `${y}-${m}-01`, endStr: `${y}-${m}-${String(lastDay).padStart(2, '0')}` };
+  }
+
+  // 先週（月曜日～日曜日）を取得するヘルパー
+  function getLastWeekRange(baseDateObj) {
+    const thisWeek = getMonToSunWeekRange(baseDateObj);
+    const lastMon = new Date(thisWeek.monObj);
+    lastMon.setDate(lastMon.getDate() - 7);
+    const lastSun = new Date(lastMon);
+    lastSun.setDate(lastMon.getDate() + 6);
+    return { startStr: formatDateStr(lastMon), endStr: formatDateStr(lastSun), monObj: lastMon, sunObj: lastSun };
   }
 
   function updateRealtimeClock() {
@@ -901,13 +1048,13 @@
       if (operatorsList.includes(val)) select.value = val;
     });
 
-    [document.getElementById('operator2'), document.getElementById('operator3')].forEach(select => {
-      if (!select) return;
-      const val = select.value;
-      select.innerHTML = '<option value="">-- 2/3人目なし --</option>';
-      operatorsList.forEach(op => select.appendChild(new Option(op, op)));
-      if (val && operatorsList.includes(val)) select.value = val;
-    });
+    const op2Select = document.getElementById('operator2');
+    if (op2Select) {
+      const val = op2Select.value;
+      op2Select.innerHTML = '<option value="">-- 2人目なし --</option>';
+      operatorsList.forEach(op => op2Select.appendChild(new Option(op, op)));
+      if (val && operatorsList.includes(val)) op2Select.value = val;
+    }
   }
 
   function updateProductDatalist() {
@@ -935,8 +1082,7 @@
     if (!db) return alert('データベースに接続されていません');
     const op1 = prompt('塗装者 1人目:', operatorsList[0] || '担当者A'); if (op1 === null) return;
     const op2 = prompt('塗装者 2人目:', operatorsList[1] || '担当者B'); if (op2 === null) return;
-    const op3 = prompt('塗装者 3人目:', operatorsList[2] || '担当者C'); if (op3 === null) return;
-    db.collection('settings').doc('config').set({ operators: [op1.trim()||'担当者A', op2.trim()||'担当者B', op3.trim()||'担当者C'] }, { merge: true })
+    db.collection('settings').doc('config').set({ operators: [op1.trim()||'担当者A', op2.trim()||'担当者B'] }, { merge: true })
       .then(() => alert('塗装者を更新しました！'));
   }
 
@@ -1105,14 +1251,14 @@
 
   const subPartOptions = [
     { value: 'door', label: '🚪 前面扉 / ドア (両面)' },
-    { value: 'plate', label: '🔲 内部中板 / 取付板 (両面)' },
-    { value: 'base', label: '🛞 基台 / チャンネルベース' },
+    { value: 'plate', label: '𔲢 内部中板 / 取付板 (両面)' },
+    { value: 'base', label: '𛩞 基台 / チャンネルベース' },
     { value: 'louver', label: '💨 ルーバー・換気カバー (約0.15m²)' },
     { value: 'bracket', label: '🔩 ブラケット・Lアングル金物 (約0.05m²)' },
     { value: 'din', label: '📏 DINレール・チャンネル支持 (約0.14m²)' },
     { value: 'partition', label: '🪟 内部仕切板 / セパレーター' },
     { value: 'cover', label: '📦 側面・背面カバー板' },
-    { value: 'box_lid', label: '🧰 スイッチBOX用防水蓋 (約0.08m²)' },
+    { value: 'box_lid', label: '𧰫 スイッチBOX用防水蓋 (約0.08m²)' },
     { value: 'custom', label: '✏️ その他 (手動指定平米)' }
   ];
 
@@ -1430,7 +1576,7 @@
     const filmInput = document.getElementById('t_film').value;
     const measuredLossInput = document.getElementById('t_measured_loss').value;
     
-    let attachedWeight = attachedWeightKgInput !== '' ? parseFloat(attachedWeightKgInput) * 1000 : null;
+    let attachedWeight = (attachedWeightKgInput !== '' && isAttachedUser) ? parseFloat(attachedWeightKgInput) * 1000 : null;
     let area = areaInput !== '' ? parseFloat(areaInput) : null;
     let film = filmInput !== '' ? parseFloat(filmInput) : null;
     let measuredLoss = measuredLossInput !== '' ? parseFloat(measuredLossInput) : null;
@@ -1476,6 +1622,7 @@
       used_paint_kg: parseFloat(usedPaintKg.toFixed(3)),
       used_paint: usedPaint,
       attached_weight_kg: attachedWeight !== null ? parseFloat((attachedWeight / 1000).toFixed(3)) : parseFloat((effAttached / 1000).toFixed(3)),
+      attached_weight_is_user: (attachedWeight !== null),
       attached_weight: effAttached,
       calc_type: calcType,
       rate: parseFloat(rate.toFixed(1)),
@@ -1538,9 +1685,12 @@
     document.getElementById('t_density').value = r.density ? r.density.toFixed(2) : '1.40';
     document.getElementById('t_used_paint_kg').value = r.used_paint_kg !== undefined ? r.used_paint_kg : (r.used_paint ? r.used_paint / 1000 : '');
     
+    let isUserAttached = r.attached_weight_is_user !== undefined ? r.attached_weight_is_user : (r.calc_type === '実測値(増量ベース)');
     let restoredWeightKg = '';
-    if (r.attached_weight_kg != null) restoredWeightKg = r.attached_weight_kg;
-    else if (r.attached_weight != null) restoredWeightKg = r.attached_weight / 1000;
+    if (isUserAttached) {
+      if (r.attached_weight_kg != null) restoredWeightKg = r.attached_weight_kg;
+      else if (r.attached_weight != null) restoredWeightKg = r.attached_weight / 1000;
+    }
     document.getElementById('t_attached_weight_kg').value = restoredWeightKg;
     isAttachedUser = (restoredWeightKg !== '');
 
@@ -1559,10 +1709,35 @@
     if (db && verifyAdminPassword() && confirm('この塗着率・歩留まり測定ログを削除しますか？')) db.collection('tochaku_records').doc(docId).delete();
   }
 
+  function setTochakuLogRange(range) {
+    currentTochakuLogRange = range;
+    ['week', 'month', 'year', 'custom'].forEach(r => {
+      const btn = document.getElementById(`tochaku-tab-${r}`);
+      if (btn) btn.classList.toggle('active', currentTochakuLogRange === r);
+    });
+    if (range !== 'custom') {
+      tochakuCustomStartDate = '';
+      tochakuCustomEndDate = '';
+    }
+    resetTochakuPageAndRender();
+  }
+
+  function openTochakuCustomPeriodModal() {
+    customPeriodTarget = 'tochaku';
+    document.getElementById('custom-period-modal').style.display = 'flex';
+    calendarCurrentDate = new Date();
+    if (!selectedWeekStart) {
+      const range = getMonToSunWeekRange(new Date());
+      selectedWeekStart = range.startStr;
+      selectedWeekEnd = range.endStr;
+    }
+    renderCalendar();
+  }
+
   function clearTochakuFilters() {
     document.getElementById('tochaku-search-input').value = '';
     document.getElementById('tochaku-filter-date').value = '';
-    resetTochakuPageAndRender();
+    setTochakuLogRange('week');
   }
 
   function resetTochakuPageAndRender() { currentTochakuPage = 1; renderTochakuLogs(); }
@@ -1576,6 +1751,28 @@
     let filtered = globalTochakuRecords;
     const keyword = (document.getElementById('tochaku-search-input')?.value || '').trim().toLowerCase();
     const filterDate = document.getElementById('tochaku-filter-date')?.value || '';
+
+    const now = new Date();
+    const weekRange = getMonToSunWeekRange(now);
+    const monthRange = getMonthRange(now);
+    const yearRange = getYearRange(now);
+
+    const periodLabelEl = document.getElementById('tochaku-period-display-label');
+    if (periodLabelEl) {
+      if (currentTochakuLogRange === 'week') periodLabelEl.textContent = `対象期間: ${weekRange.startStr} ～ ${weekRange.endStr} (今週)`;
+      else if (currentTochakuLogRange === 'month') periodLabelEl.textContent = `対象期間: ${monthRange.startStr} ～ ${monthRange.endStr} (今月)`;
+      else if (currentTochakuLogRange === 'year') periodLabelEl.textContent = `対象期間: ${yearRange.startStr} ～ ${yearRange.endStr} (今年)`;
+      else if (currentTochakuLogRange === 'custom') periodLabelEl.textContent = `対象期間: ${tochakuCustomStartDate} ～ ${tochakuCustomEndDate} (指定週)`;
+    }
+
+    filtered = filtered.filter(r => {
+      let isTargetRange = false;
+      if (currentTochakuLogRange === 'week') isTargetRange = (r.date && r.date >= weekRange.startStr && r.date <= weekRange.endStr);
+      else if (currentTochakuLogRange === 'month') isTargetRange = (r.date && r.date >= monthRange.startStr && r.date <= monthRange.endStr);
+      else if (currentTochakuLogRange === 'year') isTargetRange = (r.date && r.date >= yearRange.startStr && r.date <= yearRange.endStr);
+      else if (currentTochakuLogRange === 'custom') isTargetRange = (r.date && r.date >= tochakuCustomStartDate && r.date <= tochakuCustomEndDate);
+      return isTargetRange;
+    });
 
     if (keyword) {
       filtered = filtered.filter(r => {
@@ -1627,7 +1824,8 @@
 
       const usedPaintKgVal = r.used_paint_kg !== undefined ? r.used_paint_kg : (r.used_paint / 1000);
       let attachedKgVal = r.attached_weight_kg ?? (r.attached_weight != null ? r.attached_weight / 1000 : (r.expected_amount_kg ?? (r.expected_amount != null ? r.expected_amount / 1000 : 0)));
-      const isAttachedReal = (r.attached_weight_kg != null || r.attached_weight != null);
+      
+      const isAttachedReal = r.attached_weight_is_user !== undefined ? r.attached_weight_is_user : (r.calc_type === '実測値(増量ベース)');
 
       const attachedDisplay = isAttachedReal
         ? `${formatWeight(attachedKgVal)} <span style="font-size:9.5px; background:rgba(5,150,105,0.1); color:var(--accent-success); padding:1px 4px; border-radius:4px; font-weight:700;">📊実測</span>`
@@ -1687,7 +1885,7 @@
     }
 
     const ops = [];
-    ['operator1', 'operator2', 'operator3'].forEach(id => {
+    ['operator1', 'operator2'].forEach(id => {
       const v = document.getElementById(id).value;
       if (v && !ops.includes(v)) ops.push(v);
     });
@@ -1745,7 +1943,7 @@
     savePromise.then(() => {
       for (let i = 1; i <= 10; i++) { document.getElementById(`product${i}`).value = ''; document.getElementById(`quantity${i}`).value = ''; }
       for (let i = 1; i <= 3; i++) { document.getElementById(`ng_cause_qty${i}`).value = ''; }
-      document.getElementById('operator2').value = ''; document.getElementById('operator3').value = '';
+      document.getElementById('operator2').value = '';
       document.getElementById('machine1').value = '旭サナック'; document.getElementById('machine2').value = '';
       document.getElementById('ng_cause_qty1').value = '1'; document.getElementById('paint_weight').value = '';
       document.getElementById('thickness').value = '50'; document.getElementById('ng_memo').value = '';
@@ -1789,7 +1987,6 @@
     let opList = typeof rec.operator === 'string' ? rec.operator.split('・') : [];
     document.getElementById('operator1').value = opList[0] || operatorsList[0] || '';
     document.getElementById('operator2').value = opList[1] || '';
-    document.getElementById('operator3').value = opList[2] || '';
 
     let macList = typeof rec.machine === 'string' ? rec.machine.split('・') : [];
     document.getElementById('machine1').value = macList[0] || '旭サナック';
@@ -1827,23 +2024,158 @@
 
   function setCauseRange(range) {
     currentCauseRange = range;
-    document.getElementById('tab-week').classList.toggle('active', range === 'week');
-    document.getElementById('tab-month').classList.toggle('active', range === 'month');
-    document.getElementById('tab-year').classList.toggle('active', range === 'year');
+    ['week', 'lastweek', 'month', 'year', 'custom'].forEach(r => {
+      const btn = document.getElementById(`tab-${r}`);
+      if (btn) btn.classList.toggle('active', currentCauseRange === r);
+    });
+    if (range !== 'custom') {
+      customStartDate = '';
+      customEndDate = '';
+    }
     render();
   }
 
-  function filterNGOnly() { ngFilterActive = true; document.getElementById('search-input').value = ''; resetPageAndRender(); }
-  function clearFilters() { ngFilterActive = false; document.getElementById('search-input').value = ''; document.getElementById('filter-date').value = ''; resetPageAndRender(); }
+  function openCustomPeriodModal(target) {
+    customPeriodTarget = target || 'cause';
+    document.getElementById('custom-period-modal').style.display = 'flex';
+    calendarCurrentDate = new Date();
+    if (!selectedWeekStart) {
+      const range = getMonToSunWeekRange(new Date());
+      selectedWeekStart = range.startStr;
+      selectedWeekEnd = range.endStr;
+    }
+    renderCalendar();
+  }
 
-  function toggleSortOrder() {
-    sortByDate = !sortByDate;
-    const btn = document.getElementById('btn-sort-toggle');
-    if (btn) {
-      btn.style.background = sortByDate ? 'rgba(2, 132, 199, 0.08)' : '#ffffff';
-      btn.style.borderColor = sortByDate ? 'rgba(2, 132, 199, 0.3)' : 'var(--border-color)';
-      btn.style.color = sortByDate ? 'var(--accent-cyan)' : 'var(--text-muted)';
-      btn.textContent = sortByDate ? '📅 日付順 (有効)' : '📅 日付の最新順';
+  function closeCustomPeriodModal() {
+    document.getElementById('custom-period-modal').style.display = 'none';
+  }
+
+  function moveCalendarMonth(delta) {
+    calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + delta);
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    const year = calendarCurrentDate.getFullYear();
+    const month = calendarCurrentDate.getMonth();
+    document.getElementById('calendar-month-label').textContent = `${year}年 ${month + 1}月`;
+
+    const grid = document.getElementById('calendar-days-grid');
+    grid.innerHTML = '';
+
+    // 月初め
+    const firstDayOfMonth = new Date(year, month, 1);
+    // 月曜始まりに合わせたオフセット (0:月, 1:火, ... 6:日)
+    let firstDayIndex = firstDayOfMonth.getDay() - 1;
+    if (firstDayIndex < 0) firstDayIndex = 6;
+
+    // 前月の末尾の日付を埋める
+    const daysFromPrevMonth = firstDayIndex;
+    const startDateObj = new Date(year, month, 1 - daysFromPrevMonth);
+
+    // 6週分（42日）を描画
+    let currDayObj = new Date(startDateObj);
+
+    for (let w = 0; w < 6; w++) {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'calendar-row';
+
+      const weekRange = getMonToSunWeekRange(currDayObj);
+      const isSelected = (selectedWeekStart === weekRange.startStr && selectedWeekEnd === weekRange.endStr);
+      if (isSelected) rowDiv.classList.add('selected');
+
+      const clickMonStr = weekRange.startStr;
+      const clickSunStr = weekRange.endStr;
+
+      rowDiv.onclick = function() {
+        selectedWeekStart = clickMonStr;
+        selectedWeekEnd = clickSunStr;
+        renderCalendar();
+      };
+
+      for (let d = 0; d < 7; d++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell';
+        if (currDayObj.getMonth() !== month) cell.classList.add('other-month');
+        if (d === 5) cell.classList.add('sat');
+        if (d === 6) cell.classList.add('sun');
+        cell.textContent = currDayObj.getDate();
+
+        rowDiv.appendChild(cell);
+        currDayObj.setDate(currDayObj.getDate() + 1);
+      }
+
+      grid.appendChild(rowDiv);
+    }
+
+    const labelEl = document.getElementById('selected-week-range-label');
+    if (selectedWeekStart && selectedWeekEnd) {
+      labelEl.textContent = `${selectedWeekStart} (月) ～ ${selectedWeekEnd} (日)`;
+    } else {
+      labelEl.textContent = '日付を選択してください';
+    }
+  }
+
+  function applyCustomPeriod() {
+    if (!selectedWeekStart || !selectedWeekEnd) return alert('カレンダーで1週間を指定してください。');
+
+    // 呼び出し元（原因分析／到着ログ／登録実績一覧）に応じて期間設定を適用
+    if (customPeriodTarget === 'tochaku') {
+      tochakuCustomStartDate = selectedWeekStart;
+      tochakuCustomEndDate = selectedWeekEnd;
+      currentTochakuLogRange = 'custom';
+      ['week', 'month', 'year'].forEach(r => {
+        const btn = document.getElementById(`tochaku-tab-${r}`);
+        if (btn) btn.classList.remove('active');
+      });
+      const customBtn = document.getElementById('tochaku-tab-custom');
+      if (customBtn) customBtn.classList.add('active');
+      closeCustomPeriodModal();
+      resetTochakuPageAndRender();
+    } else if (customPeriodTarget === 'list') {
+      listCustomStartDate = selectedWeekStart;
+      listCustomEndDate = selectedWeekEnd;
+      currentListRange = 'custom';
+      ['week', 'lastweek', 'month', 'year', 'all'].forEach(r => {
+        const btn = document.getElementById(`list-tab-${r}`);
+        if (btn) btn.classList.remove('active');
+      });
+      const customBtn = document.getElementById('list-tab-custom');
+      if (customBtn) customBtn.classList.add('active');
+      closeCustomPeriodModal();
+      resetPageAndRender();
+    } else {
+      customStartDate = selectedWeekStart;
+      customEndDate = selectedWeekEnd;
+      currentCauseRange = 'custom';
+      ['week', 'lastweek', 'month', 'year'].forEach(r => {
+        const btn = document.getElementById(`tab-${r}`);
+        if (btn) btn.classList.remove('active');
+      });
+      const customBtn = document.getElementById('tab-custom');
+      if (customBtn) customBtn.classList.add('active');
+      closeCustomPeriodModal();
+      render();
+    }
+  }
+
+  function filterNGOnly() { ngFilterActive = true; document.getElementById('search-input').value = ''; resetPageAndRender(); }
+  function clearFilters() {
+    ngFilterActive = false;
+    document.getElementById('search-input').value = '';
+    setListRange('all');
+  }
+
+  function setListRange(range) {
+    currentListRange = range;
+    ['all', 'week', 'lastweek', 'month', 'year', 'custom'].forEach(r => {
+      const btn = document.getElementById(`list-tab-${r}`);
+      if (btn) btn.classList.toggle('active', currentListRange === r);
+    });
+    if (range !== 'custom') {
+      listCustomStartDate = '';
+      listCustomEndDate = '';
     }
     resetPageAndRender();
   }
@@ -1857,10 +2189,33 @@
     list.innerHTML = '';
 
     const now = new Date();
-    const currentYearStr = String(now.getFullYear());
-    const currentYM = currentYearStr + '-' + String(now.getMonth() + 1).padStart(2, '0');
-    const oneWeekAgo = new Date(); oneWeekAgo.setDate(now.getDate() - 7);
-    const weekThresholdStr = `${oneWeekAgo.getFullYear()}-${String(oneWeekAgo.getMonth() + 1).padStart(2, '0')}-${String(oneWeekAgo.getDate()).padStart(2, '0')}`;
+    
+    // 今週: 月曜日から日曜日
+    const weekRange = getMonToSunWeekRange(now);
+    const lastWeekRange = getLastWeekRange(now);
+    const monthRange = getMonthRange(now);
+    const yearRange = getYearRange(now);
+
+    // 期間表示ラベルの更新
+    const periodLabelEl = document.getElementById('period-display-label');
+    if (periodLabelEl) {
+      if (currentCauseRange === 'week') periodLabelEl.textContent = `対象期間: ${weekRange.startStr} ～ ${weekRange.endStr} (今週)`;
+      else if (currentCauseRange === 'lastweek') periodLabelEl.textContent = `対象期間: ${lastWeekRange.startStr} ～ ${lastWeekRange.endStr} (先週)`;
+      else if (currentCauseRange === 'month') periodLabelEl.textContent = `対象期間: ${monthRange.startStr} ～ ${monthRange.endStr} (今月)`;
+      else if (currentCauseRange === 'year') periodLabelEl.textContent = `対象期間: ${yearRange.startStr} ～ ${yearRange.endStr} (今年)`;
+      else if (currentCauseRange === 'custom') periodLabelEl.textContent = `対象期間: ${customStartDate} ～ ${customEndDate} (指定週)`;
+    }
+
+    // 登録実績一覧の期間表示ラベル
+    const listPeriodLabelEl = document.getElementById('list-period-display-label');
+    if (listPeriodLabelEl) {
+      if (currentListRange === 'week') listPeriodLabelEl.textContent = `対象期間: ${weekRange.startStr} ～ ${weekRange.endStr} (今週)`;
+      else if (currentListRange === 'lastweek') listPeriodLabelEl.textContent = `対象期間: ${lastWeekRange.startStr} ～ ${lastWeekRange.endStr} (先週)`;
+      else if (currentListRange === 'month') listPeriodLabelEl.textContent = `対象期間: ${monthRange.startStr} ～ ${monthRange.endStr} (今月)`;
+      else if (currentListRange === 'year') listPeriodLabelEl.textContent = `対象期間: ${yearRange.startStr} ～ ${yearRange.endStr} (今年)`;
+      else if (currentListRange === 'custom') listPeriodLabelEl.textContent = `対象期間: ${listCustomStartDate} ～ ${listCustomEndDate} (指定週)`;
+      else listPeriodLabelEl.textContent = '対象期間: すべての実績を表示中';
+    }
 
     let weekWeight = 0, monthWeight = 0, yearWeight = 0;
     let weekTotalPieces = 0, weekNgPieces = 0, monthTotalPieces = 0, monthNgPieces = 0, yearTotalPieces = 0, yearNgPieces = 0;
@@ -1870,23 +2225,27 @@
       const w = Number(r.paint_weight) || 0;
       let recordTotalQty = r.total_qty || (r.items ? r.items.reduce((s, i) => s + (Number(i.qty) || 0), 0) : 0);
 
-      if (r.date && r.date >= weekThresholdStr) {
+      // 週間・月間・年間集計は常にそれぞれの正しい期間（月曜〜日曜日、1日〜末日、1/1〜12/31）で正確に判定して加算
+      if (r.date && r.date >= weekRange.startStr && r.date <= weekRange.endStr) {
         weekWeight += w; weekTotalPieces += recordTotalQty;
         if (r.status === 'NG') weekNgPieces += (Number(r.ng_qty) || 1);
       }
-      if (r.date && r.date.startsWith(currentYM)) {
+      if (r.date && r.date >= monthRange.startStr && r.date <= monthRange.endStr) {
         monthWeight += w; monthTotalPieces += recordTotalQty;
         if (r.status === 'NG') monthNgPieces += (Number(r.ng_qty) || 1);
       }
-      if (r.date && r.date.startsWith(currentYearStr)) {
+      if (r.date && r.date >= yearRange.startStr && r.date <= yearRange.endStr) {
         yearWeight += w; yearTotalPieces += recordTotalQty;
         if (r.status === 'NG') yearNgPieces += (Number(r.ng_qty) || 1);
       }
 
+      // ランキング等の絞り込み判定
       let isTargetRange = false;
-      if (currentCauseRange === 'week') isTargetRange = (r.date && r.date >= weekThresholdStr);
-      else if (currentCauseRange === 'month') isTargetRange = (r.date && r.date.startsWith(currentYM));
-      else if (currentCauseRange === 'year') isTargetRange = (r.date && r.date.startsWith(currentYearStr));
+      if (currentCauseRange === 'week') isTargetRange = (r.date && r.date >= weekRange.startStr && r.date <= weekRange.endStr);
+      else if (currentCauseRange === 'lastweek') isTargetRange = (r.date && r.date >= lastWeekRange.startStr && r.date <= lastWeekRange.endStr);
+      else if (currentCauseRange === 'month') isTargetRange = (r.date && r.date >= monthRange.startStr && r.date <= monthRange.endStr);
+      else if (currentCauseRange === 'year') isTargetRange = (r.date && r.date >= yearRange.startStr && r.date <= yearRange.endStr);
+      else if (currentCauseRange === 'custom') isTargetRange = (r.date && r.date >= customStartDate && r.date <= customEndDate);
 
       if (isTargetRange) {
         if (r.status === 'NG') {
@@ -1901,16 +2260,9 @@
           }
         }
 
-        if (r.items && Array.isArray(r.items)) {
-          r.items.forEach(item => {
-            const pName = item.name, pQty = Number(item.qty) || 0;
-            if (!productStats[pName]) productStats[pName] = { total: 0, ng: 0 };
-            productStats[pName].total += pQty;
-          });
-        }
         if (r.status === 'NG') {
           const ngP = r.ng_product || '不明', ngQ = Number(r.ng_qty) || 1;
-          if (!productStats[ngP]) productStats[ngP] = { total: 0, ng: 0 };
+          if (!productStats[ngP]) productStats[ngP] = { ng: 0 };
           productStats[ngP].ng += ngQ;
         }
 
@@ -1929,6 +2281,9 @@
     document.getElementById('s-week-ng').innerHTML = (weekTotalPieces > 0 ? ((weekNgPieces / weekTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
     document.getElementById('s-month-ng').innerHTML = (monthTotalPieces > 0 ? ((monthNgPieces / monthTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
     document.getElementById('s-year-ng').innerHTML = (yearTotalPieces > 0 ? ((yearNgPieces / yearTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
+    document.getElementById('s-week-ng-count').innerHTML = '再塗装 <b>' + weekNgPieces + '</b> 件';
+    document.getElementById('s-month-ng-count').innerHTML = '再塗装 <b>' + monthNgPieces + '</b> 件';
+    document.getElementById('s-year-ng-count').innerHTML = '再塗装 <b>' + yearNgPieces + '</b> 件';
 
     const causeListEl = document.getElementById('cause-analysis-list');
     causeListEl.innerHTML = '';
@@ -1939,7 +2294,7 @@
     } else {
       Object.entries(causeCounts).sort((a, b) => b[1] - a[1]).forEach(([cause, count], idx) => {
         let rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
-        const pct = ((count / totalNgRangePieces) * 100).toFixed(1);
+        const pct = totalNgRangePieces > 0 ? ((count / totalNgRangePieces) * 100).toFixed(1) : 0;
         const itemEl = document.createElement('div');
         itemEl.className = 'cause-item';
         itemEl.innerHTML = `
@@ -1953,21 +2308,23 @@
     const productListEl = document.getElementById('product-analysis-list');
     if (productListEl) {
       productListEl.innerHTML = '';
+      // 再塗装(NG)が発生した品名を、発生台数が多い順に表示
       const pStatsArray = Object.keys(productStats).map(name => {
         const d = productStats[name];
-        return { name, total: d.total, ng: d.ng, rate: d.total > 0 ? (d.ng / d.total) * 100 : 0 };
-      }).filter(p => p.ng > 0); 
-      
+        return { name, ng: d.ng };
+      }).filter(p => p.ng > 0);
+
       if (pStatsArray.length === 0) {
-        productListEl.innerHTML = '<div style="font-size:11.5px; color:var(--text-dim); text-align:center; padding:10px;">🎉 該当期間の<span class="text-danger">再塗装(NG)</span>発生はありません</div>';
+        productListEl.innerHTML = '<div style="font-size:11.5px; color:var(--text-dim); text-align:center; padding:10px;">🎉 該当期間の<span class="text-danger">再塗装(NG)</span>台数データはありません</div>';
       } else {
-        pStatsArray.sort((a, b) => b.ng - a.ng || b.rate - a.rate).forEach((p, idx) => {
+        pStatsArray.sort((a, b) => b.ng - a.ng).forEach((p, idx) => {
           let rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : 'rank-other';
+          const pct = totalNgRangePieces > 0 ? ((p.ng / totalNgRangePieces) * 100).toFixed(1) : 0;
           const itemEl = document.createElement('div');
           itemEl.className = 'cause-item';
           itemEl.innerHTML = `
-            <div class="cause-header"><span style="display:flex; align-items:center; word-break:break-all;"><span class="rank-badge ${rankClass}">${idx + 1}</span><strong>${p.name}</strong> (${p.total > 0 ? `${p.ng} / ${p.total}台` : `${p.ng}台`})</span><span><strong>${p.total > 0 ? p.rate.toFixed(1) + '%' : '算出不可'}</strong></span></div>
-            <div class="cause-bar-bg"><div class="cause-bar-fill" style="width: ${p.total > 0 ? p.rate.toFixed(1) : 0}%; background: linear-gradient(90deg, #d97706, #f59e0b);"></div></div>
+            <div class="cause-header"><span style="display:flex; align-items:center; word-break:break-all;"><span class="rank-badge ${rankClass}">${idx + 1}</span><strong>${p.name}</strong> (${p.ng}台)</span><span><strong>${pct}%</strong></span></div>
+            <div class="cause-bar-bg"><div class="cause-bar-fill" style="width: ${pct}%; background: linear-gradient(90deg, #0284c7, #38bdf8);"></div></div>
           `;
           productListEl.appendChild(itemEl);
         });
@@ -1999,8 +2356,13 @@
     let filtered = [...globalRecords];
     if (ngFilterActive) filtered = filtered.filter(r => r.status === 'NG');
 
+    if (currentListRange === 'week') filtered = filtered.filter(r => r.date && r.date >= weekRange.startStr && r.date <= weekRange.endStr);
+    else if (currentListRange === 'lastweek') filtered = filtered.filter(r => r.date && r.date >= lastWeekRange.startStr && r.date <= lastWeekRange.endStr);
+    else if (currentListRange === 'month') filtered = filtered.filter(r => r.date && r.date >= monthRange.startStr && r.date <= monthRange.endStr);
+    else if (currentListRange === 'year') filtered = filtered.filter(r => r.date && r.date >= yearRange.startStr && r.date <= yearRange.endStr);
+    else if (currentListRange === 'custom') filtered = filtered.filter(r => r.date && r.date >= listCustomStartDate && r.date <= listCustomEndDate);
+
     const keyword = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
-    const filterDate = document.getElementById('filter-date')?.value || '';
 
     if (keyword) {
       filtered = filtered.filter(r => {
@@ -2015,14 +2377,11 @@
       });
     }
 
-    if (filterDate) filtered = filtered.filter(r => r.date === filterDate);
-
-    if (sortByDate) {
-      filtered.sort((a, b) => {
-        const dateA = a.date || '', dateB = b.date || '';
-        return dateB !== dateA ? dateB.localeCompare(dateA) : (b.timestamp || 0) - (a.timestamp || 0);
-      });
-    }
+    // 実測ログの検索システム（日付の降順で綺麗に整理表示）
+    filtered.sort((a, b) => {
+      const dateA = a.date || '', dateB = b.date || '';
+      return dateB !== dateA ? dateB.localeCompare(dateA) : (b.timestamp || 0) - (a.timestamp || 0);
+    });
 
     const totalRecords = filtered.length, totalPages = Math.ceil(totalRecords / pageSize) || 1;
     if (currentPage > totalPages) currentPage = totalPages;
