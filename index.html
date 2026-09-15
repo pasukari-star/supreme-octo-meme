@@ -141,6 +141,22 @@
     .cause-analysis-card { background: var(--bg-card); backdrop-filter: blur(12px); padding: 18px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 16px; box-shadow: var(--shadow-glow); }
     .ng-analysis-wrapper { border-radius: var(--radius); overflow: hidden; border: 1.5px solid rgba(225, 29, 72, 0.3); box-shadow: 0 6px 22px rgba(225, 29, 72, 0.1); margin-bottom: 16px; }
     .ng-analysis-banner { background: linear-gradient(135deg, #e11d48, #f43f5e); color: #fff; padding: 10px 18px; font-size: 13px; font-weight: 800; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px; }
+    .paint-analysis-wrapper { border-radius: var(--radius); overflow: hidden; border: 1.5px solid rgba(2, 132, 199, 0.3); box-shadow: 0 6px 22px rgba(2, 132, 199, 0.1); margin-bottom: 16px; }
+    .paint-analysis-banner { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #fff; padding: 10px 18px; font-size: 13px; font-weight: 800; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px; }
+    .preset-select-btn { width: 100%; border: 1.5px dashed var(--accent-indigo); background: rgba(79, 70, 229, 0.06); color: var(--accent-indigo); padding: 12px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; text-align: center; }
+    .preset-select-btn:hover { background: rgba(79, 70, 229, 0.12); }
+    .preset-row { display: flex; flex-direction: column; gap: 8px; padding: 12px; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-sm); }
+    .preset-row-selected { border: 1.5px solid var(--accent-indigo); background: rgba(79, 70, 229, 0.04); box-shadow: 0 4px 14px rgba(79, 70, 229, 0.12); }
+    .preset-current-tag { font-size: 10px; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan)); padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+    .preset-row-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .preset-badge { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan)); color: #fff; font-size: 12px; font-weight: 800; flex-shrink: 0; letter-spacing: 0; }
+    .preset-name-input { flex: 1; height: 36px; font-size: 12.5px; font-weight: 700; }
+    .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .preset-grid > div label { font-size: 10px; margin-bottom: 3px; color: var(--text-dim); font-weight: 700; }
+    .preset-grid input { height: 36px; font-size: 12px; }
+    .preset-apply-btn { border: none; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo)); color: #fff; padding: 9px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
+    .preset-apply-btn:hover { opacity: 0.9; }
+    .preset-apply-btn-active { background: linear-gradient(135deg, #059669, #10b981); }
     .cause-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
     .cause-tabs { display: flex; gap: 6px; }
     .btn-tab { padding: 5px 12px; font-size: 11px; border-radius: 6px; border: 1px solid var(--border-color); background: #ffffff; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: all 0.2s; }
@@ -410,8 +426,16 @@
 
                 <div><label>使用塗料 (kg)</label><input type="number" id="paint_weight" step="any" required placeholder="例: 5.3"></div>
                 <div><label>平均膜厚 (μm)<span class="optional-tag">(任意)</span></label><input type="number" id="thickness" step="0.1" value="50" placeholder="未入力OK (例: 50)"></div>
+
+                <div class="full">
+                  <button type="button" class="preset-select-btn" onclick="openMachinePresetModal()"><i class="fa-solid fa-sliders"></i> 🎛 塗装機プリセットから選択（電圧・電流・吐出量・エアー流量を自動入力）</button>
+                  <div id="preset-active-badge" style="margin-top:8px; font-size:11.5px; font-weight:700; color:var(--text-dim); background:rgba(100,116,139,0.06); border:1px solid var(--border-color); padding:8px 12px; border-radius:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">🎛 現在選択中のプリセット: <strong>未選択</strong></div>
+                </div>
+
                 <div><label>設定電圧 (kV)</label><input type="number" id="voltage" step="0.1" value="50"></div>
                 <div><label>設定電流 (μA)</label><input type="number" id="current" step="0.1" value="20"></div>
+                <div><label>吐出量 (g/min)</label><input type="number" id="discharge" step="0.1" value="300"></div>
+                <div><label>エアー流量 (L/min)</label><input type="number" id="air_flow" step="0.1" value="250"></div>
                 <div><label>焼付温度 (℃)</label><input type="number" id="bake_temp" step="1" value="200" required></div>
                 <div><label>焼付時間 (分)</label><input type="number" id="bake_time" step="1" value="20" required></div>
 
@@ -466,7 +490,23 @@
               <i class="fa-solid fa-spray-can-sparkles" style="font-size: 15px;"></i><span>💡 不具合でお困りの方はこちら（不具合原因・対策DB）</span><span style="font-size: 10px; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 10px; white-space: nowrap; margin-left: auto;">確認する ▶</span>
             </button>
           </div>
-          <div class="cause-analysis-card" style="margin-bottom: 20px;"><div class="cause-title" style="font-size: 12px;">🎨 品名別 塗料総使用量</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
+          <div class="paint-analysis-wrapper">
+            <div class="paint-analysis-banner"><i class="fa-solid fa-palette"></i> 品名別 塗料使用量 分析ダッシュボード</div>
+            <div class="cause-analysis-card" style="padding-bottom: 4px; margin-bottom: 0; border-bottom: none; border-radius: 0; border-left: none; border-right: none; border-top: none;">
+              <div class="cause-title" style="margin-bottom: 0;">
+                <span>📈 集計期間の切替</span>
+                <div class="cause-tabs" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                  <button type="button" class="btn-tab active" id="paint-tab-week" onclick="setPaintRange('week')">今週</button>
+                  <button type="button" class="btn-tab" id="paint-tab-lastweek" onclick="setPaintRange('lastweek')">先週</button>
+                  <button type="button" class="btn-tab" id="paint-tab-month" onclick="setPaintRange('month')">今月</button>
+                  <button type="button" class="btn-tab" id="paint-tab-year" onclick="setPaintRange('year')">今年</button>
+                  <button type="button" class="btn-tab" id="paint-tab-custom" onclick="openCustomPeriodModal('paint')" style="display:inline-flex; align-items:center; gap:3px;">📅 任意</button>
+                </div>
+              </div>
+              <div id="paint-period-display-label" style="font-size: 10.5px; color: var(--accent-cyan); font-weight: 700; margin-top: 6px; text-align: right;"></div>
+            </div>
+            <div class="cause-analysis-card" style="border-radius: 0; border-top: none; margin-bottom: 0; border-left: none; border-right: none; border-bottom: none;"><div class="cause-title" style="font-size: 12px;">🎨 品名別 塗料総使用量ランキング</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
+          </div>
 
           <div class="list-section">
             <div class="list-title">
@@ -503,14 +543,14 @@
         <div>
           <div class="form-section">
             <div class="list-title" style="margin-bottom:6px;">🎯 塗着率・粉体歩留まり効率解析</div>
-            <div id="tochaku-guide-banner" class="next-guide-banner">👉 <span id="tochaku-guide-text">まず「使用した塗料量 (kg)」を入力してください。</span></div>
+            <div id="tochaku-guide-banner" class="next-guide-banner">👉 <span id="tochaku-guide-text">まず「ワーク品名1」と「台数1」を入力してください（未入力の場合、登録できません）。</span></div>
             <form id="tochaku-form">
               <div class="form-grid">
                 <div class="full"><label>日付</label><input type="date" id="t_date" required></div>
                 <div class="full">
                   <label>ワーク品名・塗装台数 (最大5種類まで選択可能)</label>
                   <div class="prod-scroll-container" style="max-height: 160px;">
-                    <div class="prod-grid"><input type="text" id="t_product1" placeholder="品名1 (例: BOXパネル)" list="registered-products"><input type="number" id="t_qty1" placeholder="台数1" min="1" value="1"></div>
+                    <div class="prod-grid"><input type="text" id="t_product1" placeholder="品名1 (例: BOXパネル) ※必須" list="registered-products" required oninput="runTochakuCalc()"><input type="number" id="t_qty1" placeholder="台数1" min="1" value="1" required oninput="runTochakuCalc()"></div>
                     <div class="prod-grid"><input type="text" id="t_product2" placeholder="品名2 (任意)" list="registered-products"><input type="number" id="t_qty2" placeholder="台数2" min="1"></div>
                     <div class="prod-grid"><input type="text" id="t_product3" placeholder="品名3 (任意)" list="registered-products"><input type="number" id="t_qty3" placeholder="台数3" min="1"></div>
                     <div class="prod-grid"><input type="text" id="t_product4" placeholder="品名4 (任意)" list="registered-products"><input type="number" id="t_qty4" placeholder="台数4" min="1"></div>
@@ -551,6 +591,11 @@
                     <div>🌀 吸い込みロス <span style="font-size:9px; background:rgba(255,255,255,0.1); padding:1px 4px; border-radius:4px; color:#cbd5e1;">予測</span>: <span id="r_suikomi_loss" style="color:#fff; font-weight:600;">0g (0.0%)</span></div>
                     <div>📉 落下ロス <span style="font-size:9px; background:rgba(255,255,255,0.1); padding:1px 4px; border-radius:4px; color:#cbd5e1;">予測</span>: <span id="r_rakka_loss" style="color:#fff; font-weight:600;">0g (0.0%)</span></div>
                   </div>
+                </div>
+                <div style="margin-top: 14px; font-size: 11.5px; color: #94a3b8; line-height: 1.6; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px;">
+                  💡 <strong>計算式:</strong><br>
+                  塗着量(g) = 面積(m²) × 膜厚(μm) × 比重(g/cm³)<br>
+                  塗着率(%) = 塗着量(g) ÷ 使用量(g) × 100　／　ロス率(%) = 100 − 塗着率(%)
                 </div>
                 <div style="margin-top: 14px; font-size: 11px; color: #cbd5e1; line-height: 1.5; background: rgba(225, 29, 72, 0.12); border: 1px solid rgba(225, 29, 72, 0.3); padding: 12px; border-radius: 8px;">
                   <div style="font-size: 11.5px; font-weight: bold; color: #f87171; margin-bottom: 4px;">⚠️ 塗着率・歩留まり自動計算に関するご注意</div>
@@ -740,27 +785,11 @@
   </div>
 </div>
 
-<!-- 塗装者登録モーダル -->
-<div id="operator-modal" class="modal-overlay">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">👷 塗装者登録 (最大50件)</div>
-      <button class="btn-close" onclick="closeOperatorSettings()">×</button>
-    </div>
-    <div class="product-list" id="modal-operator-list"></div>
-    <div class="product-add-group">
-      <input type="text" id="new-operator-name" placeholder="新しい塗装者名を入力" style="flex:1;">
-      <button type="button" class="btn-settings" onclick="addOperator()" style="background:var(--accent-cyan); color:#fff; border:none; height:42px; padding:0 20px;">追加</button>
-    </div>
-    <div style="font-size:11px; color:var(--text-dim); margin-top:8px; text-align:right;" id="operator-count">0 / 50 件</div>
-  </div>
-</div>
-
 <!-- 原因内容設定モーダル -->
 <div id="cause-modal" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-header">
-      <div class="modal-title">⚙️ 不具合原因の編集・登録 (最大20種)</div>
+      <div class="modal-title">⚙️ 不具合原因の編集・登録 (最大50種)</div>
       <button class="btn-close" onclick="closeCauseSettings()">×</button>
     </div>
     <div class="product-list" id="modal-cause-list"></div>
@@ -768,7 +797,21 @@
       <input type="text" id="new-cause-name" placeholder="新しい原因を入力" style="flex:1;">
       <button type="button" class="btn-settings" onclick="addCause()" style="background:var(--accent-cyan); color:#fff; border:none; height:42px; padding:0 20px;">追加</button>
     </div>
-    <div style="font-size:11px; color:var(--text-dim); margin-top:8px; text-align:right;" id="cause-count">0 / 20 件</div>
+    <div style="font-size:11px; color:var(--text-dim); margin-top:8px; text-align:right;" id="cause-count">0 / 50 件</div>
+  </div>
+</div>
+
+<!-- 塗装機プリセット 選択・登録モーダル -->
+<div id="machine-preset-modal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 640px;">
+    <div class="modal-header">
+      <div class="modal-title">🎛 塗装機プリセット (10種)</div>
+      <button class="btn-close" onclick="closeMachinePresetModal()">×</button>
+    </div>
+    <div style="font-size:11px; color:var(--text-dim); margin-bottom:10px; line-height:1.5;">
+      各プリセットの名称・電圧(kV)・電流(μA)・吐出量(g/min)・エアー流量(L/min)は自由に編集して保存できます。「この内容を選択」を押すと、実績登録フォームの各入力欄へ自動反映されます。
+    </div>
+    <div class="product-list" id="machine-preset-list"></div>
   </div>
 </div>
 
@@ -889,6 +932,14 @@
   let currentListRange = 'all';
   let listCustomStartDate = '', listCustomEndDate = '';
   let customPeriodTarget = 'cause';
+
+  let currentPaintRange = 'week';
+  let paintCustomStartDate = '', paintCustomEndDate = '';
+
+  let machinePresets = Array.from({ length: 10 }, (_, i) => ({
+    no: i + 1, name: `プリセット${i + 1}`, voltage: 50, current: 20, discharge: 300, air: 250
+  }));
+  let selectedPresetNo = null, selectedPresetName = '';
 
   let isAreaAuto = false, isFilmAuto = false, isAttachedUser = false;
 
@@ -1044,14 +1095,19 @@
         const data = doc.data();
         if (data.password != null) currentPassword = String(data.password);
         if (data.adminPassword != null) adminPassword = String(data.adminPassword);
-        if (Array.isArray(data.operators)) operatorsList = data.operators;
+        if (Array.isArray(data.operators) && data.operators.length > 0) operatorsList = data.operators;
         if (Array.isArray(data.products)) productsList = data.products;
         if (Array.isArray(data.causes) && data.causes.length > 0) causesList = data.causes;
+        if (Array.isArray(data.machinePresets) && data.machinePresets.length > 0) machinePresets = data.machinePresets;
+        if (data.selectedPresetNo !== undefined) selectedPresetNo = data.selectedPresetNo;
+        if (data.selectedPresetName !== undefined) selectedPresetName = data.selectedPresetName;
       }
       updateOperatorSelect();
       updateProductDatalist();
       initCauseDropdowns();
       renderCauseModalList();
+      renderMachinePresetList();
+      updatePresetActiveBadge();
     });
   }
 
@@ -1071,7 +1127,6 @@
       operatorsList.forEach(op => op2Select.appendChild(new Option(op, op)));
       if (val && operatorsList.includes(val)) op2Select.value = val;
     }
-    renderOperatorModalList();
   }
 
   function updateProductDatalist() {
@@ -1096,48 +1151,11 @@
   }
 
   function openOperatorSettings() {
-    if (!db || !verifyAdminPassword()) return;
-    document.getElementById('operator-modal').style.display = 'flex';
-    renderOperatorModalList();
-  }
-  function closeOperatorSettings() { document.getElementById('operator-modal').style.display = 'none'; }
-
-  function renderOperatorModalList() {
-    const listEl = document.getElementById('modal-operator-list'), countEl = document.getElementById('operator-count');
-    if (!listEl || !countEl) return;
-    listEl.innerHTML = '';
-    operatorsList.forEach((op, idx) => {
-      const item = document.createElement('div');
-      item.className = 'product-item';
-      item.innerHTML = `<span style="flex:1; word-break:break-all;">${op}</span><button type="button" class="btn-edit" onclick="editOperator(${idx})">編集</button><button type="button" class="btn-del" onclick="deleteOperator(${idx})">削除</button>`;
-      listEl.appendChild(item);
-    });
-    countEl.textContent = `${operatorsList.length} / 50 件`;
-  }
-
-  function addOperator() {
-    const input = document.getElementById('new-operator-name'), name = input.value.trim();
-    if (!name) return;
-    if (operatorsList.includes(name)) return alert('既に登録されています。');
-    if (operatorsList.length >= 50) return alert('最大登録数(50件)に達しています。');
-    operatorsList.push(name); saveOperators(); input.value = '';
-  }
-
-  function editOperator(idx) {
-    const currentName = operatorsList[idx], newName = prompt('塗装者名を編集:', currentName);
-    if (newName !== null && newName.trim() !== '') {
-      const trimmed = newName.trim();
-      if (operatorsList.includes(trimmed) && trimmed !== currentName) return alert('既に同じ塗装者名が存在します。');
-      operatorsList[idx] = trimmed; saveOperators();
-    }
-  }
-
-  function deleteOperator(idx) {
-    if (confirm('この塗装者を削除しますか？')) { operatorsList.splice(idx, 1); saveOperators(); }
-  }
-
-  function saveOperators() {
-    if (db) db.collection('settings').doc('config').set({ operators: operatorsList }, { merge: true }).catch(err => alert('保存エラー: ' + err.message));
+    if (!db) return alert('データベースに接続されていません');
+    const op1 = prompt('塗装者 1人目:', operatorsList[0] || '担当者A'); if (op1 === null) return;
+    const op2 = prompt('塗装者 2人目:', operatorsList[1] || '担当者B'); if (op2 === null) return;
+    db.collection('settings').doc('config').set({ operators: [op1.trim()||'担当者A', op2.trim()||'担当者B'] }, { merge: true })
+      .then(() => alert('塗装者を更新しました！'));
   }
 
   function openPasswordSettings() {
@@ -1214,14 +1232,14 @@
       item.innerHTML = `<span style="flex:1; word-break:break-all;">${c}</span><button type="button" class="btn-edit" onclick="editCauseItem(${idx})">編集</button><button type="button" class="btn-del" onclick="deleteCauseItem(${idx})">削除</button>`;
       listEl.appendChild(item);
     });
-    countEl.textContent = `${causesList.length} / 20 件`;
+    countEl.textContent = `${causesList.length} / 50 件`;
   }
 
   function addCause() {
     const input = document.getElementById('new-cause-name'), name = input.value.trim();
     if (!name) return;
     if (causesList.includes(name)) return alert('既に登録されている原因です。');
-    if (causesList.length >= 20) return alert('原因の登録は最大20種までです。');
+    if (causesList.length >= 50) return alert('原因の登録は最大50種までです。');
     causesList.push(name); saveCauses(); input.value = '';
   }
 
@@ -1240,6 +1258,91 @@
 
   function saveCauses() {
     if (db) db.collection('settings').doc('config').set({ causes: causesList }, { merge: true }).then(() => { initCauseDropdowns(); renderCauseModalList(); }).catch(err => alert('保存エラー: ' + err.message));
+  }
+
+  function openMachinePresetModal() {
+    document.getElementById('machine-preset-modal').style.display = 'flex';
+    renderMachinePresetList();
+  }
+  function closeMachinePresetModal() { document.getElementById('machine-preset-modal').style.display = 'none'; }
+
+  function renderMachinePresetList() {
+    const listEl = document.getElementById('machine-preset-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    machinePresets.forEach((p, idx) => {
+      const isSelected = (selectedPresetNo === p.no);
+      const row = document.createElement('div');
+      row.className = 'preset-row' + (isSelected ? ' preset-row-selected' : '');
+      row.innerHTML = `
+        <div class="preset-row-head">
+          <span class="preset-badge">P${p.no}</span>
+          <input type="text" class="preset-name-input" value="${p.name || ('プリセット' + p.no)}" onchange="updateMachinePresetField(${idx}, 'name', this.value)">
+          ${isSelected ? '<span class="preset-current-tag">✅ 選択中</span>' : ''}
+        </div>
+        <div class="preset-grid">
+          <div><label>電圧 (kV)</label><input type="number" step="0.1" value="${p.voltage}" onchange="updateMachinePresetField(${idx}, 'voltage', this.value)"></div>
+          <div><label>電流 (μA)</label><input type="number" step="0.1" value="${p.current}" onchange="updateMachinePresetField(${idx}, 'current', this.value)"></div>
+          <div><label>吐出量 (g/min)</label><input type="number" step="0.1" value="${p.discharge}" onchange="updateMachinePresetField(${idx}, 'discharge', this.value)"></div>
+          <div><label>エアー流量 (L/min)</label><input type="number" step="0.1" value="${p.air}" onchange="updateMachinePresetField(${idx}, 'air', this.value)"></div>
+        </div>
+        <button type="button" class="preset-apply-btn${isSelected ? ' preset-apply-btn-active' : ''}" onclick="applyMachinePreset(${idx})">${isSelected ? '✅ 選択中（再度反映）' : '✅ この内容を選択して入力欄に反映'}</button>
+      `;
+      listEl.appendChild(row);
+    });
+  }
+
+  function updateMachinePresetField(idx, field, value) {
+    if (!machinePresets[idx]) return;
+    machinePresets[idx][field] = (field === 'name') ? (value || `プリセット${idx + 1}`) : (parseFloat(value) || 0);
+    if (selectedPresetNo === machinePresets[idx].no && field === 'name') {
+      selectedPresetName = machinePresets[idx].name;
+      updatePresetActiveBadge();
+      if (db) db.collection('settings').doc('config').set({ selectedPresetName }, { merge: true });
+    }
+    saveMachinePresets();
+  }
+
+  function saveMachinePresets() {
+    if (db) db.collection('settings').doc('config').set({ machinePresets: machinePresets }, { merge: true }).catch(err => alert('保存エラー: ' + err.message));
+  }
+
+  function applyMachinePreset(idx) {
+    const p = machinePresets[idx];
+    if (!p) return;
+    document.getElementById('voltage').value = p.voltage;
+    document.getElementById('current').value = p.current;
+    document.getElementById('discharge').value = p.discharge;
+    document.getElementById('air_flow').value = p.air;
+
+    selectedPresetNo = p.no;
+    selectedPresetName = p.name || `プリセット${p.no}`;
+    updatePresetActiveBadge();
+    renderMachinePresetList();
+
+    // 選択中のプリセット番号・名称を全ユーザーで共有・保存（Firestoreにリアルタイム同期）
+    if (db) {
+      db.collection('settings').doc('config').set({ selectedPresetNo, selectedPresetName }, { merge: true })
+        .catch(err => alert('プリセット選択状態の保存に失敗しました: ' + err.message));
+    }
+
+    closeMachinePresetModal();
+  }
+
+  function updatePresetActiveBadge() {
+    const el = document.getElementById('preset-active-badge');
+    if (!el) return;
+    if (selectedPresetNo) {
+      el.innerHTML = `🎛 現在選択中のプリセット: <strong>P${selectedPresetNo}（${selectedPresetName || 'プリセット' + selectedPresetNo}）</strong>　<span style="font-weight:500; color: var(--text-dim);">全ユーザーで共有中</span>`;
+      el.style.color = 'var(--accent-indigo)';
+      el.style.background = 'rgba(79, 70, 229, 0.08)';
+      el.style.borderColor = 'rgba(79, 70, 229, 0.25)';
+    } else {
+      el.innerHTML = '🎛 現在選択中のプリセット: <strong>未選択</strong>';
+      el.style.color = 'var(--text-dim)';
+      el.style.background = 'rgba(100, 116, 139, 0.06)';
+      el.style.borderColor = 'var(--border-color)';
+    }
   }
 
   function switchMainTab(tab) {
@@ -1277,7 +1380,7 @@
     const today = getTodayString();
     if (!document.getElementById('date').value) document.getElementById('date').value = today;
     if (!document.getElementById('t_date').value) document.getElementById('t_date').value = today;
-    initCauseDropdowns(); updateOperatorSelect(); updateProductDatalist(); updateRealtimeClock(); fetchFukuyamaWeather(); startRealtimeSync(); runTochakuCalc();
+    initCauseDropdowns(); updateOperatorSelect(); updateProductDatalist(); updateRealtimeClock(); fetchFukuyamaWeather(); startRealtimeSync(); runTochakuCalc(); updatePresetActiveBadge();
   }
 
   window.onload = function() {
@@ -1482,9 +1585,13 @@
     isAreaAuto = (areaInput === '');
     isFilmAuto = (filmInput === '');
 
-    if (usedPaint <= 0) {
-      elUsedPaint.classList.add('input-highlight');
-      if (guideText) guideText.textContent = 'まず「使用した塗料量 (kg)」を入力してください。';
+    const elProduct1 = document.getElementById('t_product1'), elQty1 = document.getElementById('t_qty1');
+    const productName1 = elProduct1 ? elProduct1.value.trim() : '';
+    const qty1 = elQty1 ? (parseInt(elQty1.value) || 0) : 0;
+    if (elProduct1) elProduct1.classList.remove('input-highlight');
+    if (elQty1) elQty1.classList.remove('input-highlight');
+
+    function resetPreviewPanel() {
       if (!isAttachedUser && elAttached) elAttached.value = '';
       modeBadge.textContent = '未入力';
       document.getElementById('r_rate').textContent = '0.0';
@@ -1494,6 +1601,30 @@
       document.getElementById('r_theoretical').textContent = '-';
       document.getElementById('r_expected_area').textContent = '-';
       document.getElementById('r_expected_film').textContent = '-';
+    }
+
+    if (!productName1) {
+      if (elProduct1) elProduct1.classList.add('input-highlight');
+      if (guideText) guideText.textContent = '👉 まず「ワーク品名1」を入力してください（登録には品名が必須です）。';
+      resetPreviewPanel();
+      badge.className = 'eval-badge eval-good';
+      badge.textContent = 'まず「品名1」と「台数1」を入力してください';
+      return;
+    }
+
+    if (qty1 <= 0) {
+      if (elQty1) elQty1.classList.add('input-highlight');
+      if (guideText) guideText.textContent = '👉 次に「台数1」を入力してください（1以上の数値が必要です）。';
+      resetPreviewPanel();
+      badge.className = 'eval-badge eval-good';
+      badge.textContent = '「台数1」を入力してください';
+      return;
+    }
+
+    if (usedPaint <= 0) {
+      elUsedPaint.classList.add('input-highlight');
+      if (guideText) guideText.textContent = '✅ 品名・台数はOKです。次に「使用した塗料量 (kg)」を入力してください。';
+      resetPreviewPanel();
       badge.className = 'eval-badge eval-good';
       badge.textContent = '使用塗料量(kg)と、必要な計測項目を入力してください';
       return;
@@ -1615,7 +1746,12 @@
   document.getElementById('tochaku-form').addEventListener('submit', function(e) {
     e.preventDefault();
     if (!db) return alert('データベースに接続されていません');
-    
+
+    const p1Name = document.getElementById('t_product1').value.trim();
+    const p1Qty = parseInt(document.getElementById('t_qty1').value) || 0;
+    if (!p1Name) { document.getElementById('t_product1').focus(); return alert('「ワーク品名1」を入力してください。品名・台数の入力は登録に必須です。'); }
+    if (p1Qty <= 0) { document.getElementById('t_qty1').focus(); return alert('「台数1」を1以上の数値で入力してください。'); }
+
     const usedPaintKg = parseFloat(document.getElementById('t_used_paint_kg').value) || 0;
     const usedPaint = usedPaintKg * 1000;
     const tItems = [];
@@ -1983,6 +2119,10 @@
       thickness: thicknessVal !== '' ? parseFloat(thicknessVal) : null,
       voltage: parseFloat(document.getElementById('voltage').value) || 50,
       current: parseFloat(document.getElementById('current').value) || 20,
+      discharge: parseFloat(document.getElementById('discharge').value) || 300,
+      air_flow: parseFloat(document.getElementById('air_flow').value) || 250,
+      preset_no: selectedPresetNo || null,
+      preset_name: selectedPresetName || null,
       bake_temp: parseFloat(document.getElementById('bake_temp').value) || 200,
       bake_time: parseFloat(document.getElementById('bake_time').value) || 20,
       status: statusVal,
@@ -2050,6 +2190,8 @@
     document.getElementById('thickness').value = (rec.thickness != null) ? rec.thickness : '';
     document.getElementById('voltage').value = rec.voltage || 50;
     document.getElementById('current').value = rec.current || 20;
+    document.getElementById('discharge').value = rec.discharge || 300;
+    document.getElementById('air_flow').value = rec.air_flow || 250;
     document.getElementById('bake_temp').value = rec.bake_temp || 200;
     document.getElementById('bake_time').value = rec.bake_time || 20;
     document.getElementById('status').value = rec.status || 'OK';
@@ -2085,6 +2227,19 @@
     if (range !== 'custom') {
       customStartDate = '';
       customEndDate = '';
+    }
+    render();
+  }
+
+  function setPaintRange(range) {
+    currentPaintRange = range;
+    ['week', 'lastweek', 'month', 'year', 'custom'].forEach(r => {
+      const btn = document.getElementById(`paint-tab-${r}`);
+      if (btn) btn.classList.toggle('active', currentPaintRange === r);
+    });
+    if (range !== 'custom') {
+      paintCustomStartDate = '';
+      paintCustomEndDate = '';
     }
     render();
   }
@@ -2199,6 +2354,18 @@
       if (customBtn) customBtn.classList.add('active');
       closeCustomPeriodModal();
       resetPageAndRender();
+    } else if (customPeriodTarget === 'paint') {
+      paintCustomStartDate = selectedWeekStart;
+      paintCustomEndDate = selectedWeekEnd;
+      currentPaintRange = 'custom';
+      ['week', 'lastweek', 'month', 'year'].forEach(r => {
+        const btn = document.getElementById(`paint-tab-${r}`);
+        if (btn) btn.classList.remove('active');
+      });
+      const customBtn = document.getElementById('paint-tab-custom');
+      if (customBtn) customBtn.classList.add('active');
+      closeCustomPeriodModal();
+      render();
     } else {
       customStartDate = selectedWeekStart;
       customEndDate = selectedWeekEnd;
@@ -2271,6 +2438,16 @@
       else listPeriodLabelEl.textContent = '対象期間: すべての実績を表示中';
     }
 
+    // 品名別塗料使用量ランキングの期間表示ラベル（再塗装分析とは独立）
+    const paintPeriodLabelEl = document.getElementById('paint-period-display-label');
+    if (paintPeriodLabelEl) {
+      if (currentPaintRange === 'week') paintPeriodLabelEl.textContent = `対象期間: ${weekRange.startStr} ～ ${weekRange.endStr} (今週)`;
+      else if (currentPaintRange === 'lastweek') paintPeriodLabelEl.textContent = `対象期間: ${lastWeekRange.startStr} ～ ${lastWeekRange.endStr} (先週)`;
+      else if (currentPaintRange === 'month') paintPeriodLabelEl.textContent = `対象期間: ${monthRange.startStr} ～ ${monthRange.endStr} (今月)`;
+      else if (currentPaintRange === 'year') paintPeriodLabelEl.textContent = `対象期間: ${yearRange.startStr} ～ ${yearRange.endStr} (今年)`;
+      else if (currentPaintRange === 'custom') paintPeriodLabelEl.textContent = `対象期間: ${paintCustomStartDate} ～ ${paintCustomEndDate} (指定週)`;
+    }
+
     let weekWeight = 0, monthWeight = 0, yearWeight = 0;
     let weekTotalPieces = 0, weekNgPieces = 0, monthTotalPieces = 0, monthNgPieces = 0, yearTotalPieces = 0, yearNgPieces = 0;
     const causeCounts = {}, productStats = {}, productPaintStats = {};
@@ -2301,6 +2478,14 @@
       else if (currentCauseRange === 'year') isTargetRange = (r.date && r.date >= yearRange.startStr && r.date <= yearRange.endStr);
       else if (currentCauseRange === 'custom') isTargetRange = (r.date && r.date >= customStartDate && r.date <= customEndDate);
 
+      // 品名別塗料使用量ランキングは、再塗装分析ダッシュボードとは独立した専用の集計期間で判定
+      let isPaintTargetRange = false;
+      if (currentPaintRange === 'week') isPaintTargetRange = (r.date && r.date >= weekRange.startStr && r.date <= weekRange.endStr);
+      else if (currentPaintRange === 'lastweek') isPaintTargetRange = (r.date && r.date >= lastWeekRange.startStr && r.date <= lastWeekRange.endStr);
+      else if (currentPaintRange === 'month') isPaintTargetRange = (r.date && r.date >= monthRange.startStr && r.date <= monthRange.endStr);
+      else if (currentPaintRange === 'year') isPaintTargetRange = (r.date && r.date >= yearRange.startStr && r.date <= yearRange.endStr);
+      else if (currentPaintRange === 'custom') isPaintTargetRange = (r.date && r.date >= paintCustomStartDate && r.date <= paintCustomEndDate);
+
       if (isTargetRange) {
         if (r.status === 'NG') {
           if (r.ng_details && Array.isArray(r.ng_details) && r.ng_details.length > 0) {
@@ -2319,13 +2504,13 @@
           if (!productStats[ngP]) productStats[ngP] = { ng: 0 };
           productStats[ngP].ng += ngQ;
         }
+      }
 
-        if (w > 0 && recordTotalQty > 0 && r.items) {
-          r.items.forEach(item => {
-            const pName = item.name, pQty = Number(item.qty) || 0;
-            productPaintStats[pName] = (productPaintStats[pName] || 0) + ((w * pQty) / recordTotalQty);
-          });
-        }
+      if (isPaintTargetRange && w > 0 && recordTotalQty > 0 && r.items) {
+        r.items.forEach(item => {
+          const pName = item.name, pQty = Number(item.qty) || 0;
+          productPaintStats[pName] = (productPaintStats[pName] || 0) + ((w * pQty) / recordTotalQty);
+        });
       }
     });
 
@@ -2472,6 +2657,7 @@
             <div class="card-data-row"><span class="card-label">塗料:</span><span class="card-value-text">${formatWeight(r.paint_weight)}</span></div>
             <div class="card-data-row"><span class="card-label">膜厚:</span><span class="card-value-text">${thicknessText}</span></div>
             <div class="card-data-row"><span class="card-label">電気条件:</span><span class="card-value-text">${r.voltage}kV / ${r.current}μA</span></div>
+            <div class="card-data-row"><span class="card-label">吐出/エアー:</span><span class="card-value-text">${r.discharge || '-'}g/min / ${r.air_flow || '-'}L/min${r.preset_no ? ` <span style="font-size:9px; background:rgba(79,70,229,0.1); color:var(--accent-indigo); padding:1px 6px; border-radius:8px; font-weight:700; border:1px solid rgba(79,70,229,0.2);">P${r.preset_no}${r.preset_name ? '：' + r.preset_name : ''}</span>` : ''}</span></div>
             <div class="card-data-row full-row"><span class="card-label">焼付条件:</span><span class="card-value-text">${r.bake_temp || 200}℃ / ${r.bake_time || 20}分</span></div>
           </div>
           ${r.status === 'NG' ? `
