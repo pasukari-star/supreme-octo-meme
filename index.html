@@ -740,6 +740,22 @@
   </div>
 </div>
 
+<!-- 塗装者登録モーダル -->
+<div id="operator-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">👷 塗装者登録 (最大50件)</div>
+      <button class="btn-close" onclick="closeOperatorSettings()">×</button>
+    </div>
+    <div class="product-list" id="modal-operator-list"></div>
+    <div class="product-add-group">
+      <input type="text" id="new-operator-name" placeholder="新しい塗装者名を入力" style="flex:1;">
+      <button type="button" class="btn-settings" onclick="addOperator()" style="background:var(--accent-cyan); color:#fff; border:none; height:42px; padding:0 20px;">追加</button>
+    </div>
+    <div style="font-size:11px; color:var(--text-dim); margin-top:8px; text-align:right;" id="operator-count">0 / 50 件</div>
+  </div>
+</div>
+
 <!-- 原因内容設定モーダル -->
 <div id="cause-modal" class="modal-overlay">
   <div class="modal-content">
@@ -1028,7 +1044,7 @@
         const data = doc.data();
         if (data.password != null) currentPassword = String(data.password);
         if (data.adminPassword != null) adminPassword = String(data.adminPassword);
-        if (Array.isArray(data.operators) && data.operators.length > 0) operatorsList = data.operators;
+        if (Array.isArray(data.operators)) operatorsList = data.operators;
         if (Array.isArray(data.products)) productsList = data.products;
         if (Array.isArray(data.causes) && data.causes.length > 0) causesList = data.causes;
       }
@@ -1055,6 +1071,7 @@
       operatorsList.forEach(op => op2Select.appendChild(new Option(op, op)));
       if (val && operatorsList.includes(val)) op2Select.value = val;
     }
+    renderOperatorModalList();
   }
 
   function updateProductDatalist() {
@@ -1079,11 +1096,48 @@
   }
 
   function openOperatorSettings() {
-    if (!db) return alert('データベースに接続されていません');
-    const op1 = prompt('塗装者 1人目:', operatorsList[0] || '担当者A'); if (op1 === null) return;
-    const op2 = prompt('塗装者 2人目:', operatorsList[1] || '担当者B'); if (op2 === null) return;
-    db.collection('settings').doc('config').set({ operators: [op1.trim()||'担当者A', op2.trim()||'担当者B'] }, { merge: true })
-      .then(() => alert('塗装者を更新しました！'));
+    if (!db || !verifyAdminPassword()) return;
+    document.getElementById('operator-modal').style.display = 'flex';
+    renderOperatorModalList();
+  }
+  function closeOperatorSettings() { document.getElementById('operator-modal').style.display = 'none'; }
+
+  function renderOperatorModalList() {
+    const listEl = document.getElementById('modal-operator-list'), countEl = document.getElementById('operator-count');
+    if (!listEl || !countEl) return;
+    listEl.innerHTML = '';
+    operatorsList.forEach((op, idx) => {
+      const item = document.createElement('div');
+      item.className = 'product-item';
+      item.innerHTML = `<span style="flex:1; word-break:break-all;">${op}</span><button type="button" class="btn-edit" onclick="editOperator(${idx})">編集</button><button type="button" class="btn-del" onclick="deleteOperator(${idx})">削除</button>`;
+      listEl.appendChild(item);
+    });
+    countEl.textContent = `${operatorsList.length} / 50 件`;
+  }
+
+  function addOperator() {
+    const input = document.getElementById('new-operator-name'), name = input.value.trim();
+    if (!name) return;
+    if (operatorsList.includes(name)) return alert('既に登録されています。');
+    if (operatorsList.length >= 50) return alert('最大登録数(50件)に達しています。');
+    operatorsList.push(name); saveOperators(); input.value = '';
+  }
+
+  function editOperator(idx) {
+    const currentName = operatorsList[idx], newName = prompt('塗装者名を編集:', currentName);
+    if (newName !== null && newName.trim() !== '') {
+      const trimmed = newName.trim();
+      if (operatorsList.includes(trimmed) && trimmed !== currentName) return alert('既に同じ塗装者名が存在します。');
+      operatorsList[idx] = trimmed; saveOperators();
+    }
+  }
+
+  function deleteOperator(idx) {
+    if (confirm('この塗装者を削除しますか？')) { operatorsList.splice(idx, 1); saveOperators(); }
+  }
+
+  function saveOperators() {
+    if (db) db.collection('settings').doc('config').set({ operators: operatorsList }, { merge: true }).catch(err => alert('保存エラー: ' + err.message));
   }
 
   function openPasswordSettings() {
