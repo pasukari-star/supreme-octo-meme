@@ -434,7 +434,7 @@
 
                 <div><label>設定電圧 (kV)</label><input type="number" id="voltage" step="0.1" value="50"></div>
                 <div><label>設定電流 (μA)</label><input type="number" id="current" step="0.1" value="20"></div>
-                <div><label>吐出量 (g/min)</label><input type="number" id="discharge" step="0.1" value="300"></div>
+                <div><label>吐出量 (FlowRate)</label><input type="number" id="discharge" step="0.1" value="300"></div>
                 <div><label>エアー流量 (L/min)</label><input type="number" id="air_flow" step="0.1" value="250"></div>
                 <div><label>焼付温度 (℃)</label><input type="number" id="bake_temp" step="1" value="200" required></div>
                 <div><label>焼付時間 (分)</label><input type="number" id="bake_time" step="1" value="20" required></div>
@@ -809,7 +809,7 @@
       <button class="btn-close" onclick="closeMachinePresetModal()">×</button>
     </div>
     <div style="font-size:11px; color:var(--text-dim); margin-bottom:10px; line-height:1.5;">
-      各プリセットの名称・電圧(kV)・電流(μA)・吐出量(g/min)・エアー流量(L/min)は自由に編集して保存できます。「この内容を選択」を押すと、実績登録フォームの各入力欄へ自動反映されます。
+      各プリセットの名称・電圧(kV)・電流(μA)・吐出量(FlowRate)・エアー流量(L/min)は自由に編集して保存できます。「この内容を選択」を押すと、実績登録フォームの各入力欄へ自動反映されます。
     </div>
     <div class="product-list" id="machine-preset-list"></div>
   </div>
@@ -940,6 +940,27 @@
     no: i + 1, name: `プリセット${i + 1}`, voltage: 50, current: 20, discharge: 300, air: 250
   }));
   let selectedPresetNo = null, selectedPresetName = '';
+
+  function getActivePresetValues() {
+    const preset = machinePresets.find(p => p.no === selectedPresetNo);
+    return {
+      voltage: preset ? preset.voltage : 50,
+      current: preset ? preset.current : 20,
+      discharge: preset ? preset.discharge : 300,
+      air: preset ? preset.air : 250
+    };
+  }
+
+  function applyActivePresetDefaultsToForm() {
+    if (editingRecordId) return;
+    const d = getActivePresetValues();
+    const vEl = document.getElementById('voltage'), cEl = document.getElementById('current');
+    const dEl = document.getElementById('discharge'), aEl = document.getElementById('air_flow');
+    if (vEl) vEl.value = d.voltage;
+    if (cEl) cEl.value = d.current;
+    if (dEl) dEl.value = d.discharge;
+    if (aEl) aEl.value = d.air;
+  }
 
   let isAreaAuto = false, isFilmAuto = false, isAttachedUser = false;
 
@@ -1108,6 +1129,7 @@
       renderCauseModalList();
       renderMachinePresetList();
       updatePresetActiveBadge();
+      applyActivePresetDefaultsToForm();
     });
   }
 
@@ -1283,7 +1305,7 @@
         <div class="preset-grid">
           <div><label>電圧 (kV)</label><input type="number" step="0.1" value="${p.voltage}" onchange="updateMachinePresetField(${idx}, 'voltage', this.value)"></div>
           <div><label>電流 (μA)</label><input type="number" step="0.1" value="${p.current}" onchange="updateMachinePresetField(${idx}, 'current', this.value)"></div>
-          <div><label>吐出量 (g/min)</label><input type="number" step="0.1" value="${p.discharge}" onchange="updateMachinePresetField(${idx}, 'discharge', this.value)"></div>
+          <div><label>吐出量 (FlowRate)</label><input type="number" step="0.1" value="${p.discharge}" onchange="updateMachinePresetField(${idx}, 'discharge', this.value)"></div>
           <div><label>エアー流量 (L/min)</label><input type="number" step="0.1" value="${p.air}" onchange="updateMachinePresetField(${idx}, 'air', this.value)"></div>
         </div>
         <button type="button" class="preset-apply-btn${isSelected ? ' preset-apply-btn-active' : ''}" onclick="applyMachinePreset(${idx})">${isSelected ? '✅ 選択中（再度反映）' : '✅ この内容を選択して入力欄に反映'}</button>
@@ -1380,7 +1402,7 @@
     const today = getTodayString();
     if (!document.getElementById('date').value) document.getElementById('date').value = today;
     if (!document.getElementById('t_date').value) document.getElementById('t_date').value = today;
-    initCauseDropdowns(); updateOperatorSelect(); updateProductDatalist(); updateRealtimeClock(); fetchFukuyamaWeather(); startRealtimeSync(); runTochakuCalc(); updatePresetActiveBadge();
+    initCauseDropdowns(); updateOperatorSelect(); updateProductDatalist(); updateRealtimeClock(); fetchFukuyamaWeather(); startRealtimeSync(); runTochakuCalc(); updatePresetActiveBadge(); applyActivePresetDefaultsToForm();
   }
 
   window.onload = function() {
@@ -2143,6 +2165,7 @@
       document.getElementById('thickness').value = '50'; document.getElementById('ng_memo').value = '';
       document.getElementById('memo').value = ''; document.getElementById('status').value = 'OK';
       toggleNGSection(); document.getElementById('date').value = selectedDate; editingRecordId = null;
+      applyActivePresetDefaultsToForm();
       document.querySelector('#p-form .btn-submit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> 実績を登録・保存';
       currentPage = 1;
     });
@@ -2188,10 +2211,11 @@
 
     document.getElementById('paint_weight').value = rec.paint_weight || '';
     document.getElementById('thickness').value = (rec.thickness != null) ? rec.thickness : '';
-    document.getElementById('voltage').value = rec.voltage || 50;
-    document.getElementById('current').value = rec.current || 20;
-    document.getElementById('discharge').value = rec.discharge || 300;
-    document.getElementById('air_flow').value = rec.air_flow || 250;
+    const presetFallback = getActivePresetValues();
+    document.getElementById('voltage').value = rec.voltage || presetFallback.voltage;
+    document.getElementById('current').value = rec.current || presetFallback.current;
+    document.getElementById('discharge').value = rec.discharge || presetFallback.discharge;
+    document.getElementById('air_flow').value = rec.air_flow || presetFallback.air;
     document.getElementById('bake_temp').value = rec.bake_temp || 200;
     document.getElementById('bake_time').value = rec.bake_time || 20;
     document.getElementById('status').value = rec.status || 'OK';
@@ -2657,7 +2681,7 @@
             <div class="card-data-row"><span class="card-label">塗料:</span><span class="card-value-text">${formatWeight(r.paint_weight)}</span></div>
             <div class="card-data-row"><span class="card-label">膜厚:</span><span class="card-value-text">${thicknessText}</span></div>
             <div class="card-data-row"><span class="card-label">電気条件:</span><span class="card-value-text">${r.voltage}kV / ${r.current}μA</span></div>
-            <div class="card-data-row"><span class="card-label">吐出/エアー:</span><span class="card-value-text">${r.discharge || '-'}g/min / ${r.air_flow || '-'}L/min${r.preset_no ? ` <span style="font-size:9px; background:rgba(79,70,229,0.1); color:var(--accent-indigo); padding:1px 6px; border-radius:8px; font-weight:700; border:1px solid rgba(79,70,229,0.2);">P${r.preset_no}${r.preset_name ? '：' + r.preset_name : ''}</span>` : ''}</span></div>
+            <div class="card-data-row"><span class="card-label">吐出/エアー:</span><span class="card-value-text">${r.discharge || '-'} FlowRate / ${r.air_flow || '-'}L/min${r.preset_no ? ` <span style="font-size:9px; background:rgba(79,70,229,0.1); color:var(--accent-indigo); padding:1px 6px; border-radius:8px; font-weight:700; border:1px solid rgba(79,70,229,0.2);">P${r.preset_no}${r.preset_name ? '：' + r.preset_name : ''}</span>` : ''}</span></div>
             <div class="card-data-row full-row"><span class="card-label">焼付条件:</span><span class="card-value-text">${r.bake_temp || 200}℃ / ${r.bake_time || 20}分</span></div>
           </div>
           ${r.status === 'NG' ? `
