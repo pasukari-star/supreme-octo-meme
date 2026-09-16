@@ -123,10 +123,13 @@
     .main-tab-btn.active { background: #ffffff; color: var(--accent-cyan); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid rgba(203, 213, 225, 0.6); }
 
     .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+    .summary-grid-ng { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 22px; }
+    .summary-grid-ng .card:first-child { border-color: rgba(225, 29, 72, 0.18); background: linear-gradient(135deg, rgba(225, 29, 72, 0.05), var(--bg-card)); }
     .card { background: var(--bg-card); backdrop-filter: blur(12px); padding: 16px 10px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-glow); display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .card-title { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; text-align: center; }
     .card-value { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 19px; font-weight: 800; color: var(--accent-cyan); line-height: 1.2; }
     .card-value.ng-val { color: var(--accent-danger); }
+    .card-value.qty-val { color: var(--accent-indigo); }
     .unit { font-size: 11px; font-weight: normal; color: var(--text-dim); margin-left: 2px; }
     .card-subcount { font-size: 11px; font-weight: 700; color: var(--text-dim); margin-top: 5px; letter-spacing: 0.3px; }
     .card-subcount b { font-size: 13px; font-weight: 800; color: var(--accent-danger); margin: 0 2px; }
@@ -265,6 +268,7 @@
       .header-info-row { justify-content: flex-start; }
       .header-btn-group { width: auto; justify-content: flex-end; }
       .summary-grid { gap: 14px; }
+      .summary-grid-ng { grid-template-columns: repeat(4, 1fr); gap: 14px; }
       .card-value { font-size: 23px; }
       .pc-two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
       .cause-list { max-height: 200px; }
@@ -353,6 +357,16 @@
         <div class="card"><div class="card-title">週間 塗料使用量</div><div class="card-value" id="s-week-weight">0 kg</div></div>
         <div class="card"><div class="card-title">月間 塗料使用量</div><div class="card-value" id="s-month-weight">0 kg</div></div>
         <div class="card"><div class="card-title">年間 塗料使用量</div><div class="card-value" id="s-year-weight">0 kg</div></div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="card"><div class="card-title">週間 総件数</div><div class="card-value qty-val" id="s-week-qty">0 <span class="unit">件</span></div></div>
+        <div class="card"><div class="card-title">月間 総件数</div><div class="card-value qty-val" id="s-month-qty">0 <span class="unit">件</span></div></div>
+        <div class="card"><div class="card-title">年間 総件数</div><div class="card-value qty-val" id="s-year-qty">0 <span class="unit">件</span></div></div>
+      </div>
+
+      <div class="summary-grid-ng">
+        <div class="card"><div class="card-title">先週 再塗装率</div><div class="card-value ng-val" id="s-lastweek-ng">0 <span class="unit">%</span></div><div class="card-subcount" id="s-lastweek-ng-count">再塗装 <b>0</b> 件</div></div>
         <div class="card"><div class="card-title">週間 再塗装率</div><div class="card-value ng-val" id="s-week-ng">0 <span class="unit">%</span></div><div class="card-subcount" id="s-week-ng-count">再塗装 <b>0</b> 件</div></div>
         <div class="card"><div class="card-title">月間 再塗装率</div><div class="card-value ng-val" id="s-month-ng">0 <span class="unit">%</span></div><div class="card-subcount" id="s-month-ng-count">再塗装 <b>0</b> 件</div></div>
         <div class="card"><div class="card-title">年間 再塗装率</div><div class="card-value ng-val" id="s-year-ng">0 <span class="unit">%</span></div><div class="card-subcount" id="s-year-ng-count">再塗装 <b>0</b> 件</div></div>
@@ -2474,6 +2488,7 @@
 
     let weekWeight = 0, monthWeight = 0, yearWeight = 0;
     let weekTotalPieces = 0, weekNgPieces = 0, monthTotalPieces = 0, monthNgPieces = 0, yearTotalPieces = 0, yearNgPieces = 0;
+    let lastWeekTotalPieces = 0, lastWeekNgPieces = 0;
     const causeCounts = {}, productStats = {}, productPaintStats = {};
 
     globalRecords.forEach(r => {
@@ -2484,6 +2499,10 @@
       if (r.date && r.date >= weekRange.startStr && r.date <= weekRange.endStr) {
         weekWeight += w; weekTotalPieces += recordTotalQty;
         if (r.status === 'NG') weekNgPieces += (Number(r.ng_qty) || 1);
+      }
+      if (r.date && r.date >= lastWeekRange.startStr && r.date <= lastWeekRange.endStr) {
+        lastWeekTotalPieces += recordTotalQty;
+        if (r.status === 'NG') lastWeekNgPieces += (Number(r.ng_qty) || 1);
       }
       if (r.date && r.date >= monthRange.startStr && r.date <= monthRange.endStr) {
         monthWeight += w; monthTotalPieces += recordTotalQty;
@@ -2541,12 +2560,19 @@
     document.getElementById('s-week-weight').innerHTML = formatWeight(weekWeight);
     document.getElementById('s-month-weight').innerHTML = formatWeight(monthWeight);
     document.getElementById('s-year-weight').innerHTML = formatWeight(yearWeight);
+    document.getElementById('s-week-qty').innerHTML = weekTotalPieces.toLocaleString('ja-JP') + ' <span class="unit">件</span>';
+    document.getElementById('s-month-qty').innerHTML = monthTotalPieces.toLocaleString('ja-JP') + ' <span class="unit">件</span>';
+    document.getElementById('s-year-qty').innerHTML = yearTotalPieces.toLocaleString('ja-JP') + ' <span class="unit">件</span>';
     document.getElementById('s-week-ng').innerHTML = (weekTotalPieces > 0 ? ((weekNgPieces / weekTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
     document.getElementById('s-month-ng').innerHTML = (monthTotalPieces > 0 ? ((monthNgPieces / monthTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
     document.getElementById('s-year-ng').innerHTML = (yearTotalPieces > 0 ? ((yearNgPieces / yearTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
     document.getElementById('s-week-ng-count').innerHTML = '再塗装 <b>' + weekNgPieces + '</b> 件';
     document.getElementById('s-month-ng-count').innerHTML = '再塗装 <b>' + monthNgPieces + '</b> 件';
     document.getElementById('s-year-ng-count').innerHTML = '再塗装 <b>' + yearNgPieces + '</b> 件';
+    const lastWeekNgEl = document.getElementById('s-lastweek-ng');
+    if (lastWeekNgEl) lastWeekNgEl.innerHTML = (lastWeekTotalPieces > 0 ? ((lastWeekNgPieces / lastWeekTotalPieces) * 100).toFixed(1) : 0) + ' <span class="unit">%</span>';
+    const lastWeekNgCountEl = document.getElementById('s-lastweek-ng-count');
+    if (lastWeekNgCountEl) lastWeekNgCountEl.innerHTML = '再塗装 <b>' + lastWeekNgPieces + '</b> 件';
 
     const causeListEl = document.getElementById('cause-analysis-list');
     causeListEl.innerHTML = '';
