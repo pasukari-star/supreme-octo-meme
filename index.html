@@ -321,7 +321,7 @@
     }
     .pc-click-ripple { position: fixed; top: 0; left: 0; pointer-events: none; border-radius: 50%; border: 2px solid currentColor;
       transform: translate3d(-50%, -50%, 0); animation: pcRipple .4s cubic-bezier(.1,.8,.3,1) forwards; z-index: 999998; }
-    @keyframes pcRipple { 0% { width:0; height:0; opacity:1; border-width:3px; } 100% { width:70px; height:70px; opacity:0; border-width:1px; } }
+    @keyframes pcRipple { 0% { width:0; height:0; opacity:1; border-width:2px; } 100% { width:40px; height:40px; opacity:0; border-width:1px; } }
     @keyframes pcSpin { 100% { transform: rotate(360deg); } }
     .pc-cursor-spinner-icon { display: inline-block; animation: pcSpin .8s linear infinite; }
   </style>
@@ -3115,7 +3115,7 @@
     if (Math.random() > 0.4) return;
     var d = document.createElement('div');
     d.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;pointer-events:none;z-index:999995;border-radius:50%;background:linear-gradient(135deg,#ff007f,#00f3ff);box-shadow:0 0 8px #ff007f;';
-    var size = Math.floor(Math.random() * 8 + 6);
+    var size = Math.floor(Math.random() * 5 + 4);
     d.style.width = size + 'px';
     d.style.height = size + 'px';
     var ox = (Math.random() - 0.5) * 20, oy = (Math.random() - 0.5) * 20;
@@ -3150,30 +3150,30 @@
     follower.style.borderRadius = '0';
     follower.style.boxShadow = 'none';
 
-    var dotSize = 8, followerSize = 54, followerHeight = null;
+    var dotSize = 6, followerSize = 16, followerHeight = null;
 
     if (state === 'pointer') {
-      followerSize = 64;
+      followerSize = 22;
     } else if (state === 'text') {
       dot.style.display = 'none';
       follower.innerHTML = '';
       follower.style.background = '#ff007f';
-      follower.style.boxShadow = '0 0 12px #ff007f';
+      follower.style.boxShadow = '0 0 10px #ff007f';
       follower.style.borderRadius = '2px';
-      followerSize = 3;
-      followerHeight = 26;
+      followerSize = 2;
+      followerHeight = 18;
     } else if (state === 'grab' || state === 'grabbing') {
-      followerSize = state === 'grabbing' ? 24 : 44;
+      followerSize = state === 'grabbing' ? 12 : 20;
     } else if (state === 'disabled') {
       dot.style.display = 'none';
       follower.style.display = 'none';
       extraIcon.className = 'fa-solid fa-ban';
-      extraIcon.style.cssText = 'color:#f43f5e;font-size:22px;filter:drop-shadow(0 0 8px rgba(244,63,94,.8));';
+      extraIcon.style.cssText = 'color:#f43f5e;font-size:15px;filter:drop-shadow(0 0 6px rgba(244,63,94,.8));';
     } else if (state === 'loading') {
       dot.style.display = 'none';
       follower.style.display = 'none';
       extraIcon.className = 'fa-solid fa-spinner pc-cursor-spinner-icon';
-      extraIcon.style.cssText = 'color:#22d3ee;font-size:22px;';
+      extraIcon.style.cssText = 'color:#22d3ee;font-size:15px;';
     }
 
     if (dot.style.display !== 'none') {
