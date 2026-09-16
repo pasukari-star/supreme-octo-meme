@@ -124,7 +124,6 @@
 
     .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
     .summary-grid-ng { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 22px; }
-    .summary-grid-ng .card:first-child { border-color: rgba(225, 29, 72, 0.18); background: linear-gradient(135deg, rgba(225, 29, 72, 0.05), var(--bg-card)); }
     .card { background: var(--bg-card); backdrop-filter: blur(12px); padding: 16px 10px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-glow); display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .card-title { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; text-align: center; }
     .card-value { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 19px; font-weight: 800; color: var(--accent-cyan); line-height: 1.2; }
@@ -359,7 +358,8 @@
         <div class="card"><div class="card-title">年間 塗料使用量</div><div class="card-value" id="s-year-weight">0 kg</div></div>
       </div>
 
-      <div class="summary-grid">
+      <div class="summary-grid-ng">
+        <div class="card"><div class="card-title">先週 総件数</div><div class="card-value qty-val" id="s-lastweek-qty">0 <span class="unit">件</span></div></div>
         <div class="card"><div class="card-title">週間 総件数</div><div class="card-value qty-val" id="s-week-qty">0 <span class="unit">件</span></div></div>
         <div class="card"><div class="card-title">月間 総件数</div><div class="card-value qty-val" id="s-month-qty">0 <span class="unit">件</span></div></div>
         <div class="card"><div class="card-title">年間 総件数</div><div class="card-value qty-val" id="s-year-qty">0 <span class="unit">件</span></div></div>
@@ -2560,6 +2560,8 @@
     document.getElementById('s-week-weight').innerHTML = formatWeight(weekWeight);
     document.getElementById('s-month-weight').innerHTML = formatWeight(monthWeight);
     document.getElementById('s-year-weight').innerHTML = formatWeight(yearWeight);
+    const lastWeekQtyEl = document.getElementById('s-lastweek-qty');
+    if (lastWeekQtyEl) lastWeekQtyEl.innerHTML = lastWeekTotalPieces.toLocaleString('ja-JP') + ' <span class="unit">件</span>';
     document.getElementById('s-week-qty').innerHTML = weekTotalPieces.toLocaleString('ja-JP') + ' <span class="unit">件</span>';
     document.getElementById('s-month-qty').innerHTML = monthTotalPieces.toLocaleString('ja-JP') + ' <span class="unit">件</span>';
     document.getElementById('s-year-qty').innerHTML = yearTotalPieces.toLocaleString('ja-JP') + ' <span class="unit">件</span>';
