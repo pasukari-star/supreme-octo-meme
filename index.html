@@ -304,34 +304,37 @@
     .calendar-row.selected .calendar-cell:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
     .calendar-row.selected .calendar-cell:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
-    /* ===== Liquid Blob カスタムカーソル（PC画面専用 / html.pc-cursor-active 時のみ有効） ===== */
+    /* ===== Crystal Arrow カスタムカーソル（PC画面専用 / html.pc-cursor-active 時のみ有効） ===== */
     html.pc-cursor-active, html.pc-cursor-active * { cursor: none !important; }
-    #pc-cursor-container { display: none; pointer-events: none; position: fixed; inset: 0; z-index: 999999; overflow: hidden; }
-    html.pc-cursor-active #pc-cursor-container { display: block; }
-    .pc-cursor-el { position: absolute; top: 0; left: 0; pointer-events: none; will-change: transform, width, height, opacity;
-      transform: translate3d(-50%, -50%, 0);
-      transition: width .12s cubic-bezier(.2,.8,.2,1), height .12s cubic-bezier(.2,.8,.2,1), border-radius .12s ease, background-color .12s ease, box-shadow .12s ease, opacity .12s ease; }
-    #pc-cursor-blob-inner { position: absolute; inset: 0; border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
-      background: linear-gradient(135deg,#ff007f,#7000ff,#00f3ff); opacity: .9; box-shadow: 0 0 20px rgba(255,0,127,.7);
-      animation: pcBlobMorph 3s infinite linear; }
-    @keyframes pcBlobMorph {
-      0%, 100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; transform: rotate(0deg); }
-      33% { border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%; transform: rotate(120deg); }
-      66% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; transform: rotate(240deg); }
-    }
-    .pc-click-ripple { position: fixed; top: 0; left: 0; pointer-events: none; border-radius: 50%; border: 2px solid currentColor;
-      transform: translate3d(-50%, -50%, 0); animation: pcRipple .4s cubic-bezier(.1,.8,.3,1) forwards; z-index: 999998; }
-    @keyframes pcRipple { 0% { width:0; height:0; opacity:1; border-width:2px; } 100% { width:40px; height:40px; opacity:0; border-width:1px; } }
-    @keyframes pcSpin { 100% { transform: rotate(360deg); } }
-    .pc-cursor-spinner-icon { display: inline-block; animation: pcSpin .8s linear infinite; }
+    #pc-cursor-layer { display: none; pointer-events: none; position: fixed; inset: 0; z-index: 999999; overflow: visible; }
+    html.pc-cursor-active #pc-cursor-layer { display: block; }
+    #pc-cursor-arrow { position: absolute; top: 0; left: 0; pointer-events: none; transform: translate3d(-6px,-4px,0);
+      transition: filter .15s ease; filter: drop-shadow(0 2px 5px rgba(0,0,0,.55)); }
+    #pc-cursor-halo { position: absolute; top: 0; left: 0; width: 0; height: 0; border-radius: 50%; pointer-events: none;
+      transform: translate3d(-50%,-50%,0); opacity: 0;
+      transition: width .18s cubic-bezier(.2,.9,.3,1), height .18s cubic-bezier(.2,.9,.3,1), opacity .18s ease, box-shadow .18s ease, background .18s ease; }
+    #pc-cursor-ibeam { position: absolute; top: 0; left: 0; width: 2px; height: 20px; border-radius: 2px; pointer-events: none;
+      transform: translate3d(-50%,-50%,0); opacity: 0; background: linear-gradient(180deg,#ff2e88,#22e0ff); box-shadow: 0 0 8px rgba(255,46,136,.7); }
+    #pc-cursor-icon { position: absolute; top: 0; left: 0; pointer-events: none; transform: translate3d(-50%,-50%,0);
+      display: none; align-items: center; justify-content: center; font-size: 15px; }
+    .pc-cursor-echo { position: absolute; top: 0; left: 0; border-radius: 50%; pointer-events: none; transform: translate3d(-50%,-50%,0);
+      filter: blur(1px); mix-blend-mode: screen; }
+    .pc-click-ripple { position: fixed; top: 0; left: 0; pointer-events: none; border-radius: 50%; transform: translate3d(-50%,-50%,0); z-index: 999998; }
+    @keyframes pcSpin { 100% { transform: translate3d(-50%,-50%,0) rotate(360deg); } }
+    .pc-cursor-spin { animation: pcSpin .8s linear infinite; }
   </style>
 </head>
 <body>
 
-<div id="pc-cursor-container">
-  <div id="pc-cursor-dot" class="pc-cursor-el"></div>
-  <div id="pc-cursor-follower" class="pc-cursor-el"><div id="pc-cursor-blob-inner"></div></div>
-  <div id="pc-cursor-extra" class="pc-cursor-el" style="display:flex; align-items:center; justify-content:center;"><i id="pc-cursor-extra-icon"></i></div>
+<div id="pc-cursor-layer">
+  <div id="pc-cursor-echoes"></div>
+  <div id="pc-cursor-halo"></div>
+  <div id="pc-cursor-ibeam"></div>
+  <i id="pc-cursor-icon"></i>
+  <svg id="pc-cursor-arrow" width="30" height="34" viewBox="0 0 30 34">
+    <path d="M2 2 L21 12 L12 15 L17 26 L12 28 L7.5 17 L2 22 Z" fill="rgba(30,34,64,.55)" stroke="#e8ecff" stroke-width="1.4" stroke-linejoin="round" opacity="0.96"></path>
+    <path d="M2 2 L21 12 L12 15 Z" fill="rgba(255,255,255,.35)"></path>
+  </svg>
 </div>
 
 <datalist id="registered-products"></datalist>
@@ -3086,161 +3089,202 @@
 </script>
 
 <script>
-/* ===== Liquid Blob カスタムカーソル（PC画面専用・既存機能には一切影響なし） ===== */
+/* ===== Crystal Arrow カスタムカーソル（PC画面専用・既存機能には一切影響なし） ===== */
 (function () {
-  var dot, follower, extra, extraIcon;
-  var mouseX = -100, mouseY = -100, prevX = -100, prevY = -100;
-  var isDown = false, active = false, rafId = null;
+  var layer, arrowSvg, halo, ibeam, icon, echoesRoot;
+  var mx = -100, my = -100, down = false, active = false, state = 'default';
+  var echoes = [];
   var mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  var ECHO_CFG = [
+    { size: 16, ease: 0.32, opacity: 0.45, color: 'radial-gradient(circle, rgba(34,224,255,.9), rgba(34,224,255,0) 70%)' },
+    { size: 22, ease: 0.20, opacity: 0.32, color: 'radial-gradient(circle, rgba(139,92,246,.85), rgba(139,92,246,0) 70%)' },
+    { size: 28, ease: 0.12, opacity: 0.22, color: 'radial-gradient(circle, rgba(255,46,136,.8), rgba(255,46,136,0) 70%)' }
+  ];
 
   function shouldEnable() {
     return mq.matches && window.innerWidth >= 900;
   }
 
   function cacheEls() {
-    dot = document.getElementById('pc-cursor-dot');
-    follower = document.getElementById('pc-cursor-follower');
-    extra = document.getElementById('pc-cursor-extra');
-    extraIcon = document.getElementById('pc-cursor-extra-icon');
-  }
-
-  function setTransform(x, y) {
-    var t = 'translate3d(' + x + 'px,' + y + 'px,0) translate(-50%,-50%)';
-    dot.style.transform = t;
-    follower.style.transform = t;
-    extra.style.transform = t;
-  }
-
-  function spawnDroplet(x, y) {
-    if (Math.random() > 0.4) return;
-    var d = document.createElement('div');
-    d.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;pointer-events:none;z-index:999995;border-radius:50%;background:linear-gradient(135deg,#ff007f,#00f3ff);box-shadow:0 0 8px #ff007f;';
-    var size = Math.floor(Math.random() * 5 + 4);
-    d.style.width = size + 'px';
-    d.style.height = size + 'px';
-    var ox = (Math.random() - 0.5) * 20, oy = (Math.random() - 0.5) * 20;
-    document.body.appendChild(d);
-    var anim = d.animate([
-      { transform: 'translate3d(-50%,-50%,0) scale(1)', opacity: 0.9 },
-      { transform: 'translate3d(calc(-50% + ' + ox + 'px),calc(-50% + ' + oy + 'px),0) scale(0)', opacity: 0 }
-    ], { duration: 400 + Math.random() * 200, easing: 'ease-out' });
-    anim.onfinish = function () { d.remove(); };
-  }
-
-  function createRipple(x, y) {
-    var r = document.createElement('div');
-    r.className = 'pc-click-ripple';
-    r.style.left = x + 'px';
-    r.style.top = y + 'px';
-    r.style.color = '#7000ff';
-    document.body.appendChild(r);
-    setTimeout(function () { r.remove(); }, 400);
-  }
-
-  function applyState(state) {
-    dot.style.display = 'block';
-    follower.style.display = 'block';
-    extra.style.display = 'block';
-    extraIcon.className = '';
-    follower.innerHTML = '<div id="pc-cursor-blob-inner"></div>';
-    dot.style.background = '#67e8f9';
-    dot.style.borderRadius = '50%';
-    dot.style.boxShadow = '0 0 8px #67e8f9';
-    follower.style.background = 'transparent';
-    follower.style.borderRadius = '0';
-    follower.style.boxShadow = 'none';
-
-    var dotSize = 6, followerSize = 16, followerHeight = null;
-
-    if (state === 'pointer') {
-      followerSize = 22;
-    } else if (state === 'text') {
-      dot.style.display = 'none';
-      follower.innerHTML = '';
-      follower.style.background = '#ff007f';
-      follower.style.boxShadow = '0 0 10px #ff007f';
-      follower.style.borderRadius = '2px';
-      followerSize = 2;
-      followerHeight = 18;
-    } else if (state === 'grab' || state === 'grabbing') {
-      followerSize = state === 'grabbing' ? 12 : 20;
-    } else if (state === 'disabled') {
-      dot.style.display = 'none';
-      follower.style.display = 'none';
-      extraIcon.className = 'fa-solid fa-ban';
-      extraIcon.style.cssText = 'color:#f43f5e;font-size:15px;filter:drop-shadow(0 0 6px rgba(244,63,94,.8));';
-    } else if (state === 'loading') {
-      dot.style.display = 'none';
-      follower.style.display = 'none';
-      extraIcon.className = 'fa-solid fa-spinner pc-cursor-spinner-icon';
-      extraIcon.style.cssText = 'color:#22d3ee;font-size:15px;';
-    }
-
-    if (dot.style.display !== 'none') {
-      dot.style.width = dotSize + 'px';
-      dot.style.height = dotSize + 'px';
-    }
-    if (follower.style.display !== 'none') {
-      follower.style.width = followerSize + 'px';
-      follower.style.height = (followerHeight !== null ? followerHeight : followerSize) + 'px';
+    layer = document.getElementById('pc-cursor-layer');
+    arrowSvg = document.getElementById('pc-cursor-arrow');
+    halo = document.getElementById('pc-cursor-halo');
+    ibeam = document.getElementById('pc-cursor-ibeam');
+    icon = document.getElementById('pc-cursor-icon');
+    echoesRoot = document.getElementById('pc-cursor-echoes');
+    if (echoes.length === 0) {
+      echoes = ECHO_CFG.map(function (cfg) {
+        var el = document.createElement('div');
+        el.className = 'pc-cursor-echo';
+        el.style.width = cfg.size + 'px';
+        el.style.height = cfg.size + 'px';
+        el.style.opacity = cfg.opacity;
+        el.style.background = cfg.color;
+        echoesRoot.appendChild(el);
+        return { el: el, x: -100, y: -100, ease: cfg.ease };
+      });
     }
   }
 
-  var currentState = 'default';
-  var lastHovered = null;
+  function tickEchoes() {
+    if (!active) return;
+    for (var i = 0; i < echoes.length; i++) {
+      var e = echoes[i];
+      e.x += (mx - e.x) * e.ease;
+      e.y += (my - e.y) * e.ease;
+      e.el.style.transform = 'translate3d(' + e.x + 'px,' + e.y + 'px,0) translate(-50%,-50%)';
+    }
+    requestAnimationFrame(tickEchoes);
+  }
+
+  function setPos(x, y) {
+    arrowSvg.style.left = x + 'px';
+    arrowSvg.style.top = y + 'px';
+    halo.style.left = x + 'px';
+    halo.style.top = y + 'px';
+    ibeam.style.left = x + 'px';
+    ibeam.style.top = y + 'px';
+    icon.style.left = x + 'px';
+    icon.style.top = y + 'px';
+  }
+
+  function applyState() {
+    var hovering = state === 'pointer' || state === 'grab' || state === 'grabbing';
+    var isText = state === 'text';
+    var isDisabled = state === 'disabled';
+    var isLoading = state === 'loading';
+    var pressing = state === 'grabbing' || down;
+
+    arrowSvg.style.display = (isText || isDisabled || isLoading) ? 'none' : 'block';
+    ibeam.style.opacity = isText ? '1' : '0';
+    icon.style.display = (isDisabled || isLoading) ? 'flex' : 'none';
+    icon.className = '';
+
+    if (isDisabled) {
+      icon.className = 'fa-solid fa-ban';
+      icon.style.cssText = 'display:flex;color:#f43f5e;font-size:15px;filter:drop-shadow(0 0 6px rgba(244,63,94,.8));';
+    } else if (isLoading) {
+      icon.className = 'fa-solid fa-spinner pc-cursor-spin';
+      icon.style.cssText = 'display:flex;color:#22d3ee;font-size:15px;';
+    }
+
+    if (hovering) {
+      halo.style.width = '38px'; halo.style.height = '38px';
+      halo.style.opacity = '1';
+      halo.style.background = 'radial-gradient(circle, rgba(34,224,255,.16), rgba(139,92,246,.05) 60%, transparent 70%)';
+      halo.style.boxShadow = '0 0 0 1.5px rgba(34,224,255,.55) inset';
+    } else if (isDisabled) {
+      halo.style.width = '30px'; halo.style.height = '30px'; halo.style.opacity = '1';
+      halo.style.background = 'transparent';
+      halo.style.boxShadow = '0 0 0 2px rgba(244,63,94,.7) inset';
+    } else {
+      halo.style.width = '0'; halo.style.height = '0'; halo.style.opacity = '0';
+    }
+
+    var scale = pressing ? 0.88 : (hovering ? 1.1 : 1);
+    var glow = hovering ? '#ff2e88' : '#22e0ff';
+    arrowSvg.style.filter = 'drop-shadow(0 0 ' + (hovering ? 10 : 5) + 'px ' + glow + ') drop-shadow(0 2px 5px rgba(0,0,0,.55))';
+    arrowSvg.style.transform = 'translate3d(-6px,-4px,0) scale(' + scale + ')';
+    arrowSvg.style.transformOrigin = '2px 2px';
+  }
 
   function computeState(el) {
     if (!el) return 'default';
-    var target = el.closest('a, button, input, textarea, select, [data-cursor], .cursor-grab, .cursor-grabbing, [disabled]');
-    if (!target) return 'default';
-    if (target.hasAttribute('disabled')) return 'disabled';
-    if (target.getAttribute('data-cursor') === 'loading') return 'loading';
-    var tag = target.tagName;
+    var t = el.closest('a, button, input, textarea, select, [data-cursor], .cursor-grab, .cursor-grabbing, [disabled]');
+    if (!t) return 'default';
+    if (t.hasAttribute('disabled')) return 'disabled';
+    if (t.getAttribute('data-cursor') === 'loading') return 'loading';
+    var tag = t.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA') {
-      var type = (target.getAttribute('type') || '').toLowerCase();
+      var type = (t.getAttribute('type') || '').toLowerCase();
       if (['button', 'submit', 'checkbox', 'radio', 'range', 'file', 'color'].indexOf(type) !== -1) return 'pointer';
       return 'text';
     }
     if (tag === 'SELECT') return 'pointer';
-    if (target.classList.contains('cursor-grab') || target.classList.contains('cursor-grabbing')) return isDown ? 'grabbing' : 'grab';
+    if (t.classList.contains('cursor-grab') || t.classList.contains('cursor-grabbing')) return down ? 'grabbing' : 'grab';
     if (tag === 'BUTTON' || tag === 'A') return 'pointer';
     return 'default';
   }
 
-  function updateState() {
-    var hovered = document.elementFromPoint(mouseX, mouseY);
-    var newState = computeState(hovered);
-    if (newState !== currentState) {
-      currentState = newState;
-      applyState(currentState);
+  function updateStateAtCursor() {
+    var el = document.elementFromPoint(mx, my);
+    var next = computeState(el);
+    if (next !== state) { state = next; applyState(); }
+  }
+
+  function spawnRipple(x, y) {
+    var colors = ['#ff2e88', '#8b5cf6', '#22e0ff'];
+    for (var i = 0; i < 3; i++) {
+      (function (i) {
+        var r = document.createElement('div');
+        r.className = 'pc-click-ripple';
+        var c = colors[i];
+        var delay = i * 70;
+        var size = 30 + i * 14;
+        r.style.left = x + 'px'; r.style.top = y + 'px';
+        r.style.width = '6px'; r.style.height = '6px';
+        r.style.border = '2px solid ' + c;
+        r.style.boxShadow = '0 0 10px ' + c;
+        r.style.opacity = '0.95';
+        document.body.appendChild(r);
+        setTimeout(function () {
+          r.style.transition = 'width .5s cubic-bezier(.15,.8,.25,1), height .5s cubic-bezier(.15,.8,.25,1), opacity .5s ease, border-width .5s ease';
+          r.style.width = size + 'px'; r.style.height = size + 'px';
+          r.style.opacity = '0';
+          r.style.borderWidth = '1px';
+        }, delay);
+        setTimeout(function () { r.remove(); }, 650 + delay);
+      })(i);
+    }
+    var flash = document.createElement('div');
+    flash.className = 'pc-click-ripple';
+    flash.style.left = x + 'px'; flash.style.top = y + 'px';
+    flash.style.width = '4px'; flash.style.height = '4px';
+    flash.style.background = 'radial-gradient(circle, #fff, #22e0ff 55%, transparent 75%)';
+    document.body.appendChild(flash);
+    requestAnimationFrame(function () {
+      flash.style.transition = 'width .28s ease-out, height .28s ease-out, opacity .28s ease-out';
+      flash.style.width = '16px'; flash.style.height = '16px'; flash.style.opacity = '0';
+    });
+    setTimeout(function () { flash.remove(); }, 320);
+    for (var p = 0; p < 4; p++) {
+      var d = document.createElement('div');
+      var ang = Math.random() * Math.PI * 2;
+      var dist = 18 + Math.random() * 16;
+      d.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;width:5px;height:5px;border-radius:50%;pointer-events:none;z-index:999997;background:linear-gradient(135deg,#ff2e88,#22e0ff);';
+      document.body.appendChild(d);
+      (function (d, ang, dist) {
+        var anim = d.animate([
+          { transform: 'translate3d(-50%,-50%,0) translate(0,0)', opacity: 1 },
+          { transform: 'translate3d(-50%,-50%,0) translate(' + Math.cos(ang) * dist + 'px,' + Math.sin(ang) * dist + 'px)', opacity: 0 }
+        ], { duration: 420, easing: 'ease-out' });
+        anim.onfinish = function () { d.remove(); };
+      })(d, ang, dist);
     }
   }
 
   function onMove(e) {
-    var x, y;
-    if (e.touches && e.touches[0]) { x = e.touches[0].clientX; y = e.touches[0].clientY; }
-    else { x = e.clientX; y = e.clientY; }
-    mouseX = x; mouseY = y;
-    setTransform(x, y);
-    var dist = Math.hypot(x - prevX, y - prevY);
-    if (dist > 8) { spawnDroplet(x, y); prevX = x; prevY = y; }
+    mx = e.clientX; my = e.clientY;
+    setPos(mx, my);
+    updateStateAtCursor();
   }
-
   function onDown(e) {
-    isDown = true;
-    createRipple(e.clientX, e.clientY);
-    updateState();
+    down = true;
+    spawnRipple(e.clientX, e.clientY);
+    updateStateAtCursor();
   }
-
-  function onUp() { isDown = false; updateState(); }
-  function onOver() { updateState(); }
+  function onUp() { down = false; updateStateAtCursor(); }
+  function onOver() { updateStateAtCursor(); }
 
   function enable() {
     if (active) return;
     active = true;
     cacheEls();
     document.documentElement.classList.add('pc-cursor-active');
-    applyState('default');
+    state = 'default';
+    applyState();
+    requestAnimationFrame(tickEchoes);
     window.addEventListener('mousemove', onMove, { passive: true });
     window.addEventListener('mousedown', onDown);
     window.addEventListener('mouseup', onUp);
