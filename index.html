@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <title>SIRIUS 粉体塗装 条件・実績管理 SYSTEM</title>
+  <script>if(localStorage.getItem('liteMode')==='1')document.documentElement.classList.add('lite-mode');</script>
 
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -322,6 +323,37 @@
     .pc-click-ripple { position: fixed; top: 0; left: 0; pointer-events: none; border-radius: 50%; transform: translate3d(-50%,-50%,0); z-index: 999998; }
     @keyframes pcSpin { 100% { transform: translate3d(-50%,-50%,0) rotate(360deg); } }
     .pc-cursor-spin { animation: pcSpin .8s linear infinite; }
+
+    /* ===== PCボタンホバーエフェクト（マウス操作時のみ） ===== */
+    @media (hover: hover) and (pointer: fine) {
+      button:not(:disabled), [class*="btn"]:not(:disabled) { transition: transform .16s cubic-bezier(.2,.9,.3,1), box-shadow .16s ease, filter .16s ease; }
+      button:not(:disabled):hover, [class*="btn"]:not(:disabled):hover {
+        transform: translateY(-2px) scale(1.035);
+        filter: brightness(1.06);
+        box-shadow: 0 0 0 2px rgba(2,132,199,.35), 0 10px 22px rgba(2,132,199,.22);
+        z-index: 2;
+      }
+      button:not(:disabled):active, [class*="btn"]:not(:disabled):active { transform: translateY(0) scale(0.97); }
+    }
+
+    /* ===== 軽量モード（低スペックPC向け：ぼかし・アニメ・カスタムカーソルを停止） ===== */
+    .btn-lite { display: none; }
+    @media (min-width: 992px) {
+      .btn-lite { display: inline-flex; background: rgba(5,150,105,0.06); color: var(--accent-success); border: 1px solid rgba(5,150,105,0.25); }
+      .btn-lite:hover { background: rgba(5,150,105,0.14); }
+      .btn-lite.active { background: linear-gradient(135deg,#059669,#10b981); color:#fff; border-color: transparent; }
+    }
+    html.lite-mode .login-card, html.lite-mode .form-section, html.lite-mode .list-section,
+    html.lite-mode .cause-analysis-card, html.lite-mode .card, html.lite-mode .modal-overlay,
+    html.lite-mode .modal-content { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    html.lite-mode body { background: var(--bg-main); background-attachment: scroll; }
+    html.lite-mode .next-guide-banner { animation: none !important; }
+    html.lite-mode *, html.lite-mode { cursor: auto !important; }
+    html.lite-mode #pc-cursor-layer { display: none !important; }
+    html.lite-mode button:not(:disabled):hover, html.lite-mode [class*="btn"]:not(:disabled):hover {
+      transform: none !important; filter: none !important; box-shadow: none !important;
+    }
+    html.lite-mode .card-item:hover, html.lite-mode .btn-submit:hover { transform: none !important; }
   </style>
 </head>
 <body>
@@ -366,6 +398,7 @@
         <button type="button" class="btn-settings" onclick="openCauseSettings()">⚙️ 原因内容設定</button>
         <button type="button" class="btn-settings" onclick="openPasswordSettings()">🔑 パスワード設定</button>
         <button type="button" class="btn-settings btn-admin-setting" onclick="openAdminPasswordSettings()">👑 管理者パス設定</button>
+        <button type="button" class="btn-settings btn-lite" id="btn-lite-toggle" onclick="toggleLiteMode()">🪶 軽量モード</button>
       </div>
     </div>
 
@@ -1189,6 +1222,20 @@
     productsList.forEach(p => dl.appendChild(new Option(p, p)));
     renderProductModalList(); 
   }
+
+  function updateLiteBtn(on) {
+    const b = document.getElementById('btn-lite-toggle');
+    if (!b) return;
+    b.classList.toggle('active', on);
+    b.innerHTML = on ? '🪶 軽量モード: ON' : '🪶 軽量モード';
+  }
+  function toggleLiteMode() {
+    const on = document.documentElement.classList.toggle('lite-mode');
+    try { localStorage.setItem('liteMode', on ? '1' : '0'); } catch (e) {}
+    updateLiteBtn(on);
+    if (window.__pcCursorRefresh) window.__pcCursorRefresh();
+  }
+  document.addEventListener('DOMContentLoaded', () => updateLiteBtn(document.documentElement.classList.contains('lite-mode')));
 
   function checkPassword() {
     try {
@@ -3103,7 +3150,7 @@
   ];
 
   function shouldEnable() {
-    return mq.matches && window.innerWidth >= 900;
+    return mq.matches && window.innerWidth >= 900 && !document.documentElement.classList.contains('lite-mode');
   }
 
   function cacheEls() {
@@ -3302,6 +3349,7 @@
   }
 
   function refresh() { if (shouldEnable()) enable(); else disable(); }
+  window.__pcCursorRefresh = refresh;
 
   window.addEventListener('resize', refresh, { passive: true });
   if (mq.addEventListener) mq.addEventListener('change', refresh);
