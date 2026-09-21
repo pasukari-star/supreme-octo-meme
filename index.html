@@ -372,6 +372,13 @@ input,select,button,textarea{max-width:100%}
   .prod-grid{grid-template-columns:minmax(0,1fr)}
   .qty-control{grid-template-columns:repeat(3,minmax(0,1fr)) 58px repeat(3,minmax(0,1fr));min-width:0}
 }
+
+/* 週報・月報・年報 出力ビューへのリンクボタン */
+.btn-report{background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff!important;border:none;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;box-shadow:0 3px 10px rgba(79,70,229,.28);transition:.18s ease}
+.btn-report:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 5px 14px rgba(79,70,229,.36)}
+.btn-report:active{transform:translateY(0)}
+.btn-report .ext{font-size:10px;opacity:.85}
+@media(max-width:767px){.btn-report{flex:1 1 auto;min-height:40px;padding:9px 12px;font-size:12px}}
 </style>
 </head>
 <body>
@@ -415,6 +422,7 @@ input,select,button,textarea{max-width:100%}
         </div>
       </div>
       <div class="header-btn-group">
+        <a class="btn-report" href="https://pasukari-star.github.io/pasukari_Runner/" target="_blank" rel="noopener noreferrer" title="週報・月報・年報の出力ビュー（別システム）を新しいタブで開きます">📑 週報・月報・年報 出力ビュー <i class="fa-solid fa-arrow-up-right-from-square ext"></i></a>
         <button type="button" class="btn-settings pc-only" id="cur-btn" onclick="toggleCursor()"></button>
         <div id="sw">
           <button type="button" class="btn-settings" onclick="$('menu').classList.toggle('open')">⚙️ 設定 <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
