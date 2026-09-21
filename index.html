@@ -379,6 +379,44 @@ input,select,button,textarea{max-width:100%}
 .btn-report:active{transform:translateY(0)}
 .btn-report .ext{font-size:10px;opacity:.85}
 @media(max-width:767px){.btn-report{flex:1 1 auto;min-height:40px;padding:9px 12px;font-size:12px}}
+
+/* ヘッダー操作ボタンの整列（スマホ・タブレット・PC共通） */
+.header-btn-group{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;width:100%}
+.header-btn-group>.btn-report,.header-btn-group>.btn-settings,#sw>.btn-settings{height:40px;min-height:40px;margin:0;padding:0 16px;font-size:12px;font-weight:700;line-height:1;white-space:nowrap;border-radius:var(--radius-sm)}
+.btn-report{border:1px solid transparent}
+#sw{position:relative;display:flex;align-items:center}
+#sw>.btn-settings{flex:1}
+#cur-btn{min-width:136px}
+#cur-btn[data-on="1"]{background:rgba(5,150,105,.08);color:#047857;border-color:rgba(5,150,105,.35)}
+#cur-btn[data-on="0"]{background:#f1f5f9;color:var(--text-muted);border-color:var(--border-color)}
+#cur-btn:hover{filter:brightness(.97)}
+#menu{top:calc(100% + 8px);min-width:220px}
+#menu .btn-settings{min-height:38px;font-size:12px}
+@media(min-width:992px) and (max-width:1199px){
+  .header-bar{flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-bottom:16px}
+  .header-title-box{align-items:center;width:100%}
+  .app-title{text-align:center;font-size:20px}
+  .header-info-row{justify-content:center}
+  .header-btn-group{width:100%;justify-content:center;flex-wrap:wrap}
+  #menu{right:50%;transform:translateX(50%)}
+}
+@media(min-width:1200px){
+  .header-bar{flex-direction:row;align-items:center;justify-content:space-between;text-align:left;gap:24px}
+  .header-title-box{align-items:flex-start;width:auto;flex:1 1 auto;min-width:0}
+  .header-info-row{justify-content:flex-start}
+  .header-btn-group{width:auto;flex:0 0 auto;flex-wrap:nowrap;justify-content:flex-end}
+  #menu{left:auto;right:0;transform:none}
+}
+@media(max-width:767px){
+  .header-btn-group{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .header-btn-group>.btn-report{width:100%;padding:0 10px}
+  #sw>.btn-settings{padding:0 14px}
+  #menu{left:auto;right:0;transform:none;min-width:min(240px,calc(100vw - 32px))}
+}
+@media(max-width:439px){
+  .header-btn-group{grid-template-columns:minmax(0,1fr)}
+  #menu{left:0;right:0;min-width:0}
+}
 </style>
 </head>
 <body>
@@ -1400,7 +1438,7 @@ const cur=(()=>{
     ev.forEach(([n,f])=>v?addEventListener(n,f,{passive:true}):removeEventListener(n,f));
     if(!v&&raf){cancelAnimationFrame(raf);raf=0}
   },
-  ref=()=>{set(mq.matches&&!off?1:0);const b=$('cur-btn');if(b)b.textContent='🖱 カーソル: '+(off?'OFF':'ON')};
+  ref=()=>{set(mq.matches&&!off?1:0);const b=$('cur-btn');if(b){b.textContent='🖱 カーソル: '+(off?'OFF':'ON');b.dataset.on=off?'0':'1'}};
   mq.addEventListener?mq.addEventListener('change',ref):mq.addListener(ref);
   ref();
   return{toggle(){off=!off;try{localStorage.setItem('pcCursor',off?'off':'on')}catch(e){}ref()}}
