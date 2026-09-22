@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#0284c7">
 <title>SIRIUS 粉体塗装 条件・実績管理 SYSTEM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
@@ -423,6 +424,54 @@ input,select,button,textarea{max-width:100%}
   .btn-link-group{grid-template-columns:1fr}
   #menu{left:0;right:0;min-width:0}
 }
+
+/* ---------- 総合改善パッチ：バグ修正・操作性・視認性・レスポンシブ強化 ---------- */
+html{scroll-behavior:smooth}
+*{-webkit-tap-highlight-color:transparent}
+/* iOS Safariでフォーム操作時に自動ズームが発生しないよう、スマホでは全ての入力欄を16px以上に統一 */
+@media(max-width:767px){
+  input,select,textarea{font-size:16px}
+  .qty-control input[type=number],#t-rows .qty-control input[type=number]{font-size:16px}
+  .prod-grid>input[type=text],#t-rows .prod-grid>input[type=text]{font-size:16px}
+  .prod-grid input{font-size:16px}
+  .preset-name-input{font-size:16px!important}
+  .preset-grid input{font-size:15px}
+  .sp-row select,.sp-row input{font-size:15px}
+  .filter-box input,input[type=date].filter-date-input{font-size:16px}
+  .login-input{font-size:22px}
+}
+/* キーボード操作時のフォーカスを分かりやすく表示（アクセシビリティ向上） */
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,.card-item .btn-edit:focus-visible,.card-item .btn-del:focus-visible{outline:2.5px solid var(--accent-cyan);outline-offset:2px}
+/* タップ時の押し込み感（操作フィードバック向上） */
+@media(hover:none){
+  .btn-submit:active,.btn-login:active,.main-tab-btn:active,.btn-settings:active,.btn-report:active,.btn-page:not(:disabled):active,.btn-tab:active,.qty-step:active,.btn-mini:not(:disabled):active,.btn-edit:active,.btn-del:active,.preset-apply-btn:active{transform:scale(.96);transition:transform .08s}
+}
+/* 通信状態バッジ（実際のFirebase接続状況・オンライン状況を反映） */
+.sync-status.sync-warn{color:var(--accent-warning);background:rgba(217,119,6,.08);border-color:rgba(217,119,6,.25)}
+.sync-status.sync-err{color:var(--accent-danger);background:rgba(225,29,72,.08);border-color:rgba(225,29,72,.25)}
+/* モーダルのフェードイン（唐突感を軽減） */
+.modal-overlay[style*="flex"]{animation:modalFade .15s ease}
+.modal-overlay[style*="flex"] .modal-content{animation:modalPop .18s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+@keyframes modalPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+/* カード一覧・ボタン類はタッチ端末で「押しっぱなし」表示にならないようホバー効果はマウス環境のみに限定 */
+@media(hover:hover) and (pointer:fine){
+  .card-item:hover{box-shadow:0 4px 14px rgba(0,0,0,.05)}
+}
+@media(hover:none){
+  .card-item:hover{box-shadow:0 2px 6px rgba(0,0,0,.02)}
+}
+/* iPhone等のノッチ・ホームバー領域にコンテンツが被らないよう余白を確保 */
+body{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right));padding-bottom:max(18px,env(safe-area-inset-bottom))}
+@media(max-width:767px){body{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}}
+/* 送信中の視認性向上：ボタン内にスピナー表示 */
+.btn-submit:disabled,.btn-login:disabled{position:relative;color:transparent!important}
+.btn-submit:disabled::after,.btn-login:disabled::after{content:'';position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:btnspin .7s linear infinite}
+@keyframes btnspin{to{transform:rotate(360deg)}}
+/* 空データ表示のアイコン強調 */
+.empty-msg,.empty-sm{opacity:.85}
+/* 数値入力のマウスホイールによる誤操作防止（スクロール中に値が変わるのを防止） */
+input[type=number]{-moz-appearance:textfield}
 </style>
 </head>
 <body>
@@ -461,7 +510,7 @@ input,select,button,textarea{max-width:100%}
       <div class="header-title-box">
         <div class="app-title">SIRIUS 粉体塗装 条件・実績管理 SYSTEM</div>
         <div class="header-info-row">
-          <div class="sync-status">🟢 リアルタイム共有中</div>
+          <div class="sync-status" id="sync-status-badge">🟢 リアルタイム共有中</div>
           <div class="realtime-clock" id="realtime-clock-display"></div>
         </div>
       </div>
@@ -1455,6 +1504,37 @@ const cur=(()=>{
   return{toggle(){off=!off;try{localStorage.setItem('pcCursor',off?'off':'on')}catch(e){}ref()}}
 })();
 const toggleCursor=()=>cur.toggle();
+
+/* ---------- 総合改善パッチ：接続状態表示・モーダル操作性・誤操作防止 ---------- */
+(function(){
+  /* 通信状態バッジを実際の状態（Firebase未接続／オフライン／正常）に応じて更新 */
+  function syncBadge(){
+    const b=$('sync-status-badge');if(!b)return;
+    if(!db){b.className='sync-status sync-err';b.textContent='⚠️ データベース未接続';return}
+    if(!navigator.onLine){b.className='sync-status sync-warn';b.textContent='🟡 オフライン（復帰後に自動同期）';return}
+    b.className='sync-status';b.textContent='🟢 リアルタイム共有中'
+  }
+  addEventListener('online',syncBadge);addEventListener('offline',syncBadge);
+  document.addEventListener('DOMContentLoaded',syncBadge);
+  setTimeout(syncBadge,300);setTimeout(syncBadge,2000);
+
+  /* モーダル：背景クリック／Escapeキーで閉じられるように（既存の閉じるボタンの動作はそのまま） */
+  document.querySelectorAll('.modal-overlay').forEach(ov=>{
+    ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.style.display='none'})
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      document.querySelectorAll('.modal-overlay').forEach(ov=>{if(ov.style.display==='flex')ov.style.display='none'});
+      $('menu')&&$('menu').classList.remove('open')
+    }
+  });
+
+  /* 数値入力欄にフォーカス中、ページスクロール用のマウスホイールで値が誤って変化しないようにする */
+  document.addEventListener('wheel',e=>{
+    const t=document.activeElement;
+    if(t&&t.tagName==='INPUT'&&t.type==='number')t.blur()
+  },{passive:true});
+})();
 </script>
 </body>
 </html>
