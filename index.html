@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#0284c7">
 <title>SIRIUS 粉体塗装 条件・実績管理 SYSTEM</title>
@@ -727,7 +727,7 @@ input[type=number]{-moz-appearance:textfield}
               <div class="cause-tabs" data-t="tk" data-k="all,week,month,year" style="margin-bottom:8px;width:100%"></div>
               <div class="plbl" id="l-tk" style="width:100%;margin:0 0 8px"></div>
               <input type="text" id="tochaku-search-input" placeholder="🔍 検索 (ワーク品名/担当者)" style="flex:1;min-width:140px" oninput="dbn('t')">
-              <input type="date" id="tochaku-filter-date" class="filter-date-input" style="flex:1;min-width:120px" onchange="dbn('t')">
+              <input type="date" id="tochaku-filter-date" class="filter-date-input" style="flex:1;min-width:120px" required onchange="dbn('t')">
               <button type="button" class="btn-clear" onclick="clearT()">クリア</button>
             </div>
             <div id="tochaku-log-list"></div>
@@ -1300,7 +1300,8 @@ $('p-form').onsubmit=e=>{
   }
   const th=V('thickness'),old=editId&&fnd('r',editId),
   rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_details:ngD,memo:V('memo')||'-'};
-  busy(e.target,()=>save('r',editId,rec).then(()=>{resetP();$('date').value=date}).catch(er=>uiAlert('保存エラー: '+er.message)))
+  const wasEdit=!!editId;
+  busy(e.target,()=>save('r',editId,rec).then(()=>{resetP();$('date').value=date;window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました')}).catch(er=>uiAlert('保存エラー: '+er.message)))
 };
 function resetP(){
   for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value=''}sr('p',2);
@@ -1671,8 +1672,26 @@ const toggleCursor=()=>cur.toggle();
   /* 数値入力欄にフォーカス中、ページスクロール用のマウスホイールで値が誤って変化しないようにする */
   document.addEventListener('wheel',e=>{
     const t=document.activeElement;
-    if(t&&t.tagName==='INPUT'&&t.type==='number')t.blur()
+    if(t&&t.tagName==='INPUT'&&t.type==='number'&&e.target===t)t.blur()
   },{passive:true});
+
+  /* スマホで数値入力欄タップ時に小数点入力しやすいテンキー(decimal)を自動表示 */
+  document.querySelectorAll('input[type=number]').forEach(el=>{el.inputMode='decimal'});
+
+  /* 保存完了を邪魔にならないトースト通知でも案内（実績登録フォーム用） */
+  (function(){
+    const el=document.createElement('div');
+    el.id='app-toast';
+    el.style.cssText='position:fixed;left:50%;bottom:max(20px,calc(env(safe-area-inset-bottom,0px) + 16px));transform:translateX(-50%) translateY(16px);background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:12px 22px;border-radius:30px;font-size:12.5px;font-weight:700;box-shadow:0 12px 30px rgba(15,23,42,.3);z-index:200000;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);text-align:center';
+    document.body.appendChild(el);
+    let h;
+    window.appToast=function(msg){
+      el.textContent=msg;
+      el.style.opacity='1';el.style.transform='translateX(-50%) translateY(0)';
+      clearTimeout(h);
+      h=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(16px)'},2400)
+    };
+  })();
 })();
 </script>
 </body>
