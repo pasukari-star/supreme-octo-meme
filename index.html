@@ -486,6 +486,21 @@ body{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env
 .empty-msg,.empty-sm{opacity:.85}
 /* 数値入力のマウスホイールによる誤操作防止（スクロール中に値が変わるのを防止） */
 input[type=number]{-moz-appearance:textfield}
+
+/* ---------- NG品名別台数入力：最大10品種 ---------- */
+.ng-product-section{background:#fff;border:1px solid rgba(225,29,72,.16);border-radius:12px;padding:10px;margin-bottom:10px}
+.ng-product-help{font-size:10.5px;color:#9f1239;background:rgba(225,29,72,.055);border:1px solid rgba(225,29,72,.12);padding:7px 9px;border-radius:8px;margin-bottom:8px;line-height:1.5}
+.ng-product-rows{display:flex;flex-direction:column;gap:8px}
+.ng-product-row{display:grid;grid-template-columns:minmax(0,1fr) 92px auto;gap:8px;align-items:end;padding:9px;background:#fff8f8;border:1px solid rgba(225,29,72,.14);border-radius:10px}
+.ng-product-row .ng-p-no{font-size:10px;font-weight:800;color:var(--accent-danger);grid-column:1/-1}
+.ng-product-row label{font-size:9.5px;color:#64748b;margin-bottom:3px}
+.ng-product-row input{height:38px}
+.ng-product-row .ng-p-del{height:38px;white-space:nowrap}
+.ng-product-total{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:8px;font-size:11px;font-weight:800;color:var(--accent-danger)}
+.ng-product-total strong{font-size:16px}
+@media(min-width:992px){.ng-product-row{grid-template-columns:minmax(0,1.7fr) 100px auto;align-items:end}.ng-product-row .ng-p-no{grid-column:auto;align-self:center}.ng-product-row label{display:none}}
+@media(max-width:767px){.ng-product-row{grid-template-columns:minmax(0,1fr) 82px auto;gap:6px}.ng-product-row .ng-p-del{padding:0 8px;min-width:52px}.ng-product-help{font-size:11px}}
+
 </style>
 </head>
 <body>
@@ -612,7 +627,11 @@ input[type=number]{-moz-appearance:textfield}
                   <div id="ng-section" class="ng-input-container">
                     <div class="ng-title">🚨 <span class="text-danger">再塗装(NG)</span>の詳細を入力してください</div>
                     <div class="form-grid">
-                      <div><label><span class="text-danger">再塗装(NG)</span>発生品名</label><select id="ng_product_select"></select></div>
+                      <div class="full ng-product-section">
+  <div class="ph"><label><span class="text-danger">再塗装(NG)</span>発生品名・台数 <span class="req-tag">品名ごとのNG台数を明確に入力</span></label><span class="pctl"><b id="ng-product-count">1 / 10</b><button type="button" class="btn-mini" id="ng-product-remove" onclick="ngProductRow(-1)">－</button><button type="button" class="btn-mini" id="ng-product-add" onclick="ngProductRow(1)">＋ 品名を追加</button></span></div>
+  <div class="ng-product-help">例：品名1＝2台、品名2＝8台 → NG合計10台として保存・集計します。</div>
+  <div id="ng-product-rows" class="ng-product-rows"></div>
+</div>
                       
                       <div class="full ng-cause-section"><div class="ph"><label>不具合の原因・個数 <span class="req-tag">原因1は必須</span></label><span class="pctl"><b id="ng-cause-count">1 / 10</b><button type="button" class="btn-mini" id="ng-cause-remove" onclick="ngCauseRow(-1)">－</button><button type="button" class="btn-mini" id="ng-cause-add" onclick="ngCauseRow(1)">＋ 追加</button></span></div><div id="ng-cause-rows" class="ng-cause-rows"></div></div>
                     </div>
@@ -1135,7 +1154,8 @@ function sum(){
     if(r.status==='NG'&&d>=cg[0]&&d<=cg[1]){
       if(Array.isArray(r.ng_details)&&r.ng_details.length)r.ng_details.forEach(x=>{const k=x.cause||'その他';cc[k]=(cc[k]||0)+(Number(x.qty)||1)});
       else{const k=r.ng_cause||(r.ng_causes&&r.ng_causes[0])||'その他';cc[k]=(cc[k]||0)+(Number(r.ng_qty)||1)}
-      const k=r.ng_product||'不明';np[k]=(np[k]||0)+(Number(r.ng_qty)||1)
+      if(Array.isArray(r.ng_products)&&r.ng_products.length)r.ng_products.forEach(x=>{const k=x.name||'不明';np[k]=(np[k]||0)+(Number(x.qty)||0)});
+      else{const k=r.ng_product||'不明';np[k]=(np[k]||0)+(Number(r.ng_qty)||1)}
     }
     if(d>=pg_[0]&&d<=pg_[1]&&r._w>0&&r._q>0&&Array.isArray(r.items))r.items.forEach(i=>{const k=i.name||'不明';pp[k]=(pp[k]||0)+r._w*(Number(i.qty)||0)/r._q})
   }
@@ -1160,6 +1180,7 @@ row=(l,v,c)=>`<div class="card-data-row${c?' '+c:''}"><span class="card-label">$
 function pager(k,n){const p=Math.ceil(n/10)||1;pg[k]=Math.max(1,Math.min(pg[k],p));$('pi-'+k).textContent=`${pg[k]} / ${p} ページ (全 ${n} 件)`;$('pp-'+k).disabled=pg[k]===1;$('pn-'+k).disabled=pg[k]===p}
 function recHtml(r){
   const ng=r.status==='NG',
+  np=Array.isArray(r.ng_products)&&r.ng_products.length?r.ng_products:[{name:r.ng_product||'全品',qty:r.ng_qty||1}],
   cs=Array.isArray(r.ng_details)&&r.ng_details.length?r.ng_details.map(d=>`${esc(d.cause)}: ${esc(d.qty)}個`).join(' / '):`${esc(r.ng_cause||'その他')}: ${esc(r.ng_qty||1)}個`;
   return `<div class="card-item${ng?' ng-item':''}"><div class="card-header"><span>📅 ${esc(r.date)}</span><span class="${r.status==='OK'?'badge-ok':'badge-ng'}">${ng?'⚠️ <span class="text-danger">再塗装(NG)</span>':'OK'}</span></div>`+
   `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?r.items.map(chip).join(''):'-'}</div><div class="card-data-grid">`+
@@ -1169,7 +1190,7 @@ function recHtml(r){
   row('電気条件:',`${esc(r.voltage)}kV / ${esc(r.current)}μA`)+
   row('吐出/エアー:',`${esc(r.discharge||'-')} FlowRate / ${esc(r.air_flow||'-')}L/min${r.preset_no?` <span class="ptag">P${esc(r.preset_no)}${r.preset_name?'：'+esc(r.preset_name):''}</span>`:''}`)+
   row('焼付条件:',`${esc(r.bake_temp||200)}℃ / ${esc(r.bake_time||20)}分`,'full-row')+`</div>`+
-  (ng?`<div class="ng-memo-box">🚨 <strong class="text-danger">再塗装(NG)発生:</strong> ${esc(r.ng_product||'不明')}（合計 ${esc(r.ng_qty||1)}個）<br>📌 <strong>内訳:</strong> ${cs}</div>`:'')+
+  (ng?`<div class="ng-memo-box">🚨 <strong class="text-danger">再塗装(NG)発生:</strong> 合計 ${esc(np.reduce((s,x)=>s+(Number(x.qty)||0),0))}台<br>📦 <strong>品名別:</strong> ${np.map(x=>`${esc(x.name)}: ${esc(x.qty)}台`).join(' / ')}<br>📌 <strong>不具合原因別:</strong> ${cs}</div>`:'')+
   row('メモ:',esc(r.memo),'full-row')+
   `<div class="card-footer-actions"><button type="button" class="btn-edit" onclick="editRec('${r.docId}')">編集</button><button type="button" class="btn-del" onclick="delRec('${r.docId}')">削除</button></div></div>`
 }
@@ -1218,59 +1239,66 @@ function tlist(){
 const SB={p:['<i class="fa-solid fa-floppy-disk"></i> 実績を登録・保存','<i class="fa-solid fa-floppy-disk"></i> 実績を更新・保存'],t:['<i class="fa-solid fa-cloud-arrow-up"></i> 解析結果をクラウドに保存','<i class="fa-solid fa-cloud-arrow-up"></i> 解析結果を更新・保存']};
 const sbtn=(k,e)=>{document.querySelector(k==='p'?'#p-form .btn-submit':'#tochaku-form .btn-submit').innerHTML=SB[k][e?1:0];$('cx-'+k).style.display=e?'':'none'};
 let ngCauseCount=1;const NG_CAUSE_MAX=10;
-function ngToggle(){$('ng-section').classList.toggle('active',V('status')==='NG');ngCauseUI()}
+let ngProductCount=1;const NG_PRODUCT_MAX=10;
+function ngToggle(){$('ng-section').classList.toggle('active',V('status')==='NG');ngProductUI();ngCauseUI()}
 function ngOpts(){
-  /* 再塗装の「発生品名」と「不具合原因」は別々の登録マスタを使用する */
   const productNames=[];
   for(let i=1;i<=10;i++){const n=V('product'+i).trim();if(n&&!productNames.includes(n))productNames.push(n)}
-  const productOptions=productNames.length?productNames:['全品/特定なし'];
-
-  const ps=$('ng_product_select');
-  if(ps){
-    const pv=ps.value;
-    ps.innerHTML='';
-    productOptions.forEach(n=>ps.appendChild(new Option(n,n)));
-    if([...ps.options].some(o=>o.value===pv))ps.value=pv;
-  }
-
-  /* 設定画面「原因内容設定」で登録した原因を表示 */
-  const causeOptions=(Array.isArray(causes)?causes:[])
-    .map(v=>String(v).trim())
-    .filter((v,i,a)=>v&&a.indexOf(v)===i);
-
+  document.querySelectorAll('.ng-product-select').forEach(sel=>{
+    const v=sel.value;sel.innerHTML='';
+    if(productNames.length)productNames.forEach(n=>sel.appendChild(new Option(n,n)));
+    else sel.appendChild(new Option('品名を先に入力してください',''));
+    if(v&&[...sel.options].some(o=>o.value===v))sel.value=v;
+  });
+  const causeOptions=(Array.isArray(causes)?causes:[]).map(v=>String(v).trim()).filter((v,i,a)=>v&&a.indexOf(v)===i);
   document.querySelectorAll('.ng-cause-select').forEach(sel=>{
-    const v=sel.value;
-    sel.innerHTML='';
-    if(causeOptions.length){
-      causeOptions.forEach(c=>sel.appendChild(new Option(c,c)));
-    }else{
-      sel.appendChild(new Option('原因を登録してください',''));
-    }
+    const v=sel.value;sel.innerHTML='';
+    if(causeOptions.length)causeOptions.forEach(c=>sel.appendChild(new Option(c,c)));
+    else sel.appendChild(new Option('原因を登録してください',''));
     if(v&&[...sel.options].some(o=>o.value===v))sel.value=v;
   });
 }
+function ngProductUI(v){
+  const box=$('ng-product-rows');if(!box)return;
+  if(!v){v=[];for(let i=1;i<=ngProductCount;i++){const s=$('ng_product_select'+i);if(!s)break;v.push([s.value,V('ng_product_qty'+i)])}}
+  let h='';
+  for(let i=1;i<=ngProductCount;i++){
+    h+=`<div class="ng-product-row">
+      <div class="ng-p-no">NG品名 ${i}${i===1?'（必須）':'（任意）'}</div>
+      <div><label for="ng_product_select${i}">品名</label><select id="ng_product_select${i}" class="ng-product-select"></select></div>
+      <div><label for="ng_product_qty${i}">NG台数</label><input type="number" id="ng_product_qty${i}" class="ng-product-qty" placeholder="台数" min="1"${i===1?' value="1" required':''}></div>
+      ${i>1?`<button type="button" class="btn-del ng-p-del" onclick="ngProductDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span></span>'}
+    </div>`;
+  }
+  box.innerHTML=h+`<div class="ng-product-total" id="ng-product-total">NG合計: <strong>0</strong> 台</div>`;ngOpts();
+  v.forEach((x,i)=>{if(i<ngProductCount){if(x[0])setV('ng_product_select'+(i+1),x[0]);$('ng_product_qty'+(i+1)).value=x[1]||''}});
+  const on=V('status')==='NG';box.querySelectorAll('input,select').forEach(e=>e.disabled=!on);
+  $('ng-product-count').textContent=`${ngProductCount} / ${NG_PRODUCT_MAX}`;
+  $('ng-product-add').disabled=ngProductCount>=NG_PRODUCT_MAX;$('ng-product-remove').disabled=ngProductCount<=1;
+  ngProductTotal();
+}
+function ngProductTotal(){
+  const total=[...document.querySelectorAll('.ng-product-qty')].reduce((s,e)=>s+(parseInt(e.value,10)||0),0);
+  const el=$('ng-product-total');if(el)el.innerHTML=`NG合計: <strong>${total}</strong> 台`;
+}
+async function ngProductRow(d){
+  if(d>0){if(ngProductCount>=NG_PRODUCT_MAX)return;ngProductCount++;ngProductUI();setTimeout(()=>$('ng_product_select'+ngProductCount)?.focus(),0)}
+  else{if(ngProductCount<=1)return;const q=$('ng_product_qty'+ngProductCount);if(q&&q.value&&!(await uiConfirm('最後のNG品名入力を削除して行を減らしますか？')))return;ngProductCount--;ngProductUI()}
+}
+function ngProductDelete(i){const v=[];for(let j=1;j<=ngProductCount;j++)if(j!==i)v.push([V('ng_product_select'+j),V('ng_product_qty'+j)]);ngProductCount=Math.max(1,ngProductCount-1);ngProductUI(v)}
 function ngCauseUI(v){
   const box=$('ng-cause-rows');if(!box)return;
   if(!v){v=[];for(let i=1;i<=ngCauseCount;i++){const s=$('ng_cause_select'+i);if(!s)break;v.push([s.value,V('ng_cause_qty'+i)])}}
   let h='';
   for(let i=1;i<=ngCauseCount;i++){
-    h+=`<div class="ng-cause-row">
-      <div class="cause-no">不具合原因 ${i}${i===1?'（必須）':'（任意）'}</div>
-      <div class="ng-cause-field"><label for="ng_cause_select${i}">原因</label><select id="ng_cause_select${i}" class="ng-cause-select"></select></div>
-      <div class="ng-cause-field qty"><label for="ng_cause_qty${i}">個数</label><input type="number" id="ng_cause_qty${i}" class="ng-cause-qty" placeholder="個数" min="1"${i===1?' value="1" required':''}></div>
-      ${i>1?`<button type="button" class="btn-del ng-cause-delete" onclick="ngCauseDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span class="ng-cause-spacer"></span>'}
-    </div>`;
+    h+=`<div class="ng-cause-row"><div class="cause-no">不具合原因 ${i}${i===1?'（必須）':'（任意）'}</div><div class="ng-cause-field"><label for="ng_cause_select${i}">原因</label><select id="ng_cause_select${i}" class="ng-cause-select"></select></div><div class="ng-cause-field qty"><label for="ng_cause_qty${i}">個数</label><input type="number" id="ng_cause_qty${i}" class="ng-cause-qty" placeholder="個数" min="1"${i===1?' value="1" required':''}></div>${i>1?`<button type="button" class="btn-del ng-cause-delete" onclick="ngCauseDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span class="ng-cause-spacer"></span>'}</div>`;
   }
-  box.innerHTML=h;ngOpts();
-  v.forEach((x,i)=>{if(i<ngCauseCount){if(x[0])setV('ng_cause_select'+(i+1),x[0]);$('ng_cause_qty'+(i+1)).value=x[1]}});
-  const on=V('status')==='NG';
-  box.querySelectorAll('input,select').forEach(e=>e.disabled=!on);$('ng_product_select').disabled=!on;
-  $('ng-cause-count').textContent=`${ngCauseCount} / ${NG_CAUSE_MAX}`;
-  $('ng-cause-add').disabled=ngCauseCount>=NG_CAUSE_MAX;
-  $('ng-cause-remove').disabled=ngCauseCount<=1;
+  box.innerHTML=h;ngOpts();v.forEach((x,i)=>{if(i<ngCauseCount){if(x[0])setV('ng_cause_select'+(i+1),x[0]);$('ng_cause_qty'+(i+1)).value=x[1]||''}});
+  const on=V('status')==='NG';box.querySelectorAll('input,select').forEach(e=>e.disabled=!on);
+  $('ng-cause-count').textContent=`${ngCauseCount} / ${NG_CAUSE_MAX}`;$('ng-cause-add').disabled=ngCauseCount>=NG_CAUSE_MAX;$('ng-cause-remove').disabled=ngCauseCount<=1;
 }
-async function ngCauseRow(d){if(d>0){if(ngCauseCount>=NG_CAUSE_MAX)return;ngCauseCount++}else{if(ngCauseCount<=1)return;const q=$('ng_cause_qty'+ngCauseCount);if(q&&q.value&&!(await uiConfirm('最後の原因入力を削除して行を減らしますか？')))return;ngCauseCount--}ngCauseUI()}
-function ngCauseDelete(i){const v=[];for(let j=1;j<=ngCauseCount;j++)j!==i&&v.push([V('ng_cause_select'+j),V('ng_cause_qty'+j)]);ngCauseCount=Math.max(1,ngCauseCount-1);ngCauseUI(v)}
+async function ngCauseRow(d){if(d>0){if(ngCauseCount>=NG_CAUSE_MAX)return;ngCauseCount++;ngCauseUI()}else{if(ngCauseCount<=1)return;const q=$('ng_cause_qty'+ngCauseCount);if(q&&q.value&&!(await uiConfirm('最後の原因入力を削除して行を減らしますか？')))return;ngCauseCount--;ngCauseUI()}}
+function ngCauseDelete(i){const v=[];for(let j=1;j<=ngCauseCount;j++)if(j!==i)v.push([V('ng_cause_select'+j),V('ng_cause_qty'+j)]);ngCauseCount=Math.max(1,ngCauseCount-1);ngCauseUI(v)}
 function busy(f,fn){const b=f.querySelector('.btn-submit');b.disabled=true;return fn().finally(()=>b.disabled=false)}
 $('p-form').onsubmit=e=>{
   e.preventDefault();
@@ -1281,25 +1309,32 @@ $('p-form').onsubmit=e=>{
   if(items[0].qty<=0){$('quantity1').focus();return uiAlert('「台数1」を1以上の数値で入力してください。')}
   const uq=a=>{const r=[];a.forEach(id=>{const v=V(id);v&&!r.includes(v)&&r.push(v)});return r},
   os=uq(['operator1','operator2']),ms=uq(['machine1','machine2']),st=V('status');
-  let ngP='',ngQ=0,ngD=[];
+  let ngP='',ngQ=0,ngD=[],ngProducts=[];
   if(st==='NG'){
-    ngP=V('ng_product_select')||'全品';
-    if(!Array.isArray(causes)||!causes.length){
-      ngToggle();
-      return uiAlert('「原因内容設定」から不具合原因を1件以上登録してください。');
-    }
-    for(let i=1;i<=ngCauseCount;i++){
-      const c=V('ng_cause_select'+i),q=parseInt(V('ng_cause_qty'+i))||0;
-      if(i===1&&!c){
-        $('ng_cause_select1').focus();
-        return uiAlert('「不具合原因1」を選択してください。');
+    const seenProducts=new Set();
+    for(let i=1;i<=ngProductCount;i++){
+      const n=V('ng_product_select'+i).trim(),q=parseInt(V('ng_product_qty'+i),10)||0;
+      if(i===1&&!n){$('ng_product_select1').focus();return uiAlert('「NG品名1」を選択してください。')}
+      if(n&&q>0){
+        if(seenProducts.has(n)){ $('ng_product_select'+i).focus(); return uiAlert(`NG品名「${n}」が重複しています。品名ごとに1行へまとめてください。`)}
+        seenProducts.add(n);ngProducts.push({name:n,qty:q});ngQ+=q;
       }
-      if(c&&q>0){ngD.push({cause:c,qty:q});ngQ+=q}
     }
+    if(!ngProducts.length){$('ng_product_qty1').focus();return uiAlert('NG品名とNG台数（1以上）を入力してください。')}
+    if(ngQ>tq)return uiAlert(`NG合計 ${ngQ}台 が総塗装台数 ${tq}台を超えています。NG台数を確認してください。`);
+    ngP=ngProducts.map(x=>x.name).join('・');
+    if(!Array.isArray(causes)||!causes.length){ngToggle();return uiAlert('「原因内容設定」から不具合原因を1件以上登録してください。')}
+    for(let i=1;i<=ngCauseCount;i++){
+      const c=V('ng_cause_select'+i),q=parseInt(V('ng_cause_qty'+i,10))||0;
+      if(i===1&&!c){$('ng_cause_select1').focus();return uiAlert('「不具合原因1」を選択してください。')}
+      if(c&&q>0){ngD.push({cause:c,qty:q});}
+    }
+    const causeQ=ngD.reduce((s,x)=>s+x.qty,0);
     if(!ngD.length){$('ng_cause_qty1').focus();return uiAlert('不具合原因と個数（1以上）を入力してください。')}
+    if(causeQ!==ngQ)return uiAlert(`NG品名別の合計 ${ngQ}台 と、不具合原因別の合計 ${causeQ}個 が一致していません。内訳を確認してください。`);
   }
   const th=V('thickness'),old=editId&&fnd('r',editId),
-  rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_details:ngD,memo:V('memo')||'-'};
+  rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_products:ngProducts,ng_details:ngD,memo:V('memo')||'-'};
   const wasEdit=!!editId;
   busy(e.target,()=>save('r',editId,rec).then(()=>{resetP();$('date').value=date;window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました')}).catch(er=>uiAlert('保存エラー: '+er.message)))
 };
@@ -1307,7 +1342,7 @@ function resetP(){
   for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value=''}sr('p',2);
   $('operator2').value='';$('machine1').value='旭サナック';$('machine2').value='';
   $('paint_weight').value='';$('thickness').value='50';$('memo').value='';$('status').value='OK';
-  ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1
+  ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1
 }
 function resetT(d){tf.reset();sr('t',2);$('t_date').value=d;$('t_qty1').value=1;isAtt=0;tEdit=null;sbtn('t',0);tPrev();pg.t=1}
 function cxEdit(k){if(k==='p'){resetP();$('date').value=today();$('bake_temp').value=200;$('bake_time').value=20;onDate()}else resetT(today())}
@@ -1328,8 +1363,10 @@ async function editRec(id){
   $('bake_temp').value=r.bake_temp||200;$('bake_time').value=r.bake_time||20;
   $('status').value=r.status||'OK';ngToggle();
   if(r.status==='NG'){
+    const np=(Array.isArray(r.ng_products)&&r.ng_products.length?r.ng_products:[{name:r.ng_product||'',qty:r.ng_qty||1}]).slice(0,NG_PRODUCT_MAX);
+    ngProductCount=Math.max(1,np.length);ngProductUI(np.map(x=>[x.name||'',x.qty||'']));
     const d=(Array.isArray(r.ng_details)&&r.ng_details.length?r.ng_details:[{cause:r.ng_cause||(r.ng_causes&&r.ng_causes[0])||'',qty:r.ng_qty||1}]).slice(0,NG_CAUSE_MAX);
-    ngCauseCount=d.length;ngCauseUI(d.map(x=>[x.cause||'',x.qty||'']));setV('ng_product_select',r.ng_product||'全品')
+    ngCauseCount=d.length;ngCauseUI(d.map(x=>[x.cause||'',x.qty||'']));
   }
   $('memo').value=r.memo!=='-'?r.memo||'':'';
   $('p-form').scrollIntoView({behavior:'smooth'})
@@ -1496,13 +1533,14 @@ async function rb(k,d){const[a,b,m,c]=PR[k],n=+$(c).dataset.n||2;
   else{if(n<=2)return;const x=$(a+n),y=$(b+n);if((x.value||y.value)&&!(await uiConfirm('最後の行の入力内容を消去して行を減らしますか？')))return;x.value=y.value='';sr(k,n-1);x.dispatchEvent(new Event('input',{bubbles:true}))}}
 $('prod-rows').innerHTML=rows('product','quantity',10);$('t-rows').innerHTML=rows('t_product','t_qty',5,1);sr('p',2);sr('t',2);
 $('prod-rows').addEventListener('input',()=>V('status')==='NG'&&ngOpts());
+document.addEventListener('input',e=>{if(e.target&&e.target.classList&&e.target.classList.contains('ng-product-qty'))ngProductTotal()});
 $('sum-cards').innerHTML=[['w','塗料使用量',''],['q','総件数','qty-val'],['n','再塗装率','ng-val']].map(([k,t,c])=>`<div class="summary-grid-ng">${[['lw','先週'],['sw','<span class="pn-sw">今週</span>'],['m','月間'],['y','年間']].map(([p,l])=>`<div class="card"><div class="card-title">${l} ${t}</div><div class="card-value ${c}" id="s-${p}-${k}"></div>${k==='n'?`<div class="card-subcount" id="s-${p}-c"></div>`:''}</div>`).join('')}</div>`).join('');
 document.querySelectorAll('.cause-tabs[data-t]').forEach(e=>{
   const t=e.dataset.t;
   e.innerHTML=e.dataset.k.split(',').map(k=>`<button type="button" class="btn-tab" id="t-${t}-${k}" onclick="setR('${t}','${k}')">${NM[k]}</button>`).join('')+`<button type="button" class="btn-tab" id="t-${t}-custom" onclick="openCal('${t}')">📅 任意</button>`;
   mark(t)
 });
-ngCauseUI();sbtn('p',0);sbtn('t',0);fill();spUI();runPaintCalc();
+ngProductUI();ngCauseUI();sbtn('p',0);sbtn('t',0);fill();spUI();runPaintCalc();
 try{sessionStorage.getItem('authenticated')==='true'&&showApp()}catch(e){}
 
 /* ---------- カスタムマウスカーソル（PC画面のみ・ON/OFF切替） ---------- */
