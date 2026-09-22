@@ -373,17 +373,20 @@ input,select,button,textarea{max-width:100%}
   .qty-control{grid-template-columns:repeat(3,minmax(0,1fr)) 58px repeat(3,minmax(0,1fr));min-width:0}
 }
 
-/* 週報・月報・年報 出力ビューへのリンクボタン */
-.btn-report{background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff!important;border:none;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;box-shadow:0 3px 10px rgba(79,70,229,.28);transition:.18s ease}
+/* 別システムへのリンクボタン（週報・月報・年報 出力ビュー／不具合レポート・対策データベース） */
+.btn-report{background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff!important;border:1px solid transparent;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;box-shadow:0 3px 10px rgba(79,70,229,.28);transition:.18s ease}
 .btn-report:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 5px 14px rgba(79,70,229,.36)}
 .btn-report:active{transform:translateY(0)}
 .btn-report .ext{font-size:10px;opacity:.85}
+.btn-report.btn-report-alt{background:linear-gradient(135deg,#f97316,#ef4444);box-shadow:0 3px 10px rgba(239,68,68,.28)}
+.btn-report.btn-report-alt:hover{box-shadow:0 5px 14px rgba(239,68,68,.36)}
+.btn-link-group{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px}
 @media(max-width:767px){.btn-report{flex:1 1 auto;min-height:40px;padding:9px 12px;font-size:12px}}
 
 /* ヘッダー操作ボタンの整列（スマホ・タブレット・PC共通） */
 .header-btn-group{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;width:100%}
-.header-btn-group>.btn-report,.header-btn-group>.btn-settings,#sw>.btn-settings{height:40px;min-height:40px;margin:0;padding:0 16px;font-size:12px;font-weight:700;line-height:1;white-space:nowrap;border-radius:var(--radius-sm)}
-.btn-report{border:1px solid transparent}
+.header-actions-row{display:flex;align-items:center;gap:8px}
+.header-btn-group .btn-report,.header-btn-group .btn-settings,#sw>.btn-settings{height:40px;min-height:40px;margin:0;padding:0 16px;font-size:12px;font-weight:700;line-height:1;white-space:nowrap;border-radius:var(--radius-sm)}
 #sw{position:relative;display:flex;align-items:center}
 #sw>.btn-settings{flex:1}
 #cur-btn{min-width:136px}
@@ -404,17 +407,20 @@ input,select,button,textarea{max-width:100%}
   .header-bar{flex-direction:row;align-items:center;justify-content:space-between;text-align:left;gap:24px}
   .header-title-box{align-items:flex-start;width:auto;flex:1 1 auto;min-width:0}
   .header-info-row{justify-content:flex-start}
-  .header-btn-group{width:auto;flex:0 0 auto;flex-wrap:nowrap;justify-content:flex-end}
+  .header-btn-group{width:auto;flex:0 0 auto;flex-wrap:wrap;row-gap:8px;justify-content:flex-end}
   #menu{left:auto;right:0;transform:none}
 }
 @media(max-width:767px){
-  .header-btn-group{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-  .header-btn-group>.btn-report{width:100%;padding:0 10px}
-  #sw>.btn-settings{padding:0 14px}
+  .header-btn-group{flex-direction:column;align-items:stretch;gap:8px}
+  .btn-link-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+  .btn-link-group .btn-report{width:100%;height:auto;min-height:40px;padding:8px 8px;white-space:normal;line-height:1.25;text-align:center}
+  .header-actions-row{width:100%}
+  .header-actions-row #sw{flex:1;width:100%}
+  #sw>.btn-settings{width:100%;padding:0 14px}
   #menu{left:auto;right:0;transform:none;min-width:min(240px,calc(100vw - 32px))}
 }
 @media(max-width:439px){
-  .header-btn-group{grid-template-columns:minmax(0,1fr)}
+  .btn-link-group{grid-template-columns:1fr}
   #menu{left:0;right:0;min-width:0}
 }
 </style>
@@ -460,16 +466,21 @@ input,select,button,textarea{max-width:100%}
         </div>
       </div>
       <div class="header-btn-group">
-        <a class="btn-report" href="https://pasukari-star.github.io/pasukari_Runner/" target="_blank" rel="noopener noreferrer" title="週報・月報・年報の出力ビュー（別システム）を新しいタブで開きます">📑 週報・月報・年報 出力ビュー <i class="fa-solid fa-arrow-up-right-from-square ext"></i></a>
-        <button type="button" class="btn-settings pc-only" id="cur-btn" onclick="toggleCursor()"></button>
-        <div id="sw">
-          <button type="button" class="btn-settings" onclick="$('menu').classList.toggle('open')">⚙️ 設定 <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
-          <div id="menu">
-            <button type="button" class="btn-settings" onclick="mn();opSet()">👷 塗装者登録</button>
-            <button type="button" class="btn-settings" onclick="mn();lOpen('p')">🏷 品名登録</button>
-            <button type="button" class="btn-settings" onclick="mn();lOpen('c')">⚙️ 原因内容設定</button>
-            <button type="button" class="btn-settings" onclick="mn();pwSet('password','新しいログインパスワード:','ログインパスワードを変更しました！')">🔑 パスワード設定</button>
-            <button type="button" class="btn-settings btn-admin-setting" onclick="mn();pwSet('adminPassword','新しい管理者パスワード:','管理者パスワードを変更しました！')">👑 管理者パス設定</button>
+        <div class="btn-link-group">
+          <a class="btn-report" href="https://pasukari-star.github.io/pasukari_Runner/" target="_blank" rel="noopener noreferrer" title="週報・月報・年報の出力ビュー（別システム）を新しいタブで開きます">📑 週報・月報・年報 出力ビュー <i class="fa-solid fa-arrow-up-right-from-square ext"></i></a>
+          <a class="btn-report btn-report-alt" href="https://pasukari-star.github.io/fuguaiDatabase/" target="_blank" rel="noopener noreferrer" title="不具合レポート・対策データベース（別システム）を新しいタブで開きます">🛠️ 不具合レポート・対策DB <i class="fa-solid fa-arrow-up-right-from-square ext"></i></a>
+        </div>
+        <div class="header-actions-row">
+          <button type="button" class="btn-settings pc-only" id="cur-btn" onclick="toggleCursor()"></button>
+          <div id="sw">
+            <button type="button" class="btn-settings" onclick="$('menu').classList.toggle('open')">⚙️ 設定 <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
+            <div id="menu">
+              <button type="button" class="btn-settings" onclick="mn();opSet()">👷 塗装者登録</button>
+              <button type="button" class="btn-settings" onclick="mn();lOpen('p')">🏷 品名登録</button>
+              <button type="button" class="btn-settings" onclick="mn();lOpen('c')">⚙️ 原因内容設定</button>
+              <button type="button" class="btn-settings" onclick="mn();pwSet('password','新しいログインパスワード:','ログインパスワードを変更しました！')">🔑 パスワード設定</button>
+              <button type="button" class="btn-settings btn-admin-setting" onclick="mn();pwSet('adminPassword','新しい管理者パスワード:','管理者パスワードを変更しました！')">👑 管理者パス設定</button>
+            </div>
           </div>
         </div>
       </div>
