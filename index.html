@@ -1467,20 +1467,27 @@ try{sessionStorage.getItem('authenticated')==='true'&&showApp()}catch(e){}
 const cur=(()=>{
   const L=$('pc-cursor-layer'),P_=$('pc-cursor-pos'),H=document.documentElement,mq=matchMedia('(min-width:900px) and (hover:hover) and (pointer:fine)'),
   E=[...L.querySelectorAll('.pe')].map(el=>({el,x:0,y:0,k:+el.dataset.e}));
-  let x=0,y=0,on=0,raf=0,seen=0,s='',off=0;
+  let x=0,y=0,on=0,raf=0,seen=0,s='',off=0,paused=0;
   try{off=localStorage.getItem('pcCursor')==='off'}catch(e){}
   const st=t=>{
     const c=t&&t.closest&&t.closest('a,button,input,textarea,select,[onclick],[disabled]');let n='';
     if(c)n=c.disabled?'disabled':/^(INPUT|TEXTAREA)$/.test(c.tagName)&&!/^(button|submit|reset|checkbox|radio|range|file|color|image)$/.test(c.type)?'text':'pointer';
     if(n!==s)L.dataset.s=s=n
   },
+  /* alert/confirm/prompt表示中や画面が非アクティブになった間は実OSカーソルに戻し、復帰後の最初のマウス移動で
+     カスタムカーソルの位置を再同期する（実績・解析ログの登録/編集操作で多用するダイアログの前後で
+     カーソルが消えたように見える不具合の対策） */
+  pause=()=>{if(!on||paused||!H.classList.contains('pc-cursor-active'))return;paused=1;H.classList.remove('pc-cursor-active')},
   tk=()=>{
     raf=0;let mv=0;P_.style.transform=`translate3d(${x}px,${y}px,0)`;
     for(const o of E){const dx=x-o.x,dy=y-o.y;if(Math.abs(dx)>.3||Math.abs(dy)>.3){o.x+=dx*o.k;o.y+=dy*o.k;mv=1}o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0)`}
     mv&&(raf=requestAnimationFrame(tk))
   },
   ev=[
-    ['mousemove',e=>{x=e.clientX;y=e.clientY;if(!seen){seen=1;E.forEach(o=>{o.x=x;o.y=y})}raf||(raf=requestAnimationFrame(tk))}],
+    ['mousemove',e=>{
+      if(paused){paused=0;on&&H.classList.add('pc-cursor-active');seen=0}
+      x=e.clientX;y=e.clientY;if(!seen){seen=1;E.forEach(o=>{o.x=x;o.y=y})}raf||(raf=requestAnimationFrame(tk))
+    }],
     ['mouseover',e=>st(e.target)],
     ['mousedown',e=>{
       L.classList.add('dn');st(e.target);
@@ -1494,12 +1501,20 @@ const cur=(()=>{
     ['mouseup',()=>L.classList.remove('dn')]
   ],
   set=v=>{
-    if(v===on)return;on=v;H.classList.toggle('pc-cursor-active',!!v);
+    if(v===on)return;on=v;paused=0;H.classList.toggle('pc-cursor-active',!!v);
     ev.forEach(([n,f])=>v?addEventListener(n,f,{passive:true}):removeEventListener(n,f));
     if(!v&&raf){cancelAnimationFrame(raf);raf=0}
   },
   ref=()=>{set(mq.matches&&!off?1:0);const b=$('cur-btn');if(b){b.textContent='🖱 カーソル: '+(off?'OFF':'ON');b.dataset.on=off?'0':'1'}};
   mq.addEventListener?mq.addEventListener('change',ref):mq.addListener(ref);
+  addEventListener('blur',pause,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
+  (()=>{
+    const _alert=window.alert,_confirm=window.confirm,_prompt=window.prompt;
+    window.alert=function(){pause();return _alert.apply(window,arguments)};
+    window.confirm=function(){pause();return _confirm.apply(window,arguments)};
+    window.prompt=function(){pause();return _prompt.apply(window,arguments)};
+  })();
   ref();
   return{toggle(){off=!off;try{localStorage.setItem('pcCursor',off?'off':'on')}catch(e){}ref()}}
 })();
