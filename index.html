@@ -251,13 +251,13 @@ html.pc-cursor-active #pc-cursor-layer{display:block}
 #pc-cursor-arrow{position:absolute;top:0;left:0;transform:translate(-6px,-4px);transform-origin:2px 2px;transition:transform .12s;filter:drop-shadow(0 0 5px #22e0ff) drop-shadow(0 2px 5px rgba(0,0,0,.55))}
 #pc-cursor-halo{position:absolute;left:-19px;top:-19px;width:38px;height:38px;border-radius:50%;opacity:0;transform:scale(.3);transition:transform .18s,opacity .18s}
 #pc-cursor-ibeam{position:absolute;left:-1px;top:-10px;width:2px;height:20px;border-radius:2px;opacity:0;background:linear-gradient(180deg,#ff2e88,#22e0ff);box-shadow:0 0 8px rgba(255,46,136,.7)}
-#pc-cursor-icon{position:absolute;left:-8px;top:-9px;display:none;color:#f43f5e;font-size:15px;filter:drop-shadow(0 0 6px rgba(244,63,94,.8))}
+#pc-cursor-icon{position:absolute;left:-10px;top:-11px;display:none;color:#fff;background:#f43f5e;width:20px;height:20px;border-radius:50%;font-size:11px;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff,0 0 8px rgba(244,63,94,.85)}
 [data-s=pointer] #pc-cursor-halo{opacity:1;transform:none;background:radial-gradient(circle,rgba(34,224,255,.16),rgba(139,92,246,.05) 60%,transparent 70%);box-shadow:inset 0 0 0 1.5px rgba(34,224,255,.55)}
 [data-s=pointer] #pc-cursor-arrow{transform:translate(-6px,-4px) scale(1.1);filter:drop-shadow(0 0 10px #ff2e88) drop-shadow(0 2px 5px rgba(0,0,0,.55))}
 [data-s=text] #pc-cursor-ibeam{opacity:1}
 [data-s=text] #pc-cursor-arrow,[data-s=disabled] #pc-cursor-arrow{display:none}
 [data-s=disabled] #pc-cursor-halo{opacity:1;transform:scale(.8);box-shadow:inset 0 0 0 2px rgba(244,63,94,.7)}
-[data-s=disabled] #pc-cursor-icon{display:block}
+[data-s=disabled] #pc-cursor-icon{display:flex}
 .dn #pc-cursor-arrow{transform:translate(-6px,-4px) scale(.88)}
 .pc-click-ripple{position:fixed;pointer-events:none;border-radius:50%;z-index:999998}
 input.req{border:1.5px solid var(--accent-cyan);background:#f0f9ff;box-shadow:0 0 0 3px rgba(2,132,199,.12)}
@@ -485,7 +485,7 @@ input[type=number]{-moz-appearance:textfield}
     <div id="pc-cursor-ibeam"></div>
     <i id="pc-cursor-icon" class="fa-solid fa-ban"></i>
     <svg id="pc-cursor-arrow" width="30" height="34" viewBox="0 0 30 34">
-      <path d="M2 2 L21 12 L12 15 L17 26 L12 28 L7.5 17 L2 22 Z" fill="rgba(30,34,64,.55)" stroke="#e8ecff" stroke-width="1.4" stroke-linejoin="round" opacity=".96"/>
+      <path d="M2 2 L21 12 L12 15 L17 26 L12 28 L7.5 17 L2 22 Z" fill="rgba(20,23,45,.72)" stroke="#f4f6ff" stroke-width="1.8" stroke-linejoin="round" opacity=".98"/>
       <path d="M2 2 L21 12 L12 15 Z" fill="rgba(255,255,255,.35)"/>
     </svg>
   </div>
@@ -1474,22 +1474,24 @@ const cur=(()=>{
     if(c)n=c.disabled?'disabled':/^(INPUT|TEXTAREA)$/.test(c.tagName)&&!/^(button|submit|reset|checkbox|radio|range|file|color|image)$/.test(c.type)?'text':'pointer';
     if(n!==s)L.dataset.s=s=n
   },
-  /* alert/confirm/prompt表示中や画面が非アクティブになった間は実OSカーソルに戻し、復帰後の最初のマウス移動で
-     カスタムカーソルの位置を再同期する（実績・解析ログの登録/編集操作で多用するダイアログの前後で
-     カーソルが消えたように見える不具合の対策） */
+  /* alert/confirm/prompt(管理者パスワード入力含む)表示中や画面が非アクティブになった間は実OSカーソルに戻し、
+     復帰後の最初のマウス操作（移動・ホバー・クリックのいずれでも）で即座にカスタムカーソルの位置を再同期する。
+     ダイアログを閉じた直後にマウスを動かさずクリックだけした場合でも表示が戻らなかった不具合の対策 */
   pause=()=>{if(!on||paused||!H.classList.contains('pc-cursor-active'))return;paused=1;H.classList.remove('pc-cursor-active')},
+  resume=e=>{
+    if(paused){paused=0;on&&H.classList.add('pc-cursor-active');seen=0}
+    if(e){x=e.clientX;y=e.clientY;if(!seen){seen=1;E.forEach(o=>{o.x=x;o.y=y})}raf||(raf=requestAnimationFrame(tk))}
+  },
   tk=()=>{
     raf=0;let mv=0;P_.style.transform=`translate3d(${x}px,${y}px,0)`;
     for(const o of E){const dx=x-o.x,dy=y-o.y;if(Math.abs(dx)>.3||Math.abs(dy)>.3){o.x+=dx*o.k;o.y+=dy*o.k;mv=1}o.el.style.transform=`translate3d(${o.x}px,${o.y}px,0)`}
     mv&&(raf=requestAnimationFrame(tk))
   },
   ev=[
-    ['mousemove',e=>{
-      if(paused){paused=0;on&&H.classList.add('pc-cursor-active');seen=0}
-      x=e.clientX;y=e.clientY;if(!seen){seen=1;E.forEach(o=>{o.x=x;o.y=y})}raf||(raf=requestAnimationFrame(tk))
-    }],
-    ['mouseover',e=>st(e.target)],
+    ['mousemove',resume],
+    ['mouseover',e=>{resume(e);st(e.target)}],
     ['mousedown',e=>{
+      resume(e);
       L.classList.add('dn');st(e.target);
       for(const[c,d,z]of[['#ff2e88',0,30],['#8b5cf6',70,44],['#22e0ff',140,58]]){
         const r=document.createElement('div');r.className='pc-click-ripple';
@@ -1498,7 +1500,7 @@ const cur=(()=>{
         r.animate([{transform:'scale(.2)',opacity:.95},{transform:'scale(1)',opacity:0}],{duration:520,delay:d,easing:'cubic-bezier(.15,.8,.25,1)',fill:'both'}).onfinish=()=>r.remove()
       }
     }],
-    ['mouseup',()=>L.classList.remove('dn')]
+    ['mouseup',e=>{resume(e);L.classList.remove('dn')}]
   ],
   set=v=>{
     if(v===on)return;on=v;paused=0;H.classList.toggle('pc-cursor-active',!!v);
