@@ -186,7 +186,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .pctl b{font-size:10.5px;font-weight:700;color:var(--text-dim);margin-right:2px}
 .btn-mini{height:24px;min-width:26px;padding:0 9px;font-size:11px;font-weight:700;line-height:1;border-radius:6px;border:1px solid rgba(2,132,199,.35);background:rgba(2,132,199,.08);color:var(--accent-cyan);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
 .btn-mini:hover:not(:disabled){background:var(--accent-cyan);color:#fff}
-.btn-mini:disabled{opacity:.35;cursor:not-allowed}
+.btn-mini:disabled,.qty-step:disabled{opacity:.35;cursor:not-allowed}
 .prod-box{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px;border:1px solid var(--border-color);background:rgba(248,250,252,.6);border-radius:var(--radius-sm)}
 .prod-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:7px;align-items:center;min-width:0;padding:8px;background:#fff;border:1px solid rgba(148,163,184,.22);border-radius:10px;box-shadow:0 1px 4px rgba(15,23,42,.035)}
 .prod-grid>input[type=text]{height:40px;padding:7px 10px;font-size:14px;font-weight:600;min-width:0;width:100%;box-sizing:border-box}
@@ -198,6 +198,8 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .qty-control .qty-step.plus{color:#047857;background:#f0fdf4;border-color:#bbf7d0}
 .qty-control .qty-step.plus:hover{background:#dcfce7}
 .qty-control input[type=number]{width:58px;min-width:58px;height:36px;text-align:center;font-weight:800;font-size:14px;border:2px solid rgba(2,132,199,.35);box-sizing:border-box}
+.mini-qc{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2px;margin-top:4px}
+.mini-qc .qty-step{height:18px;font-size:8px;padding:0;border-radius:5px}
 #t-rows .prod-grid{grid-template-columns:minmax(0,1fr)}
 #t-rows .prod-grid>input[type=text]{font-size:14px;height:40px}
 #t-rows .qty-control{grid-template-columns:repeat(3,minmax(0,1fr)) 64px repeat(3,minmax(0,1fr));min-width:0}
@@ -286,7 +288,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 .form-section:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;opacity:.85}
 .list-section{border-top:3px solid var(--accent-cyan)}
 .ng-cause-rows{display:flex;flex-direction:column}
-.ng-cause-row{display:grid;align-items:center}
+.ng-cause-row{display:grid;align-items:start}
 .ng-cause-row:first-child{border-color:rgba(225,29,72,.32);background:rgba(225,29,72,.055)}
 .ng-cause-row .cause-no{font-weight:800;color:var(--accent-danger);grid-column:1/-1}
 .ng-cause-row input,.ng-cause-row select{height:36px}
@@ -328,7 +330,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
   .ng-cause-row{
     grid-template-columns:minmax(0,1.7fr) minmax(90px,.55fr) auto;
     grid-template-areas:"no cause qty action";
-    align-items:end;
+    align-items:start;
   }
   .ng-cause-row .cause-no{align-self:center}
   .ng-cause-field label{display:none}
@@ -429,14 +431,14 @@ input[type=number]{-moz-appearance:textfield}
 .ng-product-section{background:#fff;border:1px solid rgba(225,29,72,.16);border-radius:12px;padding:10px;margin-bottom:10px}
 .ng-product-help{font-size:10.5px;color:#9f1239;background:rgba(225,29,72,.055);border:1px solid rgba(225,29,72,.12);padding:7px 9px;border-radius:8px;margin-bottom:8px;line-height:1.5}
 .ng-product-rows{display:flex;flex-direction:column;gap:8px}
-.ng-product-row{display:grid;grid-template-columns:minmax(0,1fr) 92px auto;gap:8px;align-items:end;padding:9px;background:#fff8f8;border:1px solid rgba(225,29,72,.14);border-radius:10px}
+.ng-product-row{display:grid;grid-template-columns:minmax(0,1fr) 92px auto;gap:8px;align-items:start;padding:9px;background:#fff8f8;border:1px solid rgba(225,29,72,.14);border-radius:10px}
 .ng-product-row .ng-p-no{font-size:10px;font-weight:800;color:var(--accent-danger);grid-column:1/-1}
 .ng-product-row label{font-size:9.5px;color:#64748b;margin-bottom:3px}
 .ng-product-row input{height:38px}
 .ng-product-row .ng-p-del{height:38px;white-space:nowrap}
 .ng-product-total{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:8px;font-size:11px;font-weight:800;color:var(--accent-danger)}
 .ng-product-total strong{font-size:16px}
-@media(min-width:992px){.ng-product-row{grid-template-columns:minmax(0,1.7fr) 100px auto;align-items:end}.ng-product-row .ng-p-no{grid-column:auto;align-self:center}.ng-product-row label{display:none}}
+@media(min-width:992px){.ng-product-row{grid-template-columns:minmax(0,1.7fr) 100px auto;align-items:start}.ng-product-row .ng-p-no{grid-column:auto;align-self:center}.ng-product-row label{display:none}}
 @media(max-width:767px){.ng-product-row{grid-template-columns:minmax(0,1fr) 82px auto;gap:6px}.ng-product-row .ng-p-del{padding:0 8px;min-width:52px}.ng-product-help{font-size:11px}}
 .weather-time-label{display:inline-flex;align-items:center;gap:5px;font-size:10px!important;color:var(--text-dim)!important;font-weight:600!important;margin:0!important}
 .weather-time-label input{width:88px;height:28px;font-size:11px;padding:3px 6px}
@@ -1296,13 +1298,13 @@ function ngProductUI(v){
     h+=`<div class="ng-product-row">
       <div class="ng-p-no">NG品名 ${i}${i===1?'（必須）':'（任意）'}</div>
       <div><label for="ng_product_select${i}">品名</label><select id="ng_product_select${i}" class="ng-product-select"></select></div>
-      <div><label for="ng_product_qty${i}">NG台数</label><input type="number" id="ng_product_qty${i}" class="ng-product-qty" placeholder="台数" min="1"${i===1?' value="1" required':''}></div>
+      <div><label for="ng_product_qty${i}">NG台数</label><input type="number" id="ng_product_qty${i}" class="ng-product-qty" placeholder="台数" min="1"${i===1?' value="1" required':''}><div class="qty-control mini-qc" aria-label="NG台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-10)" title="10減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-5)" title="5減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-1)" title="1減らす">−1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',1)" title="1増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',5)" title="5増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',10)" title="10増やす">＋10</button></div></div>
       ${i>1?`<button type="button" class="btn-del ng-p-del" onclick="ngProductDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span></span>'}
     </div>`;
   }
   box.innerHTML=h+`<div class="ng-product-total" id="ng-product-total">NG合計: <strong>0</strong> 台</div>`;ngOpts();
   v.forEach((x,i)=>{if(i<ngProductCount){if(x[0])setV('ng_product_select'+(i+1),x[0]);$('ng_product_qty'+(i+1)).value=x[1]||''}});
-  const on=V('status')==='NG';box.querySelectorAll('input,select').forEach(e=>e.disabled=!on);
+  const on=V('status')==='NG';box.querySelectorAll('input,select,.mini-qc button').forEach(e=>e.disabled=!on);
   $('ng-product-count').textContent=`${ngProductCount} / ${NG_PRODUCT_MAX}`;
   $('ng-product-add').disabled=ngProductCount>=NG_PRODUCT_MAX;$('ng-product-remove').disabled=ngProductCount<=1;
   ngProductTotal();
@@ -1332,10 +1334,10 @@ function ngCauseUI(v){
   if(!v){v=[];for(let i=1;i<=ngCauseCount;i++){const s=$('ng_cause_select'+i);if(!s)break;v.push([s.value,V('ng_cause_qty'+i)])}}
   let h='';
   for(let i=1;i<=ngCauseCount;i++){
-    h+=`<div class="ng-cause-row"><div class="cause-no">不具合原因 ${i}${i===1?'（必須）':'（任意）'}</div><div class="ng-cause-field"><label for="ng_cause_select${i}">原因</label><select id="ng_cause_select${i}" class="ng-cause-select"></select></div><div class="ng-cause-field qty"><label for="ng_cause_qty${i}">個数</label><input type="number" id="ng_cause_qty${i}" class="ng-cause-qty" placeholder="個数" min="1"${i===1?' value="1" required':''}></div>${i>1?`<button type="button" class="btn-del ng-cause-delete" onclick="ngCauseDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span class="ng-cause-spacer"></span>'}</div>`;
+    h+=`<div class="ng-cause-row"><div class="cause-no">不具合原因 ${i}${i===1?'（必須）':'（任意）'}</div><div class="ng-cause-field"><label for="ng_cause_select${i}">原因</label><select id="ng_cause_select${i}" class="ng-cause-select"></select></div><div class="ng-cause-field qty"><label for="ng_cause_qty${i}">個数</label><input type="number" id="ng_cause_qty${i}" class="ng-cause-qty" placeholder="個数" min="1"${i===1?' value="1" required':''}><div class="qty-control mini-qc" aria-label="個数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-10)" title="10減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-5)" title="5減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-1)" title="1減らす">−1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',1)" title="1増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',5)" title="5増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',10)" title="10増やす">＋10</button></div></div>${i>1?`<button type="button" class="btn-del ng-cause-delete" onclick="ngCauseDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span class="ng-cause-spacer"></span>'}</div>`;
   }
   box.innerHTML=h;ngOpts();v.forEach((x,i)=>{if(i<ngCauseCount){if(x[0])setV('ng_cause_select'+(i+1),x[0]);$('ng_cause_qty'+(i+1)).value=x[1]||''}});
-  const on=V('status')==='NG';box.querySelectorAll('input,select').forEach(e=>e.disabled=!on);
+  const on=V('status')==='NG';box.querySelectorAll('input,select,.mini-qc button').forEach(e=>e.disabled=!on);
   $('ng-cause-count').textContent=`${ngCauseCount} / ${NG_CAUSE_MAX}`;$('ng-cause-add').disabled=ngCauseCount>=NG_CAUSE_MAX;$('ng-cause-remove').disabled=ngCauseCount<=1;
 
   updateNgBalance();
