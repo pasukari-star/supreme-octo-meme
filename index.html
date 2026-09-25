@@ -52,6 +52,8 @@ body{background:radial-gradient(circle at 8% 0%,rgba(14,165,233,.10),transparent
 .unit{font-size:11px;font-weight:400;color:var(--text-dim);margin-left:2px}
 .card-subcount{font-size:11px;font-weight:700;color:var(--text-dim);margin-top:5px;letter-spacing:.3px}
 .card-subcount b{font-size:13px;font-weight:800;color:var(--accent-danger);margin:0 2px}
+.card-subcount.qc-sub{margin-top:2px}
+.card-subcount.qc-sub b{color:var(--accent-indigo)}
 .plbl{font-size:10.5px;color:var(--accent-cyan);font-weight:700;margin-top:6px;text-align:right}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -189,7 +191,11 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .btn-mini:disabled,.qty-step:disabled{opacity:.35;cursor:not-allowed}
 .prod-box{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px;border:1px solid var(--border-color);background:rgba(248,250,252,.6);border-radius:var(--radius-sm)}
 .prod-grid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:7px;align-items:center;min-width:0;padding:8px;background:#fff;border:1px solid rgba(148,163,184,.22);border-radius:10px;box-shadow:0 1px 4px rgba(15,23,42,.035)}
-.prod-grid>input[type=text]{height:40px;padding:7px 10px;font-size:14px;font-weight:600;min-width:0;width:100%;box-sizing:border-box}
+.prod-grid input[type=text]{height:40px;padding:7px 10px;font-size:14px;font-weight:600;min-width:0;width:100%;box-sizing:border-box}
+.prod-name-row{display:flex;gap:6px;align-items:center;min-width:0}
+.prod-name-row input[type=text]{flex:1;min-width:0}
+.unit-sel{flex:0 0 auto;width:60px;height:40px;padding:0 2px;border:1px solid rgba(2,132,199,.3);border-radius:7px;background:#f0f9ff;color:#0369a1;font-size:12px;font-weight:800;text-align:center;box-sizing:border-box}
+.unit-sel:disabled{opacity:.5}
 .qty-control{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 64px repeat(3,minmax(0,1fr));gap:4px;align-items:center;min-width:0;width:100%;box-sizing:border-box}
 .qty-control .qty-step{height:34px;padding:0 4px;border:1px solid var(--border-color);border-radius:7px;background:#f8fafc;color:#475569;font-size:10px;font-weight:800;cursor:pointer;line-height:1;white-space:nowrap;display:flex;align-items:center;justify-content:center;visibility:visible;opacity:1}
 .qty-control .qty-step:hover{background:#e2e8f0}
@@ -211,7 +217,8 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 @media(max-width:991px) and (min-width:701px){.prod-box{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.prod-grid,#t-rows .prod-grid{grid-template-columns:minmax(0,1fr)}.qty-control,#t-rows .qty-control{min-width:0}}
 @media(max-width:700px){.prod-box{grid-template-columns:minmax(0,1fr);gap:7px;padding:7px}
   .prod-grid,#t-rows .prod-grid{grid-template-columns:minmax(0,1fr);gap:6px;padding:7px}
-  .prod-grid>input[type=text],#t-rows .prod-grid>input[type=text]{height:42px;font-size:14px}
+  .prod-grid input[type=text],#t-rows .prod-grid>input[type=text]{height:42px;font-size:14px}
+  .unit-sel{height:42px;width:56px;font-size:13px}
   .qty-control,#t-rows .qty-control{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;min-width:0}
   .qty-control input[type=number],#t-rows .qty-control input[type=number]{grid-column:1/-1;grid-row:2;width:100%;min-width:0;height:38px}
   .qty-control .qty-step{height:32px;font-size:10px;padding:0 2px;min-width:0;overflow:hidden}
@@ -405,7 +412,7 @@ input,select,button,textarea{max-width:100%}
 html{scroll-behavior:smooth}
 @media(max-width:767px){input,select,textarea{font-size:16px}
   .qty-control input[type=number],#t-rows .qty-control input[type=number]{font-size:16px}
-  .prod-grid>input[type=text],#t-rows .prod-grid>input[type=text]{font-size:16px}
+  .prod-grid input[type=text],#t-rows .prod-grid>input[type=text]{font-size:16px}
   .prod-grid input{font-size:16px}
   .preset-name-input{font-size:16px!important}
   .preset-grid input{font-size:15px}
@@ -544,6 +551,7 @@ input[type=number]{-moz-appearance:textfield}
             <div id="menu">
               <button type="button" class="btn-settings" onclick="mn();opSet()">👷 塗装者登録</button>
               <button type="button" class="btn-settings" onclick="mn();lOpen('p')">🏷 品名登録</button>
+              <button type="button" class="btn-settings" onclick="mn();ufSet()">📐 換算係数設定(台/枚/個/本)</button>
               <button type="button" class="btn-settings" onclick="mn();lOpen('c')">⚙️ 原因内容設定</button>
               <button type="button" class="btn-settings" onclick="mn();pwSet('password','新しいログインパスワード:','ログインパスワードを変更しました！')">🔑 パスワード設定</button>
               <button type="button" class="btn-settings btn-admin-setting" onclick="mn();pwSet('adminPassword','新しい管理者パスワード:','管理者パスワードを変更しました！')">👑 管理者パス設定</button>
@@ -915,6 +923,8 @@ const WIN=(new Date().getFullYear()-1)+'-12-01',M={r:new Map(),t:new Map()},A={r
 
 let pw=atob('MTIzNA=='),apw=atob('MTk4NTA3MTU='),ops=['担当者A','担当者B','担当者C'],prods=[],
 causes=['ブツ・ゴミ・毛など','湧き','マスキング跡','弾き','クレーター','傷','肌荒れ','色散り','板金の凹み','脱脂不良','アース不良','膜厚不足','その他'],
+UNITS=['台','枚','個','本'],unitFactors={台:1,枚:0.3,個:0.15,本:0.4},
+uf=u=>{const v=unitFactors[u];return typeof v==='number'&&v>0?v:1},
 presets=Array.from({length:10},(_,i)=>({no:i+1,name:'プリセット'+(i+1),voltage:50,current:20,discharge:300,air:250})),
 selNo=null,selName='',pRe=0,cfgOk=0,started=0,curTab='main',editId=null,tEdit=null,isAtt=0,psig='',wt=0,ngF=0,lastDay='',autoD='',tm=0,dirty=7,db=null;
 
@@ -934,9 +944,10 @@ db&&CFG().onSnapshot(d=>{
   if(Array.isArray(x.products))prods=x.products;
   if(Array.isArray(x.causes))causes=x.causes;
   if(arr(x.machinePresets))presets=x.machinePresets;
+  if(x.unitFactors&&typeof x.unitFactors==='object')UNITS.forEach(u=>{if(typeof x.unitFactors[u]==='number'&&x.unitFactors[u]>0)unitFactors[u]=x.unitFactors[u]});
   if(x.selectedPresetNo!==undefined)selNo=x.selectedPresetNo;
   if(x.selectedPresetName!==undefined)selName=x.selectedPresetName;
-  cfgOk=1;fill();refreshModals();badge();applyPreset();if(V('status')==='NG')ngCauseUI()
+  cfgOk=1;fill();refreshModals();badge();applyPreset();if(V('status')==='NG')ngCauseUI();sched(1)
 },()=>{cfgOk=1});
 
 /* ---------- 共通UI ---------- */
@@ -1031,6 +1042,19 @@ async function opSet(){
   setCfg({operators}).then(()=>uiAlert('塗装者を更新しました！')).catch(e=>uiAlert('保存エラー: '+e.message))
 }
 async function pwSet(k,m,t){if(!db||!(await adm()))return;const v=await uiPrompt(m);v&&v.trim()&&setCfg({[k]:v.trim()}).then(()=>uiAlert(t)).catch(e=>uiAlert('保存エラー: '+e.message))}
+async function ufSet(){
+  if(!db||!(await adm()))return;
+  const nf={...unitFactors};
+  for(const u of UNITS){
+    const s=await uiPrompt(`「${u}」の換算係数（基準「台」=1.0。台より小さい/手間が少なければ1未満の数値。例: 枚=0.3, 個=0.15, 本=0.4）:`,nf[u]);
+    if(s===null)return;
+    const n=parseFloat(s);
+    if(!isFinite(n)||n<=0)return uiAlert(`「${u}」は0より大きい数値で入力してください。`);
+    nf[u]=Math.round(n*1000)/1000;
+  }
+  unitFactors=nf;sched(1);
+  setCfg({unitFactors:nf}).then(()=>uiAlert('換算係数を更新しました！実質換算数・実質再塗装率に反映されます。')).catch(e=>uiAlert('保存エラー: '+e.message))
+}
 const T={
   p:{a:()=>prods,k:'products',o:'product-modal',m:'modal-product-list',c:'product-count',i:'new-product-name',du:'既に登録されています。',mx:'最大登録数(50件)に達しています。',ed:'品名を編集:',dd:'既に同じ品名が存在します。',rm:'この品名を削除しますか？'},
   c:{a:()=>causes,k:'causes',o:'cause-modal',m:'modal-cause-list',c:'cause-count',i:'new-cause-name',du:'既に登録されている原因です。',mx:'原因の登録は最大50種までです。',ed:'不具合原因を編集:',dd:'既に同じ原因が存在します。',rm:'この原因を削除しますか？'}
@@ -1160,13 +1184,19 @@ function rk(id,rows,empty,bg){
   $(id).innerHTML=rows.length?rows.map((r,i)=>`<div class="cause-item"><div class="cause-header"><span style="display:flex;align-items:center;word-break:break-all"><span class="rank-badge ${i<3?'rank-'+(i+1):'rank-other'}">${i+1}</span>${r[0]}</span><span><strong>${r[1]}</strong></span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${r[2]}%${bg?';background:'+bg:''}"></div></div></div>`).join(''):`<div class="empty-sm">${empty}</div>`
 }
 const srt=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
+/* 実質換算（台=1.0基準の重み付け合計）。小物・平板など単位が混在していても、ざっくり実態に近い件数・再塗装率を出すための補助値 */
+const itemsConv=items=>Array.isArray(items)?items.reduce((s,i)=>s+(Number(i.qty)||0)*uf(i.unit||'台'),0):0;
+const ngConv=r=>{
+  if(!Array.isArray(r.ng_products)||!r.ng_products.length)return Number(r.ng_qty)||0;
+  return r.ng_products.reduce((s,x)=>{const it=Array.isArray(r.items)?r.items.find(i=>i.name===x.name):null;return s+(Number(x.qty)||0)*uf((it&&it.unit)||'台')},0)
+};
 function sum(){
   const R=ranges();need('r',['sum','cause','paint'],R);
   lbl('sum',R);lbl('cause',R);lbl('paint',R);
-  const G=[R.lastweek,rg('sum',R),R.month,R.year],S=G.map(()=>({w:0,q:0,n:0})),cg=rg('cause',R),pg_=rg('paint',R),cc={},np={},pp={};
+  const G=[R.lastweek,rg('sum',R),R.month,R.year],S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0})),cg=rg('cause',R),pg_=rg('paint',R),cc={},np={},pp={};
   for(const r of all('r')){
     const d=r.date;if(!d)continue;
-    G.forEach((g,i)=>{if(d>=g[0]&&d<=g[1]){const s=S[i];s.w+=r._w;s.q+=r._q;if(r.status==='NG')s.n+=Number(r.ng_qty)||1}});
+    G.forEach((g,i)=>{if(d>=g[0]&&d<=g[1]){const s=S[i];s.w+=r._w;s.q+=r._q;s.qc+=itemsConv(r.items);if(r.status==='NG'){s.n+=Number(r.ng_qty)||1;s.nc+=ngConv(r)}}});
     if(r.status==='NG'&&d>=cg[0]&&d<=cg[1]){
       if(Array.isArray(r.ng_details)&&r.ng_details.length)r.ng_details.forEach(x=>{const k=x.cause||'その他';cc[k]=(cc[k]||0)+(Number(x.qty)||1)});
       else{const k=r.ng_cause||(r.ng_causes&&r.ng_causes[0])||'その他';cc[k]=(cc[k]||0)+(Number(r.ng_qty)||1)}
@@ -1179,8 +1209,10 @@ function sum(){
     const s=S[i];
     $(`s-${k}-w`).textContent=fw(s.w);
     $(`s-${k}-q`).innerHTML=`${s.q.toLocaleString('ja-JP')} <span class="unit">件</span>`;
+    $(`s-${k}-qc`)&&($(`s-${k}-qc`).innerHTML=`実質換算 <b>${s.qc.toLocaleString('ja-JP',{maximumFractionDigits:1})}</b> 件`);
     $(`s-${k}-n`).innerHTML=`${s.q>0?(s.n/s.q*100).toFixed(1):0} <span class="unit">%</span>`;
-    $(`s-${k}-c`).innerHTML=`再塗装 <b>${s.n}</b> 件`
+    $(`s-${k}-c`).innerHTML=`再塗装 <b>${s.n}</b> 件`;
+    $(`s-${k}-nc`)&&($(`s-${k}-nc`).innerHTML=`実質再塗装率 <b>${s.qc>0?(s.nc/s.qc*100).toFixed(1):0}%</b>`)
   });
   document.querySelectorAll('.pn-sw').forEach(e=>e.textContent=P.sum.k==='custom'?'指定週':'今週');
   const sc=srt(cc),tc=sc.reduce((a,b)=>a+b[1],0),sn=srt(np),tn=sn.reduce((a,b)=>a+b[1],0),sp_=srt(pp).filter(x=>x[1]>0),mx=sp_.length?sp_[0][1]:1;
@@ -1190,10 +1222,10 @@ function sum(){
 }
 
 /* ---------- 一覧 ---------- */
-const chip=i=>`<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}台)</small></span>`,
+const chip=i=>`<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.unit||'台')})</small></span>`,
 tg=m=>m?'<span class="tg m">📊実測</span>':'<span class="tg a">✨自動</span>',
 row=(l,v,c)=>`<div class="card-data-row${c?' '+c:''}"><span class="card-label">${l}</span><span class="card-value-text">${v}</span></div>`,
-summaryItems=(items,fallback='-')=>Array.isArray(items)&&items.length?items.map(i=>`${esc(i.name)} (${esc(i.qty)}台)`).join(' / '):fallback,
+summaryItems=(items,fallback='-')=>Array.isArray(items)&&items.length?items.map(i=>`${esc(i.name)} (${esc(i.qty)}${esc(i.unit||'台')})`).join(' / '):fallback,
 recordSummary=(items,operator,usage)=>`<div class="record-summary"><div class="record-summary-item"><span class="record-summary-label">品名（台数）</span><span class="record-summary-value product" title="${esc(summaryItems(items))}">${summaryItems(items)}</span></div><div class="record-summary-item"><span class="record-summary-label">塗装者</span><span class="record-summary-value" title="${esc(operator||'-')}">${esc(operator||'-')}</span></div><div class="record-summary-item"><span class="record-summary-label">使用量</span><span class="record-summary-value usage">${usage}</span></div></div>`,
 footerActions=(editFn,delFn)=>`<div class="card-footer-actions"><button type="button" class="card-details-toggle" onclick="toggleCardDetails(this)">詳細を見る</button><div class="card-action-right"><button type="button" class="btn-edit" onclick="${editFn}">編集</button><button type="button" class="btn-del" onclick="${delFn}">削除</button></div></div>`;
 function pager(k,n){const p=Math.ceil(n/10)||1;pg[k]=Math.max(1,Math.min(pg[k],p));$('pi-'+k).textContent=`${pg[k]} / ${p} ページ (全 ${n} 件)`;$('pp-'+k).disabled=pg[k]===1;$('pn-'+k).disabled=pg[k]===p}
@@ -1360,7 +1392,7 @@ $('p-form').onsubmit=e=>{
   if(!db)return uiAlert('データベースに接続されていません');
   if(!validateIntegerInputs(e.target))return;
   const date=V('date'),items=[];let tq=0;
-  for(let i=1;i<=10;i++){const n=V('product'+i).trim();if(n){const q=parseInt(V('quantity'+i))||(i===1?0:1);items.push({name:n,qty:q});tq+=q}}
+  for(let i=1;i<=10;i++){const n=V('product'+i).trim();if(n){const q=parseInt(V('quantity'+i))||(i===1?0:1),u=($('unit'+i)&&V('unit'+i))||'台';items.push({name:n,qty:q,unit:u});tq+=q}}
   if(!V('product1').trim()){$('product1').focus();return uiAlert('「品名1」を入力してください。')}
   if(items[0].qty<=0){$('quantity1').focus();return uiAlert('「台数1」を1以上の数値で入力してください。')}
   const uq=a=>{const r=[];a.forEach(id=>{const v=V(id);v&&!r.includes(v)&&r.push(v)});return r},
@@ -1396,7 +1428,7 @@ $('p-form').onsubmit=e=>{
 };
 function resetP(){
   $('weather-time').value='12:00';
-  for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value=''}sr('p',2);
+  for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value='';$('unit'+i)&&($('unit'+i).value='台')}sr('p',2);
   $('operator2').value='';$('machine1').value='旭サナック';$('machine2').value='';
   $('paint_weight').value='';$('thickness').value='50';$('memo').value='';$('status').value='OK';
   ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1
@@ -1411,7 +1443,7 @@ async function editRec(id){
   setV('weather',r.weather||'晴れ');$('weather-time').value=r.weather_time||'12:00';$('temp').value=r.temp!=='-'&&r.temp!=null?r.temp:'';$('humidity').value=r.humidity!=='-'&&r.humidity!=null?r.humidity:'';
   const lk=Object.keys(LOC).find(k=>LOC[k].label===r.location);if(lk)$('location-select').value=lk;
   if(!hasW)onDate();
-  for(let i=1;i<=10;i++){const it=r.items&&r.items[i-1];$('product'+i).value=it?it.name:'';$('quantity'+i).value=it?it.qty:''}fr('p');
+  for(let i=1;i<=10;i++){const it=r.items&&r.items[i-1];$('product'+i).value=it?it.name:'';$('quantity'+i).value=it?it.qty:'';$('unit'+i)&&($('unit'+i).value=(it&&it.unit)||'台')}fr('p');
   const ol=typeof r.operator==='string'?r.operator.split('・'):[],ml=typeof r.machine==='string'?r.machine.split('・'):[];
   setV('operator1',ol[0]||ops[0]||'');setV('operator2',ol[1]||'');setV('machine1',ml[0]||'旭サナック');setV('machine2',ml[1]||'');
   const pf_=pv();
@@ -1575,7 +1607,8 @@ const ct=$('tab-content-calc');
 $('c_work_type').onchange=function(){document.querySelectorAll('.calc-work-section').forEach(e=>e.style.display='none');$('c_sec_'+this.value).style.display='block'};
 
 /* ---------- 初期化 ---------- */
-const rows=(a,b,n,t)=>{let h='';for(let i=1;i<=n;i++){const f=t&&i===1;const qty=`<div class="qty-control" aria-label="台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-10)" title="10台減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-5)" title="5台減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-1)" title="1台減らす">−1</button><input type="number"${i===1?' class="req"':''} id="${b}${i}" placeholder="台数${i}" min="1"${f?' value="1" required':''}><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',1)" title="1台増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',5)" title="5台増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',10)" title="10台増やす">＋10</button></div>`;h+=`<div class="prod-grid" id="${a}-r${i}"${i>2?' hidden':''}><input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':t?' ※必須':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>${qty}</div>`}return h};
+const unitSel=i=>`<select id="unit${i}" class="unit-sel" title="単位（実質換算に使用。基準:台=1.0）">${UNITS.map(u=>`<option value="${u}"${u==='台'?' selected':''}>${u}</option>`).join('')}</select>`;
+const rows=(a,b,n,t,withUnit)=>{let h='';for(let i=1;i<=n;i++){const f=t&&i===1;const qty=`<div class="qty-control" aria-label="台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-10)" title="10台減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-5)" title="5台減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-1)" title="1台減らす">−1</button><input type="number"${i===1?' class="req"':''} id="${b}${i}" placeholder="台数${i}" min="1"${f?' value="1" required':''}><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',1)" title="1台増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',5)" title="5台増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',10)" title="10台増やす">＋10</button></div>`,nameField=withUnit?`<div class="prod-name-row"><input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>${unitSel(i)}</div>`:`<input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':t?' ※必須':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>`;h+=`<div class="prod-grid" id="${a}-r${i}"${i>2?' hidden':''}>${nameField}${qty}</div>`}return h};
 const PR={p:['product','quantity',10,'prod-rows'],t:['t_product','t_qty',5,'t-rows']};
 function adjustQty(id,delta){
   const el=$(id);if(!el)return;
@@ -1589,10 +1622,10 @@ function fr(k){const[a,b,m]=PR[k];let n=2;for(let i=m;i>2;i--)if(V(a+i).trim()||
 async function rb(k,d){const[a,b,m,c]=PR[k],n=+$(c).dataset.n||2;
   if(d>0){if(n>=m)return;sr(k,n+1);$(a+(n+1)).focus()}
   else{if(n<=2)return;const x=$(a+n),y=$(b+n);if((x.value||y.value)&&!(await uiConfirm('最後の行の入力内容を消去して行を減らしますか？')))return;x.value=y.value='';sr(k,n-1);x.dispatchEvent(new Event('input',{bubbles:true}))}}
-$('prod-rows').innerHTML=rows('product','quantity',10);$('t-rows').innerHTML=rows('t_product','t_qty',5,1);sr('p',2);sr('t',2);
+$('prod-rows').innerHTML=rows('product','quantity',10,0,1);$('t-rows').innerHTML=rows('t_product','t_qty',5,1);sr('p',2);sr('t',2);
 $('prod-rows').addEventListener('input',()=>V('status')==='NG'&&ngOpts());
 document.addEventListener('input',e=>{if(e.target&&e.target.classList){if(e.target.classList.contains('ng-product-qty')||e.target.classList.contains('ng-cause-qty'))updateNgBalance()}});
-$('sum-cards').innerHTML=[['w','塗料使用量',''],['q','総件数','qty-val'],['n','再塗装率','ng-val']].map(([k,t,c])=>`<div class="summary-grid-ng">${[['lw','先週'],['sw','<span class="pn-sw">今週</span>'],['m','月間'],['y','年間']].map(([p,l])=>`<div class="card"><div class="card-title">${l} ${t}</div><div class="card-value ${c}" id="s-${p}-${k}"></div>${k==='n'?`<div class="card-subcount" id="s-${p}-c"></div>`:''}</div>`).join('')}</div>`).join('');
+$('sum-cards').innerHTML=[['w','塗料使用量',''],['q','総件数','qty-val'],['n','再塗装率','ng-val']].map(([k,t,c])=>`<div class="summary-grid-ng">${[['lw','先週'],['sw','<span class="pn-sw">今週</span>'],['m','月間'],['y','年間']].map(([p,l])=>`<div class="card"><div class="card-title">${l} ${t}</div><div class="card-value ${c}" id="s-${p}-${k}"></div>${k==='n'?`<div class="card-subcount" id="s-${p}-c"></div><div class="card-subcount qc-sub" id="s-${p}-nc"></div>`:k==='q'?`<div class="card-subcount qc-sub" id="s-${p}-qc"></div>`:''}</div>`).join('')}</div>`).join('');
 document.querySelectorAll('.cause-tabs[data-t]').forEach(e=>{
   const t=e.dataset.t;
   e.innerHTML=e.dataset.k.split(',').map(k=>`<button type="button" class="btn-tab" id="t-${t}-${k}" onclick="setR('${t}','${k}')">${NM[k]}</button>`).join('')+`<button type="button" class="btn-tab" id="t-${t}-custom" onclick="openCal('${t}')">📅 任意</button>`;
