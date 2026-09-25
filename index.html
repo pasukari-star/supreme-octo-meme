@@ -203,7 +203,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .qty-control .qty-step.minus:hover{background:#fee2e2}
 .qty-control .qty-step.plus{color:#047857;background:#f0fdf4;border-color:#bbf7d0}
 .qty-control .qty-step.plus:hover{background:#dcfce7}
-.qty-control input[type=number]{width:58px;min-width:58px;height:36px;text-align:center;font-weight:800;font-size:14px;border:2px solid rgba(2,132,199,.35);box-sizing:border-box}
+.qty-control input[type=number]{width:58px;min-width:58px;height:36px;text-align:center;font-weight:800;font-size:14px;border:2px solid rgba(2,132,199,.35);box-sizing:border-box}.paint-qty-control{grid-template-columns:repeat(6,minmax(0,1fr));gap:2px}.paint-qty-control .qty-step{height:22px;padding:0 1px;font-size:8px;border-radius:5px;min-width:0}.paint-qty-control input[type=number]{grid-column:1/-1;grid-row:2;width:100%;min-width:0;height:36px}
 .mini-qc{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2px;margin-top:4px}
 .mini-qc .qty-step{height:18px;font-size:8px;padding:0;border-radius:5px}
 #t-rows .prod-grid{grid-template-columns:minmax(0,1fr)}
@@ -307,6 +307,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
   #sum-cards .summary-dashboard-cards .card-value{font-size:24px}
   .summary-note{font-size:10.5px;padding:9px 11px}
 }
+@media(min-width:992px){#sum-cards .summary-note{text-align:center}}
 .form-section{position:relative;overflow:hidden}
 .form-section:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;opacity:.85}
 .list-section{border-top:3px solid var(--accent-cyan)}
@@ -623,7 +624,7 @@ input[type=number]{-moz-appearance:textfield}
                 <div class="weather-field"><div class="ph"><label>天気 <span class="auto-calc-badge">✨ 自動取得</span></label><label class="weather-time-label">取得時刻 <input type="time" id="weather-time" value="12:00" step="3600" aria-label="天候取得時刻"></label></div><select id="weather"><option value="晴れ">晴れ</option><option value="曇り">曇り</option><option value="雨">雨</option><option value="雪">雪</option></select><div id="weather-fetch-status" class="weather-fetch-status" aria-live="polite">当日12:00の天候を自動取得</div></div>
                 <div><label>気温 (℃) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="temp" step="1" placeholder="23"></div>
                 <div><label>湿度 (%) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="humidity" step="1" min="0" max="100" placeholder="55"></div>
-                <div><label>使用塗料 (kg) <span class="req-tag">必須</span></label><input type="number" class="req" id="paint_weight" step="0.001" min="0" required placeholder="例: 5.3"></div>
+                <div><label>使用塗料 (kg) <span class="req-tag">必須</span></label><div class="qty-control paint-qty-control" aria-label="使用塗料 クイック入力"><button type="button" class="qty-step minus" onclick="adjustPaintQty(-5)" title="5kg減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-1)" title="1kg減らす">−1</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-0.1)" title="0.1kg減らす">−0.1</button><input type="number" class="req" id="paint_weight" step="0.001" min="0" required placeholder="例: 5.3"><button type="button" class="qty-step plus" onclick="adjustPaintQty(0.1)" title="0.1kg増やす">＋0.1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(1)" title="1kg増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(5)" title="5kg増やす">＋5</button></div></div>
                 <div class="full">
                   <button type="button" class="preset-select-btn" onclick="pOpen()"><i class="fa-solid fa-sliders"></i> 🎛 塗装機プリセットから選択（電圧・電流・吐出量・エアー流量を自動入力）</button>
                   <div id="preset-active-badge" class="pb"></div>
@@ -1658,6 +1659,13 @@ function adjustQty(id,delta){
   const el=$(id);if(!el)return;
   const cur=parseInt(el.value,10)||0;
   el.value=Math.max(1,cur+delta);
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  el.dispatchEvent(new Event('change',{bubbles:true}));
+}
+function adjustPaintQty(delta){
+  const el=$('paint_weight');if(!el)return;
+  const cur=parseFloat(el.value)||0;
+  el.value=String(Math.max(0,Math.round((cur+delta)*1000)/1000));
   el.dispatchEvent(new Event('input',{bubbles:true}));
   el.dispatchEvent(new Event('change',{bubbles:true}));
 }
