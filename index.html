@@ -289,8 +289,24 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 @media(min-width:992px) and (max-width:1199px){#record-list .card-data-grid{grid-template-columns:1fr}#record-list .card-data-row.full-row{grid-column:span 1}}
 .summary-grid-ng>.card:nth-child(1){border-top:3px solid var(--accent-cyan)}
 .summary-grid-ng>.card:nth-child(2){border-top:3px solid var(--accent-indigo)}
-.summary-grid-ng>.card:nth-child(3){border-top:3px solid var(--accent-warning)}
+.summary-grid-ng>.card:nth-child(3){border-top:3px solid var(--accent-danger)}
 .summary-grid-ng>.card:nth-child(4){border-top:3px solid var(--accent-success)}
+#sum-cards .summary-dashboard-cards{margin-bottom:10px}
+#sum-cards .summary-dashboard-cards .card-title{font-size:12px}
+#sum-cards .summary-dashboard-cards .card-value{font-size:28px}
+#sum-cards .summary-dashboard-cards .card-subcount{font-size:11px}
+#sum-cards .summary-dashboard-cards .card-subcount b{font-size:13px}
+#sum-cards .summary-dashboard-cards .summary-total-sub{color:var(--text-dim)}
+#sum-cards .summary-dashboard-cards .summary-unit-sub{color:var(--accent-indigo);font-weight:800}
+#sum-cards .summary-dashboard-cards .summary-rate-sub{color:var(--accent-danger);font-weight:800}
+#sum-cards .summary-dashboard-cards .summary-paint-sub{color:var(--text-dim)}
+#sum-cards .summary-dashboard-cards .summary-avg-sub{color:var(--text-dim)}
+#sum-cards .summary-dashboard-cards .avg-val{color:var(--accent-success)}
+.summary-note{background:rgba(255,255,255,.92);border:1.5px solid rgba(217,119,6,.35);color:#9a3412;border-radius:12px;padding:10px 14px;margin:0 0 22px;font-size:11.5px;font-weight:700;line-height:1.6;text-align:left;box-shadow:0 4px 14px rgba(15,23,42,.04)}
+@media(max-width:600px){
+  #sum-cards .summary-dashboard-cards .card-value{font-size:24px}
+  .summary-note{font-size:10.5px;padding:9px 11px}
+}
 .form-section{position:relative;overflow:hidden}
 .form-section:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;opacity:.85}
 .list-section{border-top:3px solid var(--accent-cyan)}
@@ -568,7 +584,7 @@ input[type=number]{-moz-appearance:textfield}
     </div>
 
     <div id="tab-content-main">
-      <div class="list-title" style="margin-bottom:0"><span>📊 集計サマリー</span><div class="cause-tabs" data-t="sum" data-k="week"></div></div>
+      <div class="list-title" style="margin-bottom:0"><span>📊 集計サマリー</span><div class="cause-tabs" data-t="sum" data-k="lastweek,week,month,year"></div></div>
       <div class="plbl" id="l-sum" style="margin-bottom:10px"></div>
       <div id="sum-cards"></div>
 
@@ -1191,12 +1207,26 @@ const ngConv=r=>{
   return r.ng_products.reduce((s,x)=>{const it=Array.isArray(r.items)?r.items.find(i=>i.name===x.name):null;return s+(Number(x.qty)||0)*uf((it&&it.unit)||'台')},0)
 };
 function sum(){
-  const R=ranges();need('r',['sum','cause','paint'],R);
+  const R=ranges(),sumG=rg('sum',R);
+  need('r',['sum','cause','paint'],R);
+  if(sumG&&sumG[0]<WIN)loadArch('t');
   lbl('sum',R);lbl('cause',R);lbl('paint',R);
-  const G=[R.lastweek,rg('sum',R),R.month,R.year],S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0})),cg=rg('cause',R),pg_=rg('paint',R),cc={},np={},pp={};
+  const G=[R.lastweek,R.week,R.month,R.year,sumG],S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0,units:{}})),cg=rg('cause',R),pg_=rg('paint',R),cc={},np={},pp={};
   for(const r of all('r')){
     const d=r.date;if(!d)continue;
-    G.forEach((g,i)=>{if(d>=g[0]&&d<=g[1]){const s=S[i];s.w+=r._w;s.q+=r._q;s.qc+=itemsConv(r.items);if(r.status==='NG'){s.n+=Number(r.ng_qty)||1;s.nc+=ngConv(r)}}});
+    G.forEach((g,i)=>{
+      if(d>=g[0]&&d<=g[1]){
+        const s=S[i];
+        s.w+=r._w;
+        s.q+=r._q;
+        s.qc+=itemsConv(r.items);
+        if(Array.isArray(r.items))r.items.forEach(it=>{
+          const u=it.unit||'台',qty=Number(it.qty)||0;
+          s.units[u]=(s.units[u]||0)+qty;
+        });
+        if(r.status==='NG'){s.n+=Number(r.ng_qty)||1;s.nc+=ngConv(r)}
+      }
+    });
     if(r.status==='NG'&&d>=cg[0]&&d<=cg[1]){
       if(Array.isArray(r.ng_details)&&r.ng_details.length)r.ng_details.forEach(x=>{const k=x.cause||'その他';cc[k]=(cc[k]||0)+(Number(x.qty)||1)});
       else{const k=r.ng_cause||(r.ng_causes&&r.ng_causes[0])||'その他';cc[k]=(cc[k]||0)+(Number(r.ng_qty)||1)}
@@ -1205,16 +1235,30 @@ function sum(){
     }
     if(d>=pg_[0]&&d<=pg_[1]&&r._w>0&&r._q>0&&Array.isArray(r.items))r.items.forEach(i=>{const k=i.name||'不明';pp[k]=(pp[k]||0)+r._w*(Number(i.qty)||0)/r._q})
   }
-  ['lw','sw','m','y'].forEach((k,i)=>{
-    const s=S[i];
-    $(`s-${k}-w`).textContent=fw(s.w);
-    $(`s-${k}-q`).innerHTML=`${s.q.toLocaleString('ja-JP')} <span class="unit">件</span>`;
-    $(`s-${k}-qc`)&&($(`s-${k}-qc`).innerHTML=`実質換算 <b>${s.qc.toLocaleString('ja-JP',{maximumFractionDigits:1})}</b> 件`);
-    $(`s-${k}-n`).innerHTML=`${s.q>0?(s.n/s.q*100).toFixed(1):0} <span class="unit">%</span>`;
-    $(`s-${k}-c`).innerHTML=`再塗装 <b>${s.n}</b> 件`;
-    $(`s-${k}-nc`)&&($(`s-${k}-nc`).innerHTML=`実質再塗装率 <b>${s.qc>0?(s.nc/s.qc*100).toFixed(1):0}%</b>`)
-  });
-  document.querySelectorAll('.pn-sw').forEach(e=>e.textContent=P.sum.k==='custom'?'指定週':'今週');
+
+  const selectedIndex=G.findIndex((g,i)=>i===4 || (sumG&&g[0]===sumG[0]&&g[1]===sumG[1]));
+  const si=selectedIndex>=0?selectedIndex:1,s=S[si];
+  const unitText=(UNITS||['台','枚','個','本']).filter(u=>(s.units[u]||0)>0)
+    .map(u=>`${s.units[u].toLocaleString('ja-JP',{maximumFractionDigits:1})}${u}`).join(' / ')||'—';
+
+  let paintRateSum=0,paintRateCount=0;
+  for(const r of all('t')){
+    const d=r.date;if(!d||!sumG||d<sumG[0]||d>sumG[1])continue;
+    const rate=Number(r.rate);
+    if(Number.isFinite(rate)&&rate>=0&&rate<=100){paintRateSum+=rate;paintRateCount++}
+  }
+  const avgRate=paintRateCount?paintRateSum/paintRateCount:0;
+  $('s-w').textContent=s.qc.toLocaleString('ja-JP',{maximumFractionDigits:1});
+  $('s-w-unit').textContent=`総件数 ${s.q.toLocaleString('ja-JP')}件`;
+  $('s-w-breakdown').textContent=`原単位内訳：${unitText}`;
+  $('s-paint').textContent=fw(s.w);
+  $('s-n').innerHTML=`${s.qc>0?(s.n/s.qc*100).toFixed(1):'0.0'} <span class="unit">%</span>`;
+  $('s-n-count').innerHTML=`再塗装 <b>${s.n.toLocaleString('ja-JP')}</b> 件`;
+  $('s-n-totalrate').textContent=`総件数による再塗装率 ${s.q>0?(s.n/s.q*100).toFixed(1):'0.0'}%`;
+  $('s-a').innerHTML=`${avgRate.toFixed(1)} <span class="unit">%</span>`;
+  $('s-a-count').textContent=`測定 ${paintRateCount.toLocaleString('ja-JP')}件の平均`;
+
+  document.querySelectorAll('.pn-sw').forEach(e=>e.textContent=NM[P.sum.k]||'今週');
   const sc=srt(cc),tc=sc.reduce((a,b)=>a+b[1],0),sn=srt(np),tn=sn.reduce((a,b)=>a+b[1],0),sp_=srt(pp).filter(x=>x[1]>0),mx=sp_.length?sp_[0][1]:1;
   rk('cause-analysis-list',sc.map(([k,v])=>{const p=(v/tc*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}個)`,p+'%',p]}),'該当期間の再塗装データはありません。');
   rk('product-analysis-list',sn.map(([k,v])=>{const p=(v/tn*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}台)`,p+'%',p]}),'該当期間の再塗装データはありません。');
@@ -1625,7 +1669,31 @@ async function rb(k,d){const[a,b,m,c]=PR[k],n=+$(c).dataset.n||2;
 $('prod-rows').innerHTML=rows('product','quantity',10,0,1);$('t-rows').innerHTML=rows('t_product','t_qty',5,1);sr('p',2);sr('t',2);
 $('prod-rows').addEventListener('input',()=>V('status')==='NG'&&ngOpts());
 document.addEventListener('input',e=>{if(e.target&&e.target.classList){if(e.target.classList.contains('ng-product-qty')||e.target.classList.contains('ng-cause-qty'))updateNgBalance()}});
-$('sum-cards').innerHTML=[['w','塗料使用量',''],['q','総件数','qty-val'],['n','再塗装率','ng-val']].map(([k,t,c])=>`<div class="summary-grid-ng">${[['lw','先週'],['sw','<span class="pn-sw">今週</span>'],['m','月間'],['y','年間']].map(([p,l])=>`<div class="card"><div class="card-title">${l} ${t}</div><div class="card-value ${c}" id="s-${p}-${k}"></div>${k==='n'?`<div class="card-subcount" id="s-${p}-c"></div><div class="card-subcount qc-sub" id="s-${p}-nc"></div>`:k==='q'?`<div class="card-subcount qc-sub" id="s-${p}-qc"></div>`:''}</div>`).join('')}</div>`).join('');
+$('sum-cards').innerHTML=`<div class="summary-grid-ng summary-dashboard-cards">
+  <div class="card">
+    <div class="card-title">実質総件数</div>
+    <div class="card-value qty-val" id="s-w"></div>
+    <div class="card-subcount summary-total-sub" id="s-w-unit"></div>
+    <div class="card-subcount summary-unit-sub" id="s-w-breakdown"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">塗料使用量</div>
+    <div class="card-value qty-val" id="s-paint"></div>
+    <div class="card-subcount summary-paint-sub">実績データの合計</div>
+  </div>
+  <div class="card">
+    <div class="card-title">実質再塗装率</div>
+    <div class="card-value ng-val" id="s-n"></div>
+    <div class="card-subcount" id="s-n-count"></div>
+    <div class="card-subcount summary-rate-sub" id="s-n-totalrate"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">平均塗着率</div>
+    <div class="card-value avg-val" id="s-a"></div>
+    <div class="card-subcount summary-avg-sub" id="s-a-count"></div>
+  </div>
+</div>
+<div class="summary-note">実質換算について：台・枚・個などの数量を、登録済みの換算係数に基づいて「台=1.0」として換算した集計値です。実質再塗装率も、この実質総件数を母数に算出しています。</div>`;
 document.querySelectorAll('.cause-tabs[data-t]').forEach(e=>{
   const t=e.dataset.t;
   e.innerHTML=e.dataset.k.split(',').map(k=>`<button type="button" class="btn-tab" id="t-${t}-${k}" onclick="setR('${t}','${k}')">${NM[k]}</button>`).join('')+`<button type="button" class="btn-tab" id="t-${t}-custom" onclick="openCal('${t}')">📅 任意</button>`;
