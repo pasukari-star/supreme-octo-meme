@@ -175,7 +175,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .page-info{font-size:12px;font-weight:600;color:var(--text-dim)}
 .empty-msg{text-align:center;color:var(--text-dim);padding:32px 16px;font-size:13px}
 .empty-sm{font-size:11.5px;color:var(--text-dim);text-align:center;padding:10px}
-.sp-row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;align-items:center;background:#fff;padding:8px;border-radius:6px;border:1px solid #cbd5e1}
+.sp-row{display:grid;grid-template-columns:2fr 1fr auto 1fr auto;gap:6px;align-items:center;background:#fff;padding:8px;border-radius:6px;border:1px solid #cbd5e1}
 .sp-row select,.sp-row input,.sp-row .btn-del{height:36px;font-size:12px}
 @media(max-width:600px){.card-data-grid{grid-template-columns:1fr;gap:6px}.card-data-row.full-row{grid-column:span 1}.form-grid{grid-template-columns:1fr}.full{grid-column:span 1}.multi-select-grid-2{grid-template-columns:1fr}}
 @media(min-width:992px){.header-bar{flex-direction:row;justify-content:space-between;text-align:left;padding-bottom:18px}.header-title-box{align-items:flex-start}.app-title{font-size:21px;text-align:left}.header-info-row{justify-content:flex-start}.header-btn-group{width:auto;justify-content:flex-end;flex-wrap:nowrap}.summary-grid-ng{grid-template-columns:repeat(4,1fr);gap:14px}.card-value{font-size:23px}.pc-two-columns{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}.cause-list{max-height:200px}.form-grid{gap:10px}#menu{right:0;transform:none}}
@@ -225,7 +225,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
   .qty-control .qty-step:nth-of-type(1){grid-column:1;grid-row:1}.qty-control .qty-step:nth-of-type(2){grid-column:2;grid-row:1}.qty-control .qty-step:nth-of-type(3){grid-column:3;grid-row:1}
   .qty-control .qty-step:nth-of-type(4){grid-column:1;grid-row:3}.qty-control .qty-step:nth-of-type(5){grid-column:2;grid-row:3}.qty-control .qty-step:nth-of-type(6){grid-column:3;grid-row:3}}
 .ng-input-container .form-grid{gap:8px}
-@media(max-width:600px){.form-grid.fg4{grid-template-columns:repeat(2,minmax(0,1fr))}.fg4>.s2{grid-column:1/-1}.fg4 .multi-select-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.form-section{padding:12px}}
+@media(max-width:600px){.form-grid.fg4{grid-template-columns:repeat(2,minmax(0,1fr))}.fg4>.s2{grid-column:1/-1}.fg4>.weather-field{grid-column:1/-1}.fg4 .multi-select-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.form-section{padding:12px}.weather-field .weather-fetch-status{min-width:0;overflow-wrap:anywhere}.weather-field .weather-refresh-btn{flex:0 0 auto;white-space:nowrap;width:auto}}
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.6);z-index:1000;align-items:center;justify-content:center;padding:16px}
 #app-dialog-overlay{display:none;position:fixed;inset:0;z-index:900000;background:rgba(15,23,42,.38);align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(1.5px)}
 #app-dialog-overlay.show{display:flex}
@@ -241,7 +241,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 #app-dialog-cancel:hover{background:#f8fafc}
 #app-dialog-ok:hover{filter:brightness(1.03)}
 @keyframes appDialogPop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
-.modal-content{background:#fff;border-radius:var(--radius);width:100%;max-width:480px;padding:24px;box-shadow:0 25px 50px rgba(0,0,0,.15);max-height:90vh;display:flex;flex-direction:column;border:1px solid var(--border-color)}
+.modal-content{background:#fff;border-radius:var(--radius);width:100%;max-width:480px;padding:24px;box-shadow:0 25px 50px rgba(0,0,0,.15);max-height:90vh;display:flex;flex-direction:column;border:1px solid var(--border-color);overflow-y:auto;overscroll-behavior:contain}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .modal-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
 .btn-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-muted);line-height:1}
@@ -292,19 +292,44 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 .summary-grid-ng>.card:nth-child(3){border-top:3px solid var(--accent-danger)}
 .summary-grid-ng>.card:nth-child(4){border-top:3px solid var(--accent-success)}
 #sum-cards .summary-dashboard-cards{margin-bottom:10px}
-#sum-cards .summary-dashboard-cards .card-title{font-size:12px}
-#sum-cards .summary-dashboard-cards .card-value{font-size:28px}
-#sum-cards .summary-dashboard-cards .card-subcount{font-size:11px}
+#sum-cards .summary-dashboard-cards .card-title{font-size:12px;line-height:1.35;min-height:32px;display:flex;align-items:center;justify-content:center}
+#sum-cards .summary-dashboard-cards .card-value{font-size:30px;line-height:1.15;min-height:35px;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+#sum-cards .summary-dashboard-cards .card-subcount{font-size:11px;line-height:1.45;min-height:16px}
 #sum-cards .summary-dashboard-cards .card-subcount b{font-size:13px}
-#sum-cards .summary-dashboard-cards .summary-total-sub{color:var(--text-dim)}
+#sum-cards .summary-dashboard-cards .summary-total-sub,
+#sum-cards .summary-dashboard-cards .summary-rate-sub{font-family:'Plus Jakarta Sans','Noto Sans JP',sans-serif;font-size:22px;line-height:1.15;min-height:28px;margin-top:6px;font-weight:900;white-space:nowrap;display:flex;align-items:center;justify-content:center}
+#sum-cards .summary-dashboard-cards .summary-total-sub{color:var(--text-muted)}
 #sum-cards .summary-dashboard-cards .summary-unit-sub{color:var(--accent-indigo);font-weight:800}
-#sum-cards .summary-dashboard-cards .summary-rate-sub{color:var(--accent-danger);font-weight:800}
+#sum-cards .summary-dashboard-cards .summary-rate-sub{color:var(--accent-danger)}
 #sum-cards .summary-dashboard-cards .summary-paint-sub{color:var(--text-dim)}
 #sum-cards .summary-dashboard-cards .summary-avg-sub{color:var(--text-dim)}
 #sum-cards .summary-dashboard-cards .avg-val{color:var(--accent-success)}
+
+/* 選択された追加改善: 分析・状態表示・空状態・ページ表示 */
+.analysis-mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0 14px}
+.analysis-mini-card{background:#fff;border:1px solid var(--border-color);border-radius:10px;padding:9px 10px;min-width:0}
+.analysis-mini-label{font-size:10px;color:var(--text-dim);font-weight:700}
+.analysis-mini-value{font-size:17px;font-weight:800;color:var(--text-main);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.analysis-list-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.analysis-list-panel{background:rgba(255,255,255,.72);border:1px solid var(--border-color);border-radius:10px;padding:10px;min-width:0}
+.analysis-list-title{font-size:11px;font-weight:800;color:var(--text-main);margin-bottom:7px;line-height:1.45;overflow-wrap:anywhere}
+.summary-trends-card{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}.summary-trends-title{display:none}.summary-trends-period{display:none}.summary-trend-grid{display:contents}.summary-trend-panel{min-width:0;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:14px 16px 10px;overflow:hidden;box-shadow:var(--shadow-glow)}.summary-trend-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;min-width:0}.summary-trend-name{font-size:15px;font-weight:800;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.summary-trend-total{font-size:20px;font-weight:900;white-space:nowrap}.summary-trend-total.qty{color:#1687b7}.summary-trend-total.ng{color:#d6294d}.summary-trend-svg{display:block;width:100%;height:auto;aspect-ratio:700/270;overflow:visible}.summary-trend-meta{font-size:11px;color:var(--text-dim);line-height:1.5;margin-top:3px;white-space:normal;overflow-wrap:anywhere}.summary-trend-meta strong{color:var(--text-main)}.summary-trend-empty{min-height:190px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:12px;text-align:center}
+.bulk-product-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:280px;overflow:auto;padding:2px}.bulk-product-option{display:flex;align-items:center;gap:7px;min-width:0;padding:8px 9px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11px;font-weight:700;color:var(--text-main);cursor:pointer}.bulk-product-option input{flex:0 0 auto;width:17px;height:17px;margin:0}.bulk-product-option span{min-width:0;overflow-wrap:anywhere}.bulk-editor-count{font-size:10.5px;color:var(--text-dim);font-weight:700}.bulk-editor-fields{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(100px,.7fr));gap:8px;margin-top:12px}.bulk-editor-fields>div{min-width:0}.bulk-editor-fields select,.bulk-editor-fields input{width:100%;box-sizing:border-box}.bulk-editor-note{font-size:10.5px;color:var(--text-dim);line-height:1.55;margin-top:10px;padding:9px 10px;background:rgba(2,132,199,.06);border:1px solid rgba(2,132,199,.14);border-radius:8px}
+.bulk-bake-actions{position:sticky;bottom:0;display:flex;gap:8px;margin-top:12px;padding:10px 0 2px;background:#fff;border-top:1px solid var(--border-color);z-index:3}.bulk-bake-actions button{flex:1;min-width:0;height:44px;font-weight:800}.bulk-bake-actions button:first-child{box-shadow:0 3px 10px rgba(2,132,199,.12)}
+@media(max-width:767px){.bulk-bake-actions{flex-direction:column;gap:6px;margin-top:10px;padding-top:9px}.bulk-bake-actions button{width:100%;min-height:44px;height:44px}.bulk-editor-note{font-size:10px;line-height:1.5}.modal-content{padding:16px;max-width:calc(100vw - 24px)}#bulk-bake-modal .modal-title{font-size:15px;line-height:1.35}#bulk-bake-modal .modal-header{margin-bottom:12px}#bulk-bake-modal .ph{gap:6px}.bulk-product-list{max-height:220px}.bulk-editor-fields{margin-top:10px;gap:7px}}
+.save-state{font-size:11px;text-align:center;color:var(--text-dim);min-height:16px;margin-top:4px;font-weight:700}
+.save-state.saving{color:var(--accent-cyan)}
+.save-state.success{color:var(--accent-success)}
+.save-state.error{color:var(--accent-danger)}
+.empty-msg{padding:24px 14px;text-align:center;color:var(--text-dim);border:1px dashed var(--border-color);border-radius:10px;background:rgba(255,255,255,.55);line-height:1.7;font-size:12px}
+.page-size-control{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--text-dim);font-weight:700}
+.page-size-control select{width:auto;height:30px;padding:3px 7px;font-size:11px}
+@media(max-width:767px){.analysis-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.analysis-list-grid{grid-template-columns:minmax(0,1fr)}.analysis-mini-value{white-space:normal;overflow-wrap:anywhere}.page-size-control select{height:32px}}
 .summary-note{background:rgba(255,255,255,.92);border:1.5px solid rgba(217,119,6,.35);color:#9a3412;border-radius:12px;padding:10px 14px;margin:0 0 22px;font-size:11.5px;font-weight:700;line-height:1.6;text-align:left;box-shadow:0 4px 14px rgba(15,23,42,.04)}
 @media(max-width:600px){
-  #sum-cards .summary-dashboard-cards .card-value{font-size:24px}
+  #sum-cards .summary-dashboard-cards .card{padding:15px 9px;min-height:142px}
+  #sum-cards .summary-dashboard-cards .card-value{font-size:26px;min-height:31px}
+  #sum-cards .summary-dashboard-cards .card-title{min-height:30px}
   .summary-note{font-size:10.5px;padding:9px 11px}
 }
 @media(min-width:992px){#sum-cards .summary-note{text-align:center}}
@@ -434,7 +459,7 @@ html{scroll-behavior:smooth}
   .prod-grid input{font-size:16px}
   .preset-name-input{font-size:16px!important}
   .preset-grid input{font-size:15px}
-  .sp-row select,.sp-row input{font-size:15px}
+  .sp-row select,.sp-row input{font-size:15px}.sp-row{grid-template-columns:1fr 1fr}.sp-row select{grid-column:1/-1}.sp-row .subpart-auto-tag{justify-self:start}
   .filter-box input,input[type=date].filter-date-input{font-size:16px}
   .login-input{font-size:22px}}
 button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,.card-item .btn-edit:focus-visible,.card-item .btn-del:focus-visible{outline:2.5px solid var(--accent-cyan);outline-offset:2px}
@@ -517,6 +542,10 @@ input[type=number]{-moz-appearance:textfield}
 @media(min-width:768px){.mobile-card-details{display:block!important}}
 .bake-preset-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(90px,.7fr) minmax(90px,.7fr) auto;gap:7px;align-items:end;padding:9px;background:#fff;border:1px solid var(--border-color);border-radius:var(--radius-sm)}
 @media(max-width:600px){.bake-preset-row{grid-template-columns:1fr 1fr;gap:7px}.bake-preset-row .bake-paint{grid-column:1/-1}.bake-preset-row .bake-actions{grid-column:1/-1;display:flex;gap:6px}.bake-preset-row .bake-actions button{flex:1}}
+.calc-note{font-size:11px;color:var(--text-dim);line-height:1.5;margin-top:6px;padding:8px 10px;background:rgba(2,132,199,.06);border:1px solid rgba(2,132,199,.12);border-radius:var(--radius-sm)}
+.calc-mode-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:9px 11px;background:#f8fafc;border:1px solid var(--border-color);border-radius:9px;font-size:11px}.calc-mode-box select{flex:1;min-width:210px}.calc-mode-help{color:var(--text-dim);line-height:1.45}.calc-source-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:5px;font-size:9px;font-weight:800;margin-left:4px}.calc-source-input{background:rgba(2,132,199,.1);color:#0369a1}.calc-source-measured{background:rgba(5,150,105,.1);color:#047857}.calc-source-auto{background:rgba(124,58,237,.1);color:#6d28d9}.calc-overlap-note{background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.25);color:#92400e;border-radius:8px;padding:8px 10px;font-size:10.5px;line-height:1.5;margin-top:8px}.subpart-auto-tag{font-size:9px;color:var(--accent-indigo);font-weight:800}.weather-refresh-btn{height:28px;padding:0 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:10px;font-weight:700;cursor:pointer}.sync-detail{font-size:9.5px;color:var(--text-dim);margin-top:2px}.ng-match-summary{position:sticky;bottom:8px;z-index:5;box-shadow:0 4px 14px rgba(15,23,42,.08)}@media(max-width:600px){.calc-mode-box{align-items:stretch}.calc-mode-box select{min-width:0;width:100%}.weather-refresh-btn{width:100%}}
+@media(max-width:767px){.analysis-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.analysis-mini-card{padding:8px}.analysis-mini-label{font-size:9.5px}.analysis-mini-value{font-size:15px}.analysis-list-grid{grid-template-columns:1fr;gap:8px}.analysis-list-panel{padding:9px}.cause-header{gap:6px}.cause-header>span:last-child{white-space:nowrap;font-size:10.5px}.summary-trends-card{grid-template-columns:1fr;gap:10px;margin-bottom:12px}.summary-trend-panel{padding:11px 10px 9px;border-radius:14px}.summary-trend-name{font-size:14px}.summary-trend-total{font-size:18px}.summary-trend-meta{font-size:10.5px}.bulk-product-list{grid-template-columns:1fr;max-height:240px}.bulk-editor-fields{grid-template-columns:1fr}.bulk-editor-fields>div{width:100%}}
+@media(min-width:768px){.analysis-list-panel{overflow:hidden}.analysis-list-panel .cause-header{gap:8px}.analysis-list-panel .cause-header>span:first-child{min-width:0;overflow-wrap:anywhere}.analysis-list-panel .cause-header>span:last-child{flex:0 0 auto;white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -572,6 +601,7 @@ input[type=number]{-moz-appearance:textfield}
               <button type="button" class="btn-settings" onclick="mn();opSet()">👷 塗装者登録</button>
               <button type="button" class="btn-settings" onclick="mn();lOpen('p')">🏷 品名登録</button>
               <button type="button" class="btn-settings" onclick="mn();bakeOpen()">🔥 塗料・焼付条件設定</button>
+              <button type="button" class="btn-settings btn-admin-setting" onclick="mn();bulkBakeOpen()">🧰 過去ログの品名から塗料・焼付条件を一括編集</button>
               <button type="button" class="btn-settings" onclick="mn();ufSet()">📐 換算係数設定(台/枚/個/本)</button>
               <button type="button" class="btn-settings" onclick="mn();lOpen('c')">⚙️ 原因内容設定</button>
               <button type="button" class="btn-settings btn-admin-setting" onclick="mn();causeFixOpen()">🛠 過去ログの原因名を一括修正</button>
@@ -600,7 +630,7 @@ input[type=number]{-moz-appearance:textfield}
             <form id="p-form">
               <div class="form-grid fg4">
                 <div class="s2"><label for="date">日付</label><input type="date" id="date" required autocomplete="off" onchange="onDate()"></div>
-                <div class="s2"><label>天候自動取得 地域選択</label><select id="location-select" onchange="onLoc()">
+                <div class="s2"><label for="location-select">天候自動取得 地域選択</label><select id="location-select" onchange="onLoc()">
                     <option value="fukuyama" selected>広島県 福山市 (既定)</option>
                     <option value="hiroshima">広島県 広島市</option>
                     <option value="okayama">岡山県 岡山市</option>
@@ -612,25 +642,25 @@ input[type=number]{-moz-appearance:textfield}
                     <option value="sapporo">北海道 札幌市</option>
                   </select></div>
                 <div class="full">
-                  <div class="ph"><label>品名・塗装台数 (最大10種類) <span class="req-tag">品名1・台数1は必須</span></label><span class="pctl"><b id="pc-p">2 / 10</b><button type="button" class="btn-mini" id="ps-p" onclick="rb('p',-1)" title="最後の行を削除">－</button><button type="button" class="btn-mini" id="pa-p" onclick="rb('p',1)">＋ 追加</button></span></div>
+                  <div class="ph"><label for="product1">品名・塗装台数 (最大10種類) <span class="req-tag">品名1・台数1は必須</span></label><span class="pctl"><b id="pc-p">2 / 10</b><button type="button" class="btn-mini" id="ps-p" onclick="rb('p',-1)" title="最後の行を削除">－</button><button type="button" class="btn-mini" id="pa-p" onclick="rb('p',1)">＋ 追加</button></span></div>
                   <div class="prod-box" id="prod-rows"></div>
                 </div>
                 <div class="s2">
-                  <label>塗装者 (登録は最大3名・同時選択は最大2名)</label>
+                  <label for="operator1">塗装者 (登録は最大3名・同時選択は最大2名)</label>
                   <div class="multi-select-grid-2"><select id="operator1" required></select><select id="operator2"></select></div>
                 </div>
                 <div class="s2">
-                  <label>使用塗装機 (最大2種まで選択可能)</label>
+                  <label for="machine1">使用塗装機 (最大2種まで選択可能)</label>
                   <div class="multi-select-grid-2">
                     <select id="machine1" required><option value="旭サナック" selected>旭サナック</option><option value="ワグナー">ワグナー</option><option value="ワグナーカップガン">ワグナーカップガン</option></select>
                     <select id="machine2"><option value="" selected>-- 2台目なし --</option><option value="旭サナック">旭サナック</option><option value="ワグナー">ワグナー</option><option value="ワグナーカップガン">ワグナーカップガン</option></select>
                   </div>
                 </div>
-                <div class="weather-field"><div class="ph"><label>天気 <span class="auto-calc-badge">✨ 自動取得</span></label><label class="weather-time-label">取得時刻 <input type="time" id="weather-time" value="12:00" step="3600" aria-label="天候取得時刻"></label></div><select id="weather"><option value="晴れ">晴れ</option><option value="曇り">曇り</option><option value="雨">雨</option><option value="雪">雪</option></select><div id="weather-fetch-status" class="weather-fetch-status" aria-live="polite">当日12:00の天候を自動取得</div></div>
+                <div class="weather-field"><div class="ph"><label for="weather">天気 <span class="auto-calc-badge">✨ 自動取得</span></label><label class="weather-time-label" for="weather-time">取得時刻 <input type="time" id="weather-time" value="12:00" step="3600" aria-label="天候取得時刻"></label></div><select id="weather"><option value="晴れ">晴れ</option><option value="曇り">曇り</option><option value="雨">雨</option><option value="雪">雪</option></select><div style="display:flex;gap:6px;align-items:center;margin-top:5px"><div id="weather-fetch-status" class="weather-fetch-status" aria-live="polite" style="flex:1">当日12:00の天候を自動取得</div><button type="button" class="weather-refresh-btn" onclick="refreshWx()">↻ 再取得</button></div></div>
                 <div><label for="temp">気温 (℃) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="temp" step="1" placeholder="23"></div>
                 <div><label for="humidity">湿度 (%) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="humidity" step="1" min="0" max="100" placeholder="55"></div>
-                <div><label for="bake_paint_select">塗料名 <span class="optional-tag">※焼付条件プリセット</span></label><select id="bake_paint_select" onchange="applyBakePreset(this.value)"><option value="">-- 塗料を選択（任意） --</option></select></div>
-                <div><label for="paint_weight">使用塗料 (kg) <span class="req-tag">必須</span></label><div class="qty-control paint-qty-control" aria-label="使用塗料 クイック入力"><button type="button" class="qty-step minus" onclick="adjustPaintQty(-5)" title="5kg減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-1)" title="1kg減らす">−1</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-0.1)" title="0.1kg減らす">−0.1</button><input type="number" class="req" id="paint_weight" step="0.001" min="0" required placeholder="例: 5.3"><button type="button" class="qty-step plus" onclick="adjustPaintQty(0.1)" title="0.1kg増やす">＋0.1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(1)" title="1kg増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(5)" title="5kg増やす">＋5</button></div></div>
+                <div><label for="bake_paint_select">塗料名 <span class="optional-tag">※焼付条件プリセット</span></label><select id="bake_paint_select" onchange="applyBakePreset(this.value)"><option value="">-- 塗料を選択（任意） --</option></select><div id="bake-preset-status" class="calc-note" style="display:none"></div></div>
+                <div><label for="paint_weight">使用塗料 (kg) <span class="req-tag">必須</span></label><div class="qty-control paint-qty-control" aria-label="使用塗料 クイック入力"><button type="button" class="qty-step minus" onclick="adjustPaintQty(-5)" title="5kg減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-1)" title="1kg減らす">−1</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-0.1)" title="0.1kg減らす">−0.1</button><input type="number" class="req" id="paint_weight" step="0.001" min="0.001" required placeholder="例: 5.3"><button type="button" class="qty-step plus" onclick="adjustPaintQty(0.1)" title="0.1kg増やす">＋0.1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(1)" title="1kg増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(5)" title="5kg増やす">＋5</button></div></div>
                 <div class="full">
                   <button type="button" class="preset-select-btn" onclick="pOpen()"><i class="fa-solid fa-sliders"></i> 🎛 塗装機プリセットから選択（電圧・電流・吐出量・エアー流量を自動入力）</button>
                   <div id="preset-active-badge" class="pb"></div>
@@ -640,20 +670,20 @@ input[type=number]{-moz-appearance:textfield}
                 <div><label for="discharge">吐出量 (FlowRate)</label><input type="number" id="discharge" step="1" value="300"></div>
                 <div><label for="air_flow">エアー流量 (L/min)</label><input type="number" id="air_flow" step="1" value="250"></div>
                 <div><label for="thickness">平均膜厚 (μm)<span class="optional-tag">(任意)</span></label><input type="number" id="thickness" step="0.1" min="0" value="50" placeholder="例: 50"></div>
-                <div><label for="bake_temp">焼付温度 (℃) <span class="req-tag">必須</span></label><input type="number" id="bake_temp" step="1" value="200" required></div>
-                <div><label for="bake_time">焼付時間 (分) <span class="req-tag">必須</span></label><input type="number" id="bake_time" step="1" value="20" required></div>
+                <div><label for="bake_temp">焼付温度 (℃) <span class="req-tag">必須</span></label><input type="number" id="bake_temp" step="1" min="0" value="200" required></div>
+                <div><label for="bake_time">焼付時間 (分) <span class="req-tag">必須</span></label><input type="number" id="bake_time" step="1" min="0" value="20" required></div>
                 <div><label for="status">判定</label><select id="status" onchange="ngToggle()"><option value="OK">OK (全数合格)</option><option value="NG" class="text-danger">再塗装(NG)</option></select></div>
                 <div class="full">
                   <div id="ng-section" class="ng-input-container">
                     <div class="ng-title">🚨 <span class="text-danger">再塗装(NG)</span>の詳細を入力してください</div>
                     <div class="form-grid">
                       <div class="full ng-product-section">
-  <div class="ph"><label><span class="text-danger">再塗装(NG)</span>発生品名・台数 <span class="req-tag">品名ごとのNG台数を明確に入力</span></label><span class="pctl"><b id="ng-product-count">1 / 10</b><button type="button" class="btn-mini" id="ng-product-remove" onclick="ngProductRow(-1)">－</button><button type="button" class="btn-mini" id="ng-product-add" onclick="ngProductRow(1)">＋ 品名を追加</button></span></div>
+  <div class="ph"><label for="ng_product_select1"><span class="text-danger">再塗装(NG)</span>発生品名・台数 <span class="req-tag">品名ごとのNG台数を明確に入力</span></label><span class="pctl"><b id="ng-product-count">1 / 10</b><button type="button" class="btn-mini" id="ng-product-remove" onclick="ngProductRow(-1)">－</button><button type="button" class="btn-mini" id="ng-product-add" onclick="ngProductRow(1)">＋ 品名を追加</button></span></div>
   <div class="ng-product-help">例：品名1＝2台、品名2＝8台 → NG合計10台として保存・集計します。</div>
   <div id="ng-product-rows" class="ng-product-rows"></div>
 </div>
                       
-                      <div class="full ng-cause-section"><div class="ph"><label>不具合の原因・個数 <span class="req-tag">原因1は必須</span></label><span class="pctl"><b id="ng-cause-count">1 / 10</b><button type="button" class="btn-mini" id="ng-cause-remove" onclick="ngCauseRow(-1)">－</button><button type="button" class="btn-mini" id="ng-cause-add" onclick="ngCauseRow(1)">＋ 追加</button></span></div><div id="ng-cause-rows" class="ng-cause-rows"></div></div>
+                      <div class="full ng-cause-section"><div class="ph"><label for="ng_cause_select1">不具合の原因・個数 <span class="req-tag">原因1は必須・NG台数と合計一致</span></label><span class="pctl"><b id="ng-cause-count">1 / 10</b><button type="button" class="btn-mini" id="ng-cause-remove" onclick="ngCauseRow(-1)">－</button><button type="button" class="btn-mini" id="ng-cause-add" onclick="ngCauseRow(1)">＋ 追加</button></span></div><div id="ng-cause-rows" class="ng-cause-rows"></div></div>
                       <div class="full ng-match-summary" id="ng-match-summary" aria-live="polite"><span class="ng-match-product">NG合計：<strong id="ng-balance-product">0</strong> 台</span><span class="ng-match-cause">原因合計：<strong id="ng-balance-cause">0</strong> 個</span><span class="ng-match-diff" id="ng-balance-diff">⚠ あと0個</span></div>
                     </div>
                   </div>
@@ -661,6 +691,7 @@ input[type=number]{-moz-appearance:textfield}
                 <div class="full"><label for="memo">特記事項・メモ</label><input type="text" id="memo" placeholder="作業特記事項など"></div>
               </div>
               <button type="submit" class="btn-submit"></button>
+              <div class="save-state" id="p-save-state" aria-live="polite"></div>
               <button type="button" class="btn-clear" id="cx-p" style="display:none;width:100%;margin-top:8px" onclick="cxEdit('p')">✖ 編集をキャンセル</button>
             </form>
           </div>
@@ -673,7 +704,7 @@ input[type=number]{-moz-appearance:textfield}
               <div class="cause-title" style="margin-bottom:0"><span>📈 集計期間の切替</span><div class="cause-tabs" data-t="cause" data-k="week,lastweek,month,year"></div></div>
               <div class="plbl" id="l-cause"></div>
             </div>
-            <div class="cause-analysis-card ca"><div class="cause-title sm">🚨 原因別ランキング (再塗装発生数)</div><div class="cause-list" id="cause-analysis-list"></div></div>
+            <div class="cause-analysis-card ca"><div class="cause-title sm">🚨 原因別ランキング (再塗装発生数)</div><div class="analysis-mini-grid" id="ng-analysis-summary"></div><div class="cause-list" id="cause-analysis-list"></div></div>
             <div class="cause-analysis-card ca b"><div class="cause-title sm">📦 台数別ランキング (再塗装発生台数)</div><div class="cause-list" id="product-analysis-list"></div></div>
           </div>
           <div class="paint-analysis-wrapper">
@@ -683,6 +714,13 @@ input[type=number]{-moz-appearance:textfield}
               <div class="plbl" id="l-paint"></div>
             </div>
             <div class="cause-analysis-card ca b"><div class="cause-title sm">🎨 品名別 塗料総使用量ランキング</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
+            <div class="cause-analysis-card ca b">
+              <div class="cause-title sm">📊 製品・塗料別 実績分析</div>
+              <div class="analysis-list-grid">
+                <div class="analysis-list-panel"><div class="analysis-list-title">製品別：塗装数量・NG率・塗料使用量</div><div class="cause-list" id="product-performance-list"></div></div>
+                <div class="analysis-list-panel"><div class="analysis-list-title">塗料別：使用量</div><div class="cause-list" id="paint-performance-list"></div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -695,6 +733,7 @@ input[type=number]{-moz-appearance:textfield}
           <button type="button" class="btn-filter-ng" id="btn-ng" onclick="ngOnly()">⚠️ 再塗装(NG)のみ</button>
           <button type="button" class="btn-clear" onclick="clearF()">クリア</button>
           <button type="button" class="btn-clear" id="btn-arch" onclick="loadArch('r')" style="display:none"></button>
+          <label class="page-size-control">表示件数<select id="page-size-l" onchange="setPageSize('l',this.value)"><option value="10" selected>10</option><option value="20">20</option><option value="50">50</option></select></label>
         </div>
         <div id="record-list"></div>
         <div class="pagination"><button type="button" class="btn-page" id="pp-l" onclick="chp('l',-1)">◀ 前の10件</button><span class="page-info" id="pi-l">1 / 1 ページ (0件)</span><button type="button" class="btn-page" id="pn-l" onclick="chp('l',1)">次の10件 ▶</button></div>
@@ -711,18 +750,19 @@ input[type=number]{-moz-appearance:textfield}
               <div class="form-grid">
                 <div class="full"><label for="t_date">日付</label><input type="date" id="t_date" required></div>
                 <div class="full">
-                  <div class="ph"><label>ワーク品名・塗装台数 (最大5種類まで選択可能)</label><span class="pctl"><b id="pc-t">2 / 5</b><button type="button" class="btn-mini" id="ps-t" onclick="rb('t',-1)" title="最後の行を削除">－</button><button type="button" class="btn-mini" id="pa-t" onclick="rb('t',1)">＋ 追加</button></span></div>
+                  <div class="ph"><label for="t_product1">ワーク品名・塗装台数 (最大5種類まで選択可能)</label><span class="pctl"><b id="pc-t">2 / 5</b><button type="button" class="btn-mini" id="ps-t" onclick="rb('t',-1)" title="最後の行を削除">－</button><button type="button" class="btn-mini" id="pa-t" onclick="rb('t',1)">＋ 追加</button></span></div>
                   <div class="prod-box" id="t-rows"></div>
                 </div>
                 <div><label for="t_operator">塗装担当者</label><select id="t_operator"></select></div>
                 <div><label for="t_density">塗料比重 (g/cm³)</label>
                   <select id="t_density"><option value="1.40" selected>一般ポリエステル樹脂 (1.40)</option><option value="1.50">高比重・ホワイト系 (1.50)</option><option value="1.20">クリア系・低比重 (1.20)</option></select>
                 </div>
-                <div><label for="t_used_paint_kg">使用した塗料量 (kg) <span class="optional-tag">※必須</span></label><input type="number" id="t_used_paint_kg" step="0.001" min="0" required placeholder="例: 0.50 (kg)"></div>
-                <div><label for="t_attached_weight_kg">焼付後の塗膜増量 (kg) <span class="auto-calc-badge" id="badge_attached_weight" style="display:none">✨ 自動計算済</span><span class="optional-tag">※膜厚とどちらか</span></label><input type="number" id="t_attached_weight_kg" step="0.001" min="0" placeholder="例: 0.315 (実測値kg)"></div>
-                <div><label for="t_area">ワーク総表面積 (m²) <span class="auto-calc-badge" id="badge_area" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_area" step="0.01" min="0" placeholder="例: 1.2 (未入力OK)"></div>
-                <div><label for="t_film">平均膜厚 (μm) <span class="auto-calc-badge" id="badge_film" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_film" step="0.1" min="0" placeholder="例: 75"></div>
-                <div class="full"><label for="t_measured_loss">実測ロス率 (%) <span class="optional-tag">※任意（実測値を優先指定して逆算する場合に入力）</span></label><input type="number" id="t_measured_loss" step="0.1" min="0" max="100" placeholder="例: 35.0 (任意入力)"></div>
+                <div><label for="t_used_paint_kg">使用した塗料量 (kg) <span class="calc-source-badge calc-source-input">入力値</span> <span class="optional-tag">※必須</span></label><input type="number" id="t_used_paint_kg" step="0.001" min="0" required placeholder="例: 0.50 (kg)"></div>
+                <div><label for="t_attached_weight_kg">焼付後の塗膜増量 (kg) <span class="calc-source-badge calc-source-measured">実測/自動</span> <span class="auto-calc-badge" id="badge_attached_weight" style="display:none">✨ 自動計算済</span><span class="optional-tag">※膜厚とどちらか</span></label><input type="number" id="t_attached_weight_kg" step="0.001" min="0" placeholder="例: 0.315 (実測値kg)"></div>
+                <div><label for="t_area">ワーク総表面積 (m²) <span class="calc-source-badge calc-source-input">入力/自動</span> <span class="auto-calc-badge" id="badge_area" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_area" step="0.01" min="0" placeholder="例: 1.2 (未入力OK)"></div>
+                <div><label for="t_film">平均膜厚 (μm) <span class="calc-source-badge calc-source-input">入力/自動</span> <span class="auto-calc-badge" id="badge_film" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_film" step="0.1" min="0" placeholder="例: 75"></div>
+                <div class="full"><label for="t_measured_loss">実測ロス率 (%) <span class="calc-source-badge calc-source-measured">実測</span> <span class="optional-tag">※任意（実測値を優先指定して逆算する場合に入力）</span></label><input type="number" id="t_measured_loss" step="0.1" min="0" max="100" placeholder="例: 35.0 (任意入力)"></div>
+                <div class="full calc-mode-box"><label for="t_calc_mode" style="margin:0;font-weight:800;white-space:nowrap">計算モード</label><select id="t_calc_mode"><option value="auto">自動判定（入力内容から選択）</option><option value="loss">実測ロス率を使用</option><option value="attached">実測塗膜増量を使用</option><option value="theory">膜厚・表面積から理論計算</option></select><span class="calc-mode-help" id="t_calc_mode_help">入力されている実測値を優先して計算します。</span></div>
               </div>
 
               <div class="tochaku-res-card-dark">
@@ -755,6 +795,7 @@ input[type=number]{-moz-appearance:textfield}
                 <div class="eval-badge eval-good" id="r_eval_badge">使用塗料量(kg)と、必要な計測項目を入力してください</div>
               </div>
               <button type="submit" class="btn-submit" style="margin-top:18px"></button>
+              <div class="save-state" id="t-save-state" aria-live="polite"></div>
               <button type="button" class="btn-clear" id="cx-t" style="display:none;width:100%;margin-top:8px" onclick="cxEdit('t')">✖ 編集をキャンセル</button>
             </form>
           </div>
@@ -769,6 +810,7 @@ input[type=number]{-moz-appearance:textfield}
               <input type="text" id="tochaku-search-input" placeholder="🔍 検索 (ワーク品名/担当者)" style="flex:1;min-width:140px" oninput="dbn('t')">
               <input type="date" id="tochaku-filter-date" class="filter-date-input" style="flex:1;min-width:120px" required onchange="dbn('t')">
               <button type="button" class="btn-clear" onclick="clearT()">クリア</button>
+              <label class="page-size-control">表示件数<select id="page-size-t" onchange="setPageSize('t',this.value)"><option value="10" selected>10</option><option value="20">20</option><option value="50">50</option></select></label>
             </div>
             <div id="tochaku-log-list"></div>
             <div class="pagination"><button type="button" class="btn-page" id="pp-t" onclick="chp('t',-1)">◀ 前の10件</button><span class="page-info" id="pi-t">1 / 1 ページ (0件)</span><button type="button" class="btn-page" id="pn-t" onclick="chp('t',1)">次の10件 ▶</button></div>
@@ -784,8 +826,8 @@ input[type=number]{-moz-appearance:textfield}
             <div class="list-title">📐 対象ワーク設定</div>
             <div class="form-grid">
               <div class="full">
-                <label>ワーク形状 (用途別分類)</label>
-                <select id="c_work_type"><option value="panel">1. 制御盤・配電盤・BOX</option><option value="flat">2. 平板・パネル</option><option value="angle">3. アングル・Cチャン</option><option value="pipe">4. パイプ・丸棒</option></select>
+                <label for="c_work_type">ワーク形状 (用途別分類)</label>
+                <select id="c_work_type"><option value="panel">1. 制御盤・配電盤・BOX</option><option value="flat">2. 平板・パネル</option><option value="angle">3. アングル・Cチャン</option><option value="pipe">4. パイプ・丸棒</option></select><div class="calc-note">※形状寸法からの面積は概算です。肉厚・折返し・開口部などの実寸差は計算に含まれない場合があります。</div>
               </div>
             </div>
             <div id="c_sec_panel" class="calc-work-section">
@@ -798,7 +840,7 @@ input[type=number]{-moz-appearance:textfield}
                   <div><label for="c_qty">本体 台数</label><input type="number" id="c_qty" min="1" value="1"></div>
                   <div class="full" style="display:flex;align-items:center;gap:8px">
                     <input type="checkbox" id="c_panel_double" checked style="width:auto;height:auto">
-                    <label style="margin:0;font-size:12px;cursor:pointer" for="c_panel_double">本体内外両面を塗装する</label>
+                    <label style="margin:0;font-size:12px;cursor:pointer" for="c_panel_double">本体の外面＋内面を塗装する（概算）</label><div class="calc-note" style="grid-column:1/-1">内面は外形寸法を基準にした概算です。子部品として追加した扉は、本体前面との重複を自動控除します。中板・開口部などは別途計上します。</div>
                   </div>
                 </div>
               </div>
@@ -807,8 +849,8 @@ input[type=number]{-moz-appearance:textfield}
                   <label style="font-size:12.5px;color:var(--text-main);margin:0;font-weight:700">🔩 子部品・付属パーツ設定 (最大5種まで選択)</label>
                   <button type="button" class="btn-settings" onclick="spAdd()" style="padding:4px 10px;height:28px">＋ 追加 (残り <span id="sub-parts-remain">5</span>)</button>
                 </div>
-                <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px">配電盤や制御盤・スイッチBOXから考えられる子部品を選択すると、本体寸法(W×H×D)から適切な平米数が自動で予測・反映されます。</div>
-                <div id="sub-parts-list-container" style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding-right:2px"></div>
+                <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px">配電盤や制御盤・スイッチBOXから考えられる子部品を選択すると、本体寸法(W×H×D)から平米数を概算します。同じ面を本体と子部品の両方に含めないよう、扉は本体前面から自動控除します。</div>
+                <div id="sub-parts-list-container" style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding-right:2px"></div><div class="calc-overlap-note">⚠️ 重複計上防止：本体の「外面＋内面」を選択した場合、子部品の「前面扉 / ドア」は本体前面と重なる面積を自動控除します。その他の子部品は別面として加算します。</div>
               </div>
             </div>
             <div id="c_sec_flat" class="calc-work-section" style="display:none">
@@ -832,7 +874,7 @@ input[type=number]{-moz-appearance:textfield}
                 <div><label for="c_angle_l">長さ L (mm)</label><input type="number" id="c_angle_l" min="0" placeholder="例: 2000"></div>
                 <div><label for="c_angle_qty">本数</label><input type="number" id="c_angle_qty" min="1" value="1"></div>
                 <div class="full"><label for="c_angle_surface">塗装面</label>
-                  <select id="c_angle_surface"><option value="all">全周 (表裏 / 内外両面)</option><option value="outer">外周のみ (外側面のみ)</option><option value="inner">内周のみ (内側面のみ)</option></select>
+                  <select id="c_angle_surface"><option value="all">全周（表裏・内外面を概算）</option><option value="outer">外周のみ（外側面のみ）</option><option value="inner">内周のみ（内側面のみ）</option></select>
                 </div>
               </div>
             </div>
@@ -840,7 +882,7 @@ input[type=number]{-moz-appearance:textfield}
               <div class="form-grid">
                 <div><label for="c_pipe_d">直径 D (mm)</label><input type="number" id="c_pipe_d" min="0" placeholder="例: 100"></div>
                 <div><label for="c_pipe_l">長さ L (mm)</label><input type="number" id="c_pipe_l" min="0" placeholder="例: 2000"></div>
-                <div class="full"><label for="c_pipe_qty">本数</label><input type="number" id="c_pipe_qty" min="1" value="1"></div>
+                <div><label for="c_pipe_surface">塗装面</label><select id="c_pipe_surface"><option value="outer">外周のみ（外側面）</option><option value="all">内外面（内径は外径近似）</option></select></div><div><label for="c_pipe_qty">本数</label><input type="number" id="c_pipe_qty" min="1" value="1"></div>
               </div>
             </div>
           </div>
@@ -848,7 +890,7 @@ input[type=number]{-moz-appearance:textfield}
             <div class="list-title">⚙️ 塗装条件</div>
             <div class="form-grid">
               <div><label for="c_film">目標膜厚 (μm)</label><input type="number" id="c_film" min="0" value="60" required></div>
-              <div><label>塗料比重 (g/cm³)</label>
+              <div><label for="c_density">塗料比重 (g/cm³)</label>
                 <select id="c_density"><option value="1.40" selected>一般ポリエステル (1.40)</option><option value="1.50">高比重・ホワイト系 (1.50)</option><option value="1.20">クリア系・低比重 (1.20)</option><option value="1.60">ジンクリッチ (1.60)</option></select>
               </div>
               <div class="full"><label for="c_loss">ロス率 (%) <span class="optional-tag">※ブースへの吸い込み等（初期値40%）</span></label><input type="number" id="c_loss" min="0" max="100" value="40" required></div>
@@ -871,7 +913,7 @@ input[type=number]{-moz-appearance:textfield}
             <div style="margin-top:24px;font-size:11.5px;color:#94a3b8;line-height:1.6;background:rgba(0,0,0,.3);padding:14px;border-radius:8px">💡 <strong>計算式:</strong><br>推定使用量 = (面積(m²) × 膜厚(μm) × 比重(g/cm³)) ÷ ((100 - ロス率) ÷ 100)</div>
             <div style="margin-top:16px;font-size:11.5px;color:#cbd5e1;line-height:1.6;background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.2);padding:14px;border-radius:8px">
               <div style="font-size:12.5px;font-weight:700;color:#f87171;margin-bottom:8px">⚠️ 塗料使用量に関するご注意</div>
-              本計算による塗料使用量は、入力数値に基づく理論上の目安です。塗装条件を正確に設定することで、より実態に近い使用量の算出が可能になります。発注やコスト管理の参考値としてご活用ください。
+              本計算による塗料使用量は、入力数値に基づく理論上の目安です。塗装条件を正確に設定することで、より実態に近い使用量の算出が可能になります。発注やコスト管理の参考値としてご活用ください。<br>※形状寸法からの面積は概算です。肉厚・折返し・開口部・内面形状などの実寸差は結果に反映されない場合があります。
             </div>
           </div>
         </div>
@@ -902,6 +944,27 @@ input[type=number]{-moz-appearance:textfield}
   <div style="font-size:11px;color:var(--text-dim);margin-top:8px;text-align:right" id="bake-preset-count">0 / 50 件</div>
 </div></div>
 
+<div id="bulk-bake-modal" class="modal-overlay" data-confirm-escape="true"><div class="modal-content" style="max-width:720px">
+  <div class="modal-header"><div class="modal-title">🧰 過去ログの品名から塗料・焼付条件を一括編集</div><button class="btn-close" onclick="hide('bulk-bake-modal')">×</button></div>
+  <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;line-height:1.55">過去ログに実際に登録されている品名を選び、その品名を含む実績の「塗料名・焼付温度・焼付時間」をまとめて変更します。変更は共有データ（Firestore）へ保存され、全ユーザーに反映されます。</div>
+  <div id="bulk-bake-loading" class="empty-sm">過去ログの品名を読み込み中…</div>
+  <div id="bulk-bake-body" style="display:none">
+    <div class="ph"><label style="font-size:11px;color:var(--text-dim);margin:0">対象品名（複数選択可）</label><span class="bulk-editor-count" id="bulk-bake-product-count">0件選択</span></div>
+    <div class="bulk-product-list" id="bulk-bake-products"></div>
+    <div class="bulk-editor-fields">
+      <div><label for="bulk-bake-paint">変更後の塗料名</label><select id="bulk-bake-paint"></select></div>
+      <div><label for="bulk-bake-temp">焼付温度 (℃)</label><input type="number" id="bulk-bake-temp" min="0" step="1" placeholder="例: 200"></div>
+      <div><label for="bulk-bake-time">焼付時間 (分)</label><input type="number" id="bulk-bake-time" min="0" step="1" placeholder="例: 20"></div>
+    </div>
+    <div id="bulk-bake-preview" class="bulk-editor-note" style="display:none"></div>
+    <div class="bulk-bake-actions">
+      <button type="button" class="btn-settings btn-add" id="bulk-bake-apply" onclick="bulkBakeApply()" disabled>選択した過去ログを更新</button>
+      <button type="button" class="btn-settings" onclick="hide('bulk-bake-modal')">キャンセル</button>
+    </div>
+    <div class="bulk-editor-note">空欄の項目は変更せず、入力・選択した項目だけ更新します。塗料名は登録済みの焼付条件プリセット、または過去ログに記録された塗料名から選択できます。対象件数を確認してから実行してください。</div>
+  </div>
+</div></div>
+
 <div id="machine-preset-modal" class="modal-overlay"><div class="modal-content" style="max-width:640px">
   <div class="modal-header"><div class="modal-title">🎛 塗装機プリセット (10種)</div><button class="btn-close" onclick="hide('machine-preset-modal')">×</button></div>
   <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;line-height:1.5">各プリセットの名称・電圧(kV)・電流(μA)・吐出量(FlowRate)・エアー流量(L/min)は自由に編集して保存できます。「この内容を選択」を押すと、実績登録フォームの各入力欄へ自動反映されます。</div>
@@ -923,12 +986,12 @@ input[type=number]{-moz-appearance:textfield}
   </div>
 </div></div>
 
-<div id="causefix-modal" class="modal-overlay"><div class="modal-content" style="max-width:440px">
+<div id="causefix-modal" class="modal-overlay" data-confirm-escape="true"><div class="modal-content" style="max-width:440px">
   <div class="modal-header"><div class="modal-title">🛠 過去ログの原因名を一括修正</div><button class="btn-close" onclick="hide('causefix-modal')">×</button></div>
   <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.5">過去ログに実際に登録されている原因名を一覧から選び、正しい表記へ一括修正します。</div>
   <div id="causefix-body">
-    <div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:var(--text-dim);display:block;margin-bottom:4px">修正前（過去ログの表記を選択）</label><select id="causefix-old" style="width:100%" onchange="$('causefix-new').value=this.value"></select></div>
-    <div style="margin-bottom:14px"><label style="font-size:11px;font-weight:700;color:var(--text-dim);display:block;margin-bottom:4px">修正後の表記</label><input type="text" id="causefix-new" style="width:100%"></div>
+    <div style="margin-bottom:12px"><label for="causefix-old" style="font-size:11px;font-weight:700;color:var(--text-dim);display:block;margin-bottom:4px">修正前（過去ログの表記を選択）</label><select id="causefix-old" style="width:100%" onchange="$('causefix-new').value=this.value"></select></div>
+    <div style="margin-bottom:14px"><label for="causefix-new" style="font-size:11px;font-weight:700;color:var(--text-dim);display:block;margin-bottom:4px">修正後の表記</label><input type="text" id="causefix-new" style="width:100%"></div>
   </div>
   <div id="causefix-empty" style="display:none;font-size:12px;color:var(--text-dim);text-align:center;padding:12px 0">過去ログに登録されている不具合原因が見つかりませんでした。</div>
   <div style="display:flex;gap:8px;margin-top:4px">
@@ -964,14 +1027,14 @@ show=id=>$(id).style.display='flex',hide=id=>$(id).style.display='none',mn=()=>$
 const LOC={fukuyama:{lat:34.4858,lon:133.3642,label:'福山市'},hiroshima:{lat:34.3853,lon:132.4553,label:'広島市'},okayama:{lat:34.6617,lon:133.935,label:'岡山市'},tokyo:{lat:35.6895,lon:139.6917,label:'東京都'},osaka:{lat:34.6937,lon:135.5023,label:'大阪市'},nagoya:{lat:35.1815,lon:136.9066,label:'名古屋市'},fukuoka:{lat:33.5904,lon:130.4017,label:'福岡市'},sendai:{lat:38.2682,lon:140.8694,label:'仙台市'},sapporo:{lat:43.0642,lon:141.3469,label:'札幌市'}};
 const NM={all:'すべて',week:'今週',lastweek:'先週',month:'今月',year:'今年',custom:'指定週'},F={sum:1,cause:1,paint:1,list:2,tk:4};
 const P={sum:{k:'week'},cause:{k:'week'},paint:{k:'week'},list:{k:'all'},tk:{k:'all'}};
-const WIN=(new Date().getFullYear()-1)+'-12-01',M={r:new Map(),t:new Map()},A={r:{m:new Map(),s:0},t:{m:new Map(),s:0}},cache={},pg={l:1,t:1},cal={t:'',s:'',e:'',d:new Date()};
+const WIN=(new Date().getFullYear()-1)+'-12-01',M={r:new Map(),t:new Map()},A={r:{m:new Map(),s:0},t:{m:new Map(),s:0}},cache={},pg={l:1,t:1},pageSize={l:10,t:10},cal={t:'',s:'',e:'',d:new Date()};
 
 let pw=atob('MTIzNA=='),apw=atob('MTk4NTA3MTU='),ops=['担当者A','担当者B','担当者C'],prods=[],
 causes=['ブツ・ゴミ・毛など','湧き','マスキング跡','弾き','クレーター','傷','肌荒れ','色散り','板金の凹み','脱脂不良','アース不良','膜厚不足','その他'],
 UNITS=['台','枚','個','本'],unitFactors={台:1,枚:0.3,個:0.15,本:0.4},
 uf=u=>{const v=unitFactors[u];return typeof v==='number'&&v>0?v:1},
 presets=Array.from({length:10},(_,i)=>({no:i+1,name:'プリセット'+(i+1),voltage:50,current:20,discharge:300,air:250})),
-bakePresets=[],
+bakePresets=[],bakeLocalChange=0,bakeConfigReady=0,bakeConfigLast='',presetLocalChange=0,presetConfigReady=0,presetConfigLast='',
 selNo=null,selName='',pRe=0,cfgOk=0,started=0,curTab='main',editId=null,tEdit=null,isAtt=0,psig='',wt=0,ngF=0,lastDay='',autoD='',tm=0,dirty=7,db=null;
 
 try{
@@ -989,8 +1052,8 @@ db&&CFG().onSnapshot(d=>{
   if(arr(x.operators))ops=x.operators;
   if(Array.isArray(x.products))prods=x.products;
   if(Array.isArray(x.causes))causes=x.causes;
-  if(arr(x.machinePresets))presets=x.machinePresets;
-  if(Array.isArray(x.bakePresets))bakePresets=x.bakePresets.slice(0,50);
+  if(arr(x.machinePresets)){const nextPresets=x.machinePresets,sigP=JSON.stringify(nextPresets);if(presetConfigReady&&sigP!==presetConfigLast&&Date.now()>presetLocalChange&&window.appToast)window.appToast('🔄 塗装機プリセットが更新されました');presets=nextPresets;presetConfigLast=sigP;presetConfigReady=1;}
+  if(Array.isArray(x.bakePresets)){const nextBake=x.bakePresets.slice(0,50),sig=JSON.stringify(nextBake);if(bakeConfigReady&&sig!==bakeConfigLast&&Date.now()>bakeLocalChange&&window.appToast)window.appToast('🔄 塗料・焼付条件設定が更新されました');bakePresets=nextBake;bakeConfigLast=sig;bakeConfigReady=1;}
   if(x.unitFactors&&typeof x.unitFactors==='object')UNITS.forEach(u=>{if(typeof x.unitFactors[u]==='number'&&x.unitFactors[u]>0)unitFactors[u]=x.unitFactors[u]});
   if(x.selectedPresetNo!==undefined)selNo=x.selectedPresetNo;
   if(x.selectedPresetName!==undefined)selName=x.selectedPresetName;
@@ -1076,6 +1139,7 @@ function wx(d,cb){
     })
 }
 const fillWx=w=>{$('weather').value=w.weather;$('temp').value=w.temp;$('humidity').value=w.humidity},
+refreshWx=()=>wx(V('date')||today(),fillWx),
 onDate=()=>wx(V('date'),fillWx),
 onLoc=()=>wx(V('date')||today(),fillWx);
 $('weather-time')?.addEventListener('change',()=>wx(V('date')||today(),fillWx));
@@ -1099,8 +1163,8 @@ async function ufSet(){
     if(!isFinite(n)||n<=0)return uiAlert(`「${u}」は0より大きい数値で入力してください。`);
     nf[u]=Math.round(n*1000)/1000;
   }
-  unitFactors=nf;sched(1);
-  setCfg({unitFactors:nf}).then(()=>uiAlert('換算係数を更新しました！実質換算数・実質再塗装率に反映されます。')).catch(e=>uiAlert('保存エラー: '+e.message))
+  const before={...unitFactors};unitFactors=nf;sched(1);
+  setCfg({unitFactors:nf}).then(()=>uiAlert('換算係数を更新しました！実質換算数・実質再塗装率に反映されます。')).catch(e=>{unitFactors=before;sched(1);uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。')})
 }
 const T={
   p:{a:()=>prods,k:'products',o:'product-modal',m:'modal-product-list',c:'product-count',i:'new-product-name',du:'既に登録されています。',mx:'最大登録数(50件)に達しています。',ed:'品名を編集:',dd:'既に同じ品名が存在します。',rm:'この品名を削除しますか？'},
@@ -1108,10 +1172,10 @@ const T={
 };
 async function lOpen(t){if(!db)return uiAlert('データベースに接続されていません');if(!(await adm()))return;show(T[t].o);lst(t)}
 function lst(t){const o=T[t],a=o.a();$(o.m).innerHTML=a.map((v,i)=>`<div class="product-item"><span style="flex:1;word-break:break-all">${esc(v)}</span><button type="button" class="btn-edit" onclick="lEd('${t}',${i})">編集</button><button type="button" class="btn-del" onclick="lDel('${t}',${i})">削除</button></div>`).join('');$(o.c).textContent=a.length+' / 50 件'}
-function lSave(t){setCfg({[T[t].k]:T[t].a()}).catch(e=>uiAlert('保存エラー: '+e.message));lst(t)}
-function lAdd(t){const o=T[t],i=$(o.i),n=i.value.trim(),a=o.a();if(!n)return;if(a.includes(n))return uiAlert(o.du);if(a.length>=50)return uiAlert(o.mx);a.push(n);i.value='';lSave(t)}
-async function lEd(t,i){const o=T[t],a=o.a(),old=a[i],n=await uiPrompt(o.ed,old);if(n===null)return;const v=n.trim();if(!v)return;if(a.includes(v)&&v!==old)return uiAlert(o.dd);a[i]=v;lSave(t);if(t==='c'&&v!==old)await syncCauseRename(old,v)}
-async function lDel(t,i){const o=T[t];if(!(await uiConfirm(o.rm)))return;o.a().splice(i,1);lSave(t)}
+function lSave(t,before){const o=T[t],next=o.a().slice();return setCfg({[o.k]:next}).then(()=>{lst(t);window.appToast&&window.appToast('✅ 設定を保存しました')}).catch(e=>{o.a().splice(0,o.a().length,...(before||[]));lst(t);uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。');throw e})}
+function lAdd(t){const o=T[t],i=$(o.i),n=i.value.trim(),a=o.a(),before=a.slice();if(!n)return;if(a.includes(n))return uiAlert(o.du);if(a.length>=50)return uiAlert(o.mx);a.push(n);i.value='';lSave(t,before).catch(()=>{})}
+async function lEd(t,i){const o=T[t],a=o.a(),old=a[i],before=a.slice(),n=await uiPrompt(o.ed,old);if(n===null)return;const v=n.trim();if(!v)return;if(a.includes(v)&&v!==old)return uiAlert(o.dd);a[i]=v;try{await lSave(t,before)}catch(e){return}if(t==='c'&&v!==old)await syncCauseRename(old,v)}
+async function lDel(t,i){const o=T[t];if(!(await uiConfirm(o.rm)))return;const a=o.a(),before=a.slice();a.splice(i,1);try{await lSave(t,before)}catch(e){}}
 /* 「原因内容設定」で原因名を編集した際、Firestore上の過去ログ（records全件）に登録済みの原因名も自動で同期する */
 async function syncCauseRename(oldName,newName){
   if(!db||!oldName||!newName||oldName===newName)return;
@@ -1120,16 +1184,18 @@ async function syncCauseRename(oldName,newName){
     const targets=[];
     snap.forEach(doc=>{
       const d=doc.data();
-      const hit=(Array.isArray(d.ng_details)&&d.ng_details.some(x=>x&&x.cause===oldName))||d.ng_cause===oldName;
+      const hit=(Array.isArray(d.ng_details)&&d.ng_details.some(x=>x&&x.cause===oldName))||d.ng_cause===oldName||(Array.isArray(d.ng_causes)&&d.ng_causes.some(x=>x===oldName));
       if(hit)targets.push({ref:doc.ref,data:d})
     });
     if(!targets.length)return;
+    if(!(await uiConfirm(`原因名「${oldName}」は過去ログ ${targets.length}件で使用されています。すべて「${newName}」へ同期しますか？`)))return;
     for(let i=0;i<targets.length;i+=400){
       const batch=db.batch();
       targets.slice(i,i+400).forEach(({ref,data})=>{
         const upd={};
         if(Array.isArray(data.ng_details))upd.ng_details=data.ng_details.map(x=>x&&x.cause===oldName?{...x,cause:newName}:x);
         if(data.ng_cause===oldName)upd.ng_cause=newName;
+        if(Array.isArray(data.ng_causes))upd.ng_causes=data.ng_causes.map(x=>x===oldName?newName:x);
         batch.update(ref,upd)
       });
       await batch.commit()
@@ -1138,11 +1204,12 @@ async function syncCauseRename(oldName,newName){
       let ch=0;
       if(Array.isArray(r.ng_details))r.ng_details.forEach(x=>{if(x&&x.cause===oldName){x.cause=newName;ch=1}});
       if(r.ng_cause===oldName){r.ng_cause=newName;ch=1}
+      if(Array.isArray(r.ng_causes))r.ng_causes=r.ng_causes.map(x=>x===oldName?(ch=1,newName):x)
       if(ch)prep('r',r)
     }));
     cache.r=0;sched(7);
-    uiAlert(`原因名「${oldName}」→「${newName}」を過去ログ ${targets.length}件に同期しました。`)
-  }catch(e){uiAlert('過去ログへの原因名同期に失敗しました: '+e.message)}
+    uiAlert(`原因名「${oldName}」→「${newName}」を過去ログ ${targets.length}件に同期しました。過去ログ側の更新に失敗した場合は、再度「過去ログの原因名を一括修正」を実行してください。`)
+  }catch(e){uiAlert('原因マスターの変更後、過去ログへの同期に失敗しました。マスターは変更済みです。時間を置いて「過去ログの原因名を一括修正」を実行してください。\n'+e.message)}
 }
 /* 既に食い違ってしまった過去ログの原因名（例:設定は変更済みだが過去ログは旧表記のまま）を、実際に過去ログで使われている表記の一覧から選んで一括修正するツール */
 async function causeFixOpen(){
@@ -1159,7 +1226,7 @@ async function causeFixOpen(){
     snap.forEach(doc=>{
       const d=doc.data();
       if(Array.isArray(d.ng_details))d.ng_details.forEach(x=>{if(x&&x.cause)names.add(x.cause)});
-      if(d.ng_cause)names.add(d.ng_cause)
+      if(d.ng_cause)names.add(d.ng_cause);if(Array.isArray(d.ng_causes))d.ng_causes.forEach(x=>{if(x)names.add(x)})
     });
     causes.forEach(c=>names.add(c));
     const list=[...names].sort((a,b)=>a.localeCompare(b,'ja'));
@@ -1187,51 +1254,77 @@ function applyPreset(f){if(editId&&f!==2)return;const d=pv(),g=JSON.stringify(d)
 function pOpen(){show('machine-preset-modal');pList()}
 function pList(){
   $('machine-preset-list').innerHTML=presets.map((p,i)=>{
-    const s=selNo===p.no,f=(k,l,st)=>`<div><label>${l}</label><input type="number" step="${st}" value="${esc(p[k])}" onchange="pSet(${i},'${k}',this.value)"></div>`;
+    const s=selNo===p.no,f=(k,l,st)=>`<div><label for="preset-${i}-${k}">${l}</label><input id="preset-${i}-${k}" type="number" step="${st}" value="${esc(p[k])}" onchange="pSet(${i},'${k}',this.value)"></div>`;
     return `<div class="preset-row${s?' preset-row-selected':''}"><div class="preset-row-head"><span class="preset-badge">${p.no}</span><input type="text" class="preset-name-input" maxlength="30" value="${esc(p.name)}" onchange="pSet(${i},'name',this.value)">${s?'<span class="preset-current-tag">現在選択中</span>':''}</div><div class="preset-grid">${f('voltage','電圧 (kV)','1')}${f('current','電流 (μA)','1')}${f('discharge','吐出量 (FlowRate)','1')}${f('air','エアー流量 (L/min)','1')}</div><button type="button" class="preset-apply-btn${s?' preset-apply-btn-active':''}" onclick="pApply(${i})">${s?'✅ 選択中（全ユーザー共通）':'この内容を選択'}</button></div>`
   }).join('')
 }
 function pSet(i,f,v){
   const p=presets[i];if(!p)return;
-  p[f]=f==='name'?(v.trim()||'プリセット'+(i+1)):(parseFloat(v)||0);
-  if(f==='name'&&selNo===p.no){selName=p.name;badge();db&&setCfg({selectedPresetName:selName})}
-  db&&setCfg({machinePresets:presets}).catch(e=>uiAlert('保存エラー: '+e.message))
+  const before={...p},beforeSelName=selName;p[f]=f==='name'?(v.trim()||'プリセット'+(i+1)):(parseFloat(v)||0);
+  if(f==='name'&&selNo===p.no){selName=p.name;badge()}
+  if(!db)return;
+  presetLocalChange=Date.now()+2500;presetConfigLast=JSON.stringify(presets);presetConfigReady=1;window.appToast&&window.appToast('💾 塗装機プリセットを保存中…');
+  const writes=[setCfg({machinePresets:presets})];if(f==='name'&&selNo===p.no)writes.push(setCfg({selectedPresetName:selName}));
+  Promise.all(writes).then(()=>window.appToast&&window.appToast('✅ 塗装機プリセットを保存しました')).catch(e=>{Object.assign(p,before);if(f==='name'&&selNo===p.no){selName=beforeSelName;badge()}pList();uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。')})
 }
 function pApply(i){
-  const p=presets[i];selNo=p.no;selName=p.name;pRe=1;applyPreset(2);badge();pList();hide('machine-preset-modal');
-  db&&setCfg({selectedPresetNo:selNo,selectedPresetName:selName}).catch(e=>uiAlert('保存エラー: '+e.message))
+  const prevNo=selNo,prevName=selName,prevRe=pRe,p=presets[i];selNo=p.no;selName=p.name;pRe=1;applyPreset(2);badge();pList();hide('machine-preset-modal');
+  if(db){presetLocalChange=Date.now()+2500;window.appToast&&window.appToast('💾 選択内容を保存中…');setCfg({selectedPresetNo:selNo,selectedPresetName:selName}).then(()=>window.appToast&&window.appToast('✅ プリセット選択を保存しました')).catch(e=>{uiAlert('保存エラー: '+e.message+'\n選択状態は元に戻してください。');if(prevNo!=null){selNo=prevNo;selName=prevName;pRe=prevRe;applyPreset(2);badge()}})}
 }
 
 /* ---------- 塗料・焼付条件プリセット ---------- */
-function fillBakePresets(){
-  const s=$('bake_paint_select');if(!s)return;const v=s.value;
-  s.innerHTML='<option value="">-- 塗料を選択（任意） --</option>'+bakePresets.map((p,i)=>`<option value="${i}">${esc(p.name)}（${esc(p.temp)}℃ / ${esc(p.time)}分）</option>`).join('');
-  if(v!==''&&bakePresets[v])s.value=v;
-}
-function applyBakePreset(i){const p=bakePresets[Number(i)];if(!p)return;$('bake_temp').value=p.temp;$('bake_time').value=p.time}
+function bakeStatus(msg,show=true){const e=$('bake-preset-status');if(!e)return;e.textContent=msg;e.style.display=show?'block':'none'}
+function fillBakePresets(){const s=$('bake_paint_select');if(!s)return;const v=s.value;s.innerHTML='<option value="">-- 塗料を選択（任意） --</option>'+bakePresets.map((p,i)=>`<option value="${i}">${esc(p.name)}（${esc(p.temp)}℃ / ${esc(p.time)}分）</option>`).join('');if(v!==''&&bakePresets[v])s.value=v}
+function applyBakePreset(i){if(i===''||i==null){bakeStatus('',false);return}if(String(i).startsWith('stored:')){bakeStatus('📋 過去実績に記録された塗料名です。現在のプリセットには登録されていません。');return}const p=bakePresets[Number(i)];if(!p)return;$('bake_temp').value=p.temp;$('bake_time').value=p.time;bakeStatus(`✅ プリセット適用：${p.name} / ${p.temp}℃ / ${p.time}分`)}
+function setBakePaintByName(name){const s=$('bake_paint_select');if(!s)return;fillBakePresets();const i=bakePresets.findIndex(p=>String(p.name).trim()===String(name||'').trim());if(i>=0){s.value=String(i);bakeStatus(`📋 登録済みプリセット：${bakePresets[i].name} / ${bakePresets[i].temp}℃ / ${bakePresets[i].time}分`);return}if(name){const o=new Option(`過去実績：${name}`,`stored:${encodeURIComponent(name)}`);s.appendChild(o);s.value=o.value;bakeStatus(`📋 過去実績に記録された塗料名：${name}（現在のプリセットには未登録）`)}else bakeStatus('',false)}
+function bakeValidate(name,temp,time){const n=String(name||'').trim(),t=Number(temp),tm=Number(time);if(!n)return '塗料名を入力してください。';if(!Number.isFinite(t)||!Number.isInteger(t)||t<0)return '焼付温度は0以上の整数で入力してください。';if(!Number.isFinite(tm)||!Number.isInteger(tm)||tm<0)return '焼付時間は0以上の整数で入力してください。';return ''}
+function bakeSetLocal(next){bakeLocalChange=Date.now()+2500;bakePresets=next.slice(0,50);bakeConfigLast=JSON.stringify(bakePresets);bakeConfigReady=1;fillBakePresets();bakeList()}
 function bakeOpen(){show('bake-preset-modal');bakeList()}
-function bakeList(){
-  const box=$('bake-preset-list');if(!box)return;
-  box.innerHTML=bakePresets.length?bakePresets.map((p,i)=>`<div class="bake-preset-row"><div class="bake-paint"><label for="bp-name-${i}">塗料名</label><input id="bp-name-${i}" type="text" value="${esc(p.name)}" maxlength="50" readonly></div><div><label for="bp-temp-${i}">焼付温度 ℃</label><input id="bp-temp-${i}" type="number" value="${esc(p.temp)}" readonly></div><div><label for="bp-time-${i}">焼付時間 分</label><input id="bp-time-${i}" type="number" value="${esc(p.time)}" readonly></div><div class="bake-actions"><button type="button" class="btn-edit" onclick="bakeEdit(${i})">編集</button><button type="button" class="btn-del" onclick="bakeDel(${i})">削除</button></div></div>`).join(''):'<div class="empty-sm">登録されている塗料・焼付条件はありません。</div>';
-  $('bake-preset-count').textContent=`${bakePresets.length} / 50 件`;
+function bakeList(){const box=$('bake-preset-list');if(!box)return;box.innerHTML=bakePresets.length?bakePresets.map((p,i)=>`<div class="bake-preset-row"><div class="bake-paint"><label for="bp-name-${i}">塗料名</label><input id="bp-name-${i}" type="text" value="${esc(p.name)}" maxlength="50" readonly></div><div><label for="bp-temp-${i}">焼付温度 ℃</label><input id="bp-temp-${i}" type="number" min="0" step="1" value="${esc(p.temp)}" readonly></div><div><label for="bp-time-${i}">焼付時間 分</label><input id="bp-time-${i}" type="number" min="0" step="1" value="${esc(p.time)}" readonly></div><div class="bake-actions"><button type="button" class="btn-edit" onclick="bakeEdit(${i})">編集</button><button type="button" class="btn-del" onclick="bakeDel(${i})">削除</button></div></div>`).join(''):'<div class="empty-sm">登録されている塗料・焼付条件はありません。</div>';$('bake-preset-count').textContent=`${bakePresets.length} / 50 件`}
+async function bakeAdd(){if(!db||!(await adm()))return;if(bakePresets.length>=50)return uiAlert('塗料・焼付条件は最大50パターンまで登録できます。');const n=await uiPrompt('塗料名を入力してください:');if(n===null)return;const t=await uiPrompt('焼付温度 (℃) ※0以上の整数:','200');if(t===null)return;const tm=await uiPrompt('焼付時間 (分) ※0以上の整数:','20');if(tm===null)return;const name=n.trim(),temp=Number(t),time=Number(tm),err=bakeValidate(name,temp,time);if(err)return uiAlert(err);if(bakePresets.some(p=>String(p.name).trim()===name))return uiAlert('同じ塗料名が既に登録されています。');const next=[...bakePresets,{name,temp,time}];try{await setCfg({bakePresets:next});bakeSetLocal(next);uiAlert('塗料・焼付条件を登録しました。')}catch(e){uiAlert('保存エラー: '+e.message)}}
+async function bakeEdit(i){if(!db||!(await adm()))return;const p=bakePresets[i];if(!p)return;const n=await uiPrompt('塗料名を変更:',p.name);if(n===null)return;const t=await uiPrompt('焼付温度 (℃) ※0以上の整数:',p.temp);if(t===null)return;const tm=await uiPrompt('焼付時間 (分) ※0以上の整数:',p.time);if(tm===null)return;const name=n.trim(),temp=Number(t),time=Number(tm),err=bakeValidate(name,temp,time);if(err)return uiAlert(err);if(bakePresets.some((x,j)=>j!==i&&String(x.name).trim()===name))return uiAlert('同じ塗料名が既に登録されています。');const next=bakePresets.slice();next[i]={name,temp,time};try{await setCfg({bakePresets:next});bakeSetLocal(next);uiAlert('塗料・焼付条件を更新しました。')}catch(e){uiAlert('保存エラー: '+e.message)}}
+async function bakeDel(i){if(!db||!(await adm()))return;const p=bakePresets[i];if(!p)return;if(!(await uiConfirm(`「${p.name}」の焼付条件を削除しますか？`)))return;const next=bakePresets.slice();next.splice(i,1);try{await setCfg({bakePresets:next});bakeSetLocal(next);uiAlert('塗料・焼付条件を削除しました。')}catch(e){uiAlert('保存エラー: '+e.message)}}
+async function bulkBakeOpen(){
+  if(!db||!(await adm()))return;
+  show('bulk-bake-modal');$('bulk-bake-loading').style.display='block';$('bulk-bake-body').style.display='none';$('bulk-bake-apply').disabled=true;$('bulk-bake-products').innerHTML='';$('bulk-bake-preview').style.display='none';$('bulk-bake-paint').value='';$('bulk-bake-temp').value='';$('bulk-bake-time').value='';
+  try{
+    const snap=await db.collection(COL.r).get(),names=new Set(),paintNames=new Set(),rows=[];
+    snap.forEach(doc=>{const d=doc.data();rows.push({ref:doc.ref,data:d});if(Array.isArray(d.items))d.items.forEach(i=>{if(i&&String(i.name||'').trim())names.add(String(i.name).trim())});if(d.paint_name&&String(d.paint_name).trim())paintNames.add(String(d.paint_name).trim())});
+    const products=[...names].sort((a,b)=>a.localeCompare(b,'ja')),paints=[...new Set([...bakePresets.map(x=>String(x.name||'').trim()).filter(Boolean),...paintNames])].sort((a,b)=>a.localeCompare(b,'ja'));
+    $('bulk-bake-products').innerHTML=products.length?products.map(n=>`<label class="bulk-product-option"><input type="checkbox" class="bulk-product-check" value="${esc(n)}"><span>${esc(n)}</span></label>`).join(''):'<div class="empty-sm">過去ログに品名が登録されていません。</div>';
+    $('bulk-bake-paint').innerHTML='<option value="">-- 塗料名を変更しない --</option>'+paints.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');bulkBakeRows=rows;
+    $('bulk-bake-products').querySelectorAll('.bulk-product-check').forEach(e=>e.addEventListener('change',bulkBakeUpdateState));$('bulk-bake-temp').oninput=bulkBakeUpdateState;$('bulk-bake-time').oninput=bulkBakeUpdateState;$('bulk-bake-paint').onchange=bulkBakeUpdateState;
+    $('bulk-bake-loading').style.display='none';$('bulk-bake-body').style.display='block';bulkBakeUpdateState();
+  }catch(e){hide('bulk-bake-modal');uiAlert('過去ログの読込に失敗しました: '+e.message)}
 }
-async function bakeAdd(){
-  if(!db||!(await adm()))return;if(bakePresets.length>=50)return uiAlert('塗料・焼付条件は最大50パターンまで登録できます。');
-  const n=await uiPrompt('塗料名を入力してください:');if(n===null)return;const name=n.trim();if(!name)return uiAlert('塗料名を入力してください。');
-  if(bakePresets.some(p=>String(p.name).trim()===name))return uiAlert('同じ塗料名が既に登録されています。');
-  const t=await uiPrompt('焼付温度 (℃):','200');if(t===null)return;const temp=Number(t);if(!Number.isFinite(temp))return uiAlert('焼付温度は数値で入力してください。');
-  const tm=await uiPrompt('焼付時間 (分):','20');if(tm===null)return;const time=Number(tm);if(!Number.isFinite(time))return uiAlert('焼付時間は数値で入力してください。');
-  bakePresets.push({name,temp,time});await setCfg({bakePresets});fillBakePresets();bakeList();uiAlert('塗料・焼付条件を登録しました。')
+let bulkBakeRows=[];
+function bulkBakeSelected(){return [...document.querySelectorAll('.bulk-product-check:checked')].map(e=>e.value)}
+function bulkBakeUpdateState(){const selected=bulkBakeSelected(),temp=V('bulk-bake-temp'),time=V('bulk-bake-time'),paint=V('bulk-bake-paint'),hasChange=!!paint||temp!==''||time!=='';$('bulk-bake-product-count').textContent=`${selected.length}件選択`;let count=0;if(selected.length)bulkBakeRows.forEach(x=>{const items=Array.isArray(x.data.items)?x.data.items:[];if(items.some(i=>selected.includes(String(i&&i.name||'').trim())))count++});const p=$('bulk-bake-preview');p.style.display=selected.length&&hasChange?'block':'none';if(selected.length&&hasChange)p.textContent=`更新対象の実績：${count}件 ／ 選択品名：${selected.length}件 ／ 変更項目：${[paint?'塗料名':'',temp!==''?'焼付温度':'',time!==''?'焼付時間':''].filter(Boolean).join('・')}`;$('bulk-bake-apply').disabled=!selected.length||!hasChange||count===0}
+async function bulkBakeApply(){
+  if(!db)return;
+  const selected=bulkBakeSelected(),paint=V('bulk-bake-paint').trim(),tempText=V('bulk-bake-temp'),timeText=V('bulk-bake-time');
+  if(!selected.length)return uiAlert('対象品名を1件以上選択してください。');
+  if(!paint&&tempText===''&&timeText==='')return uiAlert('変更する塗料名・温度・時間のいずれかを入力してください。');
+  const temp=tempText===''?null:Number(tempText),time=timeText===''?null:Number(timeText);
+  if(temp!==null&&(!Number.isFinite(temp)||!Number.isInteger(temp)||temp<0))return uiAlert('焼付温度は0以上の整数で入力してください。');
+  if(time!==null&&(!Number.isFinite(time)||!Number.isInteger(time)||time<0))return uiAlert('焼付時間は0以上の整数で入力してください。');
+  const targets=bulkBakeRows.filter(x=>Array.isArray(x.data.items)&&x.data.items.some(i=>selected.includes(String(i&&i.name||'').trim())));
+  if(!targets.length)return uiAlert('選択した品名に一致する過去ログがありません。');
+  const changes=[paint?'塗料名「'+paint+'」':'',temp!==null?'焼付温度 '+temp+'℃':'',time!==null?'焼付時間 '+time+'分':''].filter(Boolean).join(' / ');
+  if(!(await uiConfirm(`選択した品名 ${selected.length}件に一致する過去ログ ${targets.length}件を更新します。\n${changes}\n共有データへ反映します。実行しますか？`)))return;
+  const b=$('bulk-bake-apply'),oldText=b.textContent;b.disabled=true;b.textContent='⏳ 更新中…';
+  try{
+    let done=0;
+    for(let i=0;i<targets.length;i+=400){
+      const chunk=targets.slice(i,i+400),batch=db.batch();
+      chunk.forEach(x=>{const upd={};if(paint)upd.paint_name=paint;if(temp!==null)upd.bake_temp=temp;if(time!==null)upd.bake_time=time;batch.update(x.ref,upd)});
+      await batch.commit();done+=chunk.length;b.textContent=`⏳ 更新中… ${done}/${targets.length}`;
+    }
+    targets.forEach(x=>{const r=fnd('r',x.ref.id);if(r){if(paint)r.paint_name=paint;if(temp!==null)r.bake_temp=temp;if(time!==null)r.bake_time=time;prep('r',r)}});
+    cache.r=0;sched(7);hide('bulk-bake-modal');uiAlert(`過去ログ ${targets.length}件を更新しました。\n${changes}\n共有データへ反映済みです。`);
+  }catch(e){uiAlert('一括更新に失敗しました。Firestoreへの保存が完了していない可能性があります。\n'+e.message)}
+  finally{b.disabled=false;b.textContent=oldText}
 }
-async function bakeEdit(i){
-  if(!db||!(await adm()))return;const p=bakePresets[i];if(!p)return;
-  const n=await uiPrompt('塗料名を変更:',p.name);if(n===null)return;const name=n.trim();if(!name)return uiAlert('塗料名を入力してください。');
-  if(bakePresets.some((x,j)=>j!==i&&String(x.name).trim()===name))return uiAlert('同じ塗料名が既に登録されています。');
-  const t=await uiPrompt('焼付温度 (℃):',p.temp);if(t===null)return;const temp=Number(t);if(!Number.isFinite(temp))return uiAlert('焼付温度は数値で入力してください。');
-  const tm=await uiPrompt('焼付時間 (分):',p.time);if(tm===null)return;const time=Number(tm);if(!Number.isFinite(time))return uiAlert('焼付時間は数値で入力してください。');
-  bakePresets[i]={name,temp,time};await setCfg({bakePresets});fillBakePresets();bakeList();uiAlert('塗料・焼付条件を更新しました。')
-}
-async function bakeDel(i){if(!db||!(await adm()))return;const p=bakePresets[i];if(!p)return;if(!(await uiConfirm(`「${p.name}」の焼付条件を削除しますか？`)))return;bakePresets.splice(i,1);await setCfg({bakePresets});fillBakePresets();bakeList();uiAlert('塗料・焼付条件を削除しました。')}
 
 /* ---------- タブ ---------- */
 function tab(t){curTab=t;['main','tochaku','calc'].forEach(k=>{$('tab-content-'+k).style.display=k===t?'block':'none';$('tab-nav-'+k).classList.toggle('active',k===t)});flush()}
@@ -1241,7 +1334,7 @@ function prep(c,o){
   if(c==='r'){
     o._q=o.total_qty||(Array.isArray(o.items)?o.items.reduce((s,i)=>s+(Number(i.qty)||0),0):0);
     o._w=Number(o.paint_weight)||0;
-    o._h=[(o.items||[]).map(i=>i.name).join(' '),o.operator,o.machine,Array.isArray(o.ng_details)?o.ng_details.map(d=>d.cause).join(' '):o.ng_cause,o.ng_memo,o.memo].join('\n').toLowerCase()
+    o._h=[(o.items||[]).map(i=>i.name).join(' '),o.operator,o.machine,o.paint_name,Array.isArray(o.ng_details)?o.ng_details.map(d=>d.cause).join(' '):o.ng_cause,o.ng_memo,o.memo].join('\n').toLowerCase()
   }else o._h=((Array.isArray(o.work_items)?o.work_items.map(i=>i.name).join(' '):o.work_name)+'\n'+(o.operator||'')).toLowerCase();
   return o
 }
@@ -1336,12 +1429,42 @@ const ngConv=r=>{
   if(!Array.isArray(r.ng_products)||!r.ng_products.length)return Number(r.ng_qty)||0;
   return r.ng_products.reduce((s,x)=>{const it=Array.isArray(r.items)?r.items.find(i=>i.name===x.name):null;return s+(Number(x.qty)||0)*uf((it&&it.unit)||'台')},0)
 };
+function trendBucket(date,span){if(span<=14)return date;const d=pd(date);if(span<=90){d.setDate(d.getDate()-((d.getDay()+6)%7));return ds(d)}return date.slice(0,7)}
+function trendLabel(key,mode){if(mode==='day'){const d=pd(key);return `${d.getMonth()+1}/${d.getDate()}`}if(mode==='week'){const d=pd(key),e=D(d,6);return `${d.getMonth()+1}/${d.getDate()}～${e.getMonth()+1}/${e.getDate()}`}const [y,m]=key.split('-');return `${y}/${Number(m)}`}
+function trendWeekday(key){return '日月火水木金土'[pd(key).getDay()]}
+function renderTrendPanel(kind,data,meta){
+  const isNg=kind==='ng',cls=isNg?'ng':'qty',title=isNg?'再塗装発生の推移':'塗装数量の推移',unit=isNg?'件':'数量';
+  if(!data.length)return `<div class="summary-trend-panel"><div class="summary-trend-head"><div class="summary-trend-name">${title}</div><div class="summary-trend-total ${cls}">${isNg?'合計 0件':'実質合計 0件'}</div></div><div class="summary-trend-empty">対象期間のデータがありません。</div></div>`;
+  const max=Math.max(...data.map(x=>x.v),0),avg=Number.isFinite(meta.avg)?meta.avg:0,rawMax=Math.max(1,max,avg),yMax=rawMax<=5?5:Math.ceil(rawMax*1.2/20)*20,W=700,H=270,L=42,R=12,T=18,B=52,CH=H-T-B,CW=W-L-R,step=data.length>1?CW/(data.length-1):0,pts=data.map((x,i)=>({x:data.length===1?L+CW/2:L+i*step,y:T+CH-(x.v/yMax)*CH,...x}));
+  const grid=[0,1/3,2/3,1].map(p=>{const y=T+CH*(1-p),v=yMax*p;return `<line x1="${L}" x2="${W-R}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#dbe3ec" stroke-dasharray="5 6"/><text x="${L-7}" y="${(y+4).toFixed(1)}" text-anchor="end" fill="#64748b" font-size="11">${Math.abs(v-Math.round(v))<.05?Math.round(v):v.toFixed(1)}</text>`}).join('');
+  const weekend=meta.mode==='day'?data.map((x,i)=>{const day=pd(x.key).getDay();if(day!==6&&day!==0)return '';const x0=Math.max(L,pts[i].x-step*.5),x1=Math.min(W-R,pts[i].x+step*.5);return `<rect x="${x0.toFixed(1)}" y="${T}" width="${Math.max(0,x1-x0).toFixed(1)}" height="${CH}" fill="#eef2f7"/>`}).join(''):'';
+  const line=pts.length<2?`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`:pts.map((p,i)=>{if(i===0)return`M ${p.x.toFixed(1)} ${p.y.toFixed(1)}`;const a=pts[i-1],b=p,cx=(a.x+b.x)/2;return` C ${cx.toFixed(1)} ${a.y.toFixed(1)}, ${cx.toFixed(1)} ${b.y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`}).join(''),area=`${L},${T+CH} ${pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')} ${W-R},${T+CH}`,avgY=T+CH-(Math.min(yMax,avg)/yMax)*CH;
+  const avgLine=avg>0?`<line x1="${L}" x2="${W-R}" y1="${avgY.toFixed(1)}" y2="${avgY.toFixed(1)}" stroke="#d59b3b" stroke-width="2" stroke-dasharray="8 6"/><text x="${W-R-2}" y="${(avgY-6).toFixed(1)}" text-anchor="end" fill="#a66d25" font-size="11" font-weight="700">平均 ${avg.toFixed(1).replace(/\.0$/,'')}</text>`:'';
+  const labels=pts.map((p,i)=>{const show=data.length<=14||i===0||i===data.length-1||i%Math.ceil(data.length/10)===0;if(!show)return '';const day=meta.mode==='day'?trendWeekday(p.key):'';const dow=meta.mode==='day'?pd(p.key).getDay():-1;const fill=dow===0?'#d6294d':dow===6?'#1687b7':'#64748b';return `<text x="${p.x.toFixed(1)}" y="${H-18}" text-anchor="middle" fill="${fill}" font-size="11" font-weight="800"><tspan x="${p.x.toFixed(1)}" dy="0">${esc(p.label)}</tspan>${day?`<tspan x="${p.x.toFixed(1)}" dy="13">${day}</tspan>`:''}</text>`}).join('');
+  const values=pts.map(p=>p.v>0?`<text x="${p.x.toFixed(1)}" y="${Math.max(12,p.y-10).toFixed(1)}" text-anchor="middle" fill="#172033" font-size="12" font-weight="900">${Number.isInteger(p.v)?p.v:p.v.toFixed(1)}</text>`:'').join('');
+  const circles=pts.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${data.length<=14?6.5:4.8}" fill="#fff" stroke="${isNg?'#df3158':'#3659d7'}" stroke-width="4"><title>${esc(p.title)}: ${Number.isInteger(p.v)?p.v:p.v.toFixed(1)}${unit}</title></circle>`).join('');
+  const total=isNg?meta.total.toLocaleString('ja-JP'):meta.total.toLocaleString('ja-JP',{maximumFractionDigits:1});
+  return `<div class="summary-trend-panel"><div class="summary-trend-head"><div class="summary-trend-name">${title}</div><div class="summary-trend-total ${cls}">${isNg?'合計 ':'実質合計 '}${total}${isNg?'件':'件'}</div></div><svg class="summary-trend-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}"><defs><linearGradient id="trend-fill-${kind}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${isNg?'#f4728b':'#4f8eea'}" stop-opacity=".32"/><stop offset="100%" stop-color="${isNg?'#f4728b':'#4f8eea'}" stop-opacity=".04"/></linearGradient></defs>${weekend}${grid}${avgLine}<polygon points="${area}" fill="url(#trend-fill-${kind})"/><path d="${line}" fill="none" stroke="${isNg?'#df3158':'#3659d7'}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".16"/><path d="${line}" fill="none" stroke="${isNg?'#df3158':'#3659d7'}" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>${circles}${values}${labels}</svg><div class="summary-trend-meta">${meta.footer}</div></div>`;
+}
+function renderSummaryTrends(g){
+  const box=$('summary-trends-card');if(!box)return;if(!g){box.innerHTML='';return}
+  const span=Math.max(1,Math.round((pd(g[1])-pd(g[0]))/86400000)+1),mode=span<=14?'day':span<=90?'week':'month',buckets={};
+  for(const r of all('r')){if(!r.date||r.date<g[0]||r.date>g[1])continue;const key=trendBucket(r.date,span);if(!buckets[key])buckets[key]={q:0,n:0};buckets[key].q+=itemsConv(r.items);buckets[key].n+=r.status==='NG'?ngConv(r):0}
+  let keys=[];
+  if(mode==='day'){for(let d=pd(g[0]);d<=pd(g[1]);d=D(d,1))keys.push(ds(d))}
+  else if(mode==='week'){for(let d=pd(g[0]);d<=pd(g[1]);d=D(d,7)){d.setDate(d.getDate()-((d.getDay()+6)%7));const k=ds(d);if(!keys.includes(k))keys.push(k)}}
+  else{const [yy,mm]=g[0].split('-').map(Number);for(let d=new Date(yy,mm-1,1);ds(d)<=g[1];d=new Date(d.getFullYear(),d.getMonth()+1,1))keys.push(`${d.getFullYear()}-${pad(d.getMonth()+1)}`)}
+  keys.sort();keys.forEach(k=>{if(!buckets[k])buckets[k]={q:0,n:0}});
+  const qty=keys.map(key=>({key,v:+buckets[key].q.toFixed(1),label:trendLabel(key,mode),weekend:mode==='day'&&[0,6].includes(pd(key).getDay()),title:trendLabel(key,mode)})),ng=keys.map(key=>({key,v:+buckets[key].n.toFixed(1),label:trendLabel(key,mode),weekend:mode==='day'&&[0,6].includes(pd(key).getDay()),title:trendLabel(key,mode)})),totalQ=qty.reduce((s,x)=>s+x.v,0),activeQ=qty.filter(x=>x.v>0),totalN=ng.reduce((s,x)=>s+x.v,0),activeN=ng.filter(x=>x.v>0),avgQ=activeQ.length?totalQ/activeQ.length:0,avgN=activeN.length?totalN/activeN.length:0,maxQ=qty.reduce((a,b)=>b.v>a.v?b:a,{v:0,key:g[0]}),maxN=ng.reduce((a,b)=>b.v>a.v?b:a,{v:0,key:g[0]});
+  const fmtDate=k=>mode==='month'?k.replace('-','/'):trendLabel(k,mode),footerQ=`最大 <strong>${maxQ.v.toLocaleString('ja-JP',{maximumFractionDigits:1})}数量</strong>（${fmtDate(maxQ.key)}） ／ 稼働${mode==='day'?'日':'期間'}平均 <strong>${avgQ.toLocaleString('ja-JP',{maximumFractionDigits:1})}数量</strong>`,footerN=`発生日 <strong>${activeN.length}日</strong> ／ 最多 <strong>${maxN.v.toLocaleString('ja-JP',{maximumFractionDigits:1})}件</strong>（${fmtDate(maxN.key)}） ／ 発生日平均 <strong>${avgN.toLocaleString('ja-JP',{maximumFractionDigits:1})}件</strong>`;
+  box.innerHTML=`<div class="summary-trends-title"><span>📈 実績推移</span><span class="summary-trends-period">${g[0]} ～ ${g[1]} ・ ${mode==='day'?'日別':mode==='week'?'週別':'月別'}</span></div><div class="summary-trend-grid">${renderTrendPanel('qty',qty,{mode,total:totalQ,avg:avgQ,footer:footerQ})}${renderTrendPanel('ng',ng,{mode,total:totalN,avg:avgN,footer:footerN})}</div>`;
+}
 function sum(){
   const R=ranges(),sumG=rg('sum',R);
   need('r',['sum','cause','paint'],R);
-  if(sumG&&sumG[0]<WIN)loadArch('t');
+  if(sumG&&sumG[0]<WIN)loadArch('r');
   lbl('sum',R);lbl('cause',R);lbl('paint',R);
-  const G=[R.lastweek,R.week,R.month,R.year,sumG],S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0,units:{}})),cg=rg('cause',R),pg_=rg('paint',R),cc={},np={},pp={};
+  const G=[R.lastweek,R.week,R.month,R.year,sumG].filter(Boolean),S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0,units:{}})),cg=rg('cause',R)||R.week,pg_=rg('paint',R)||R.week,cc={},np={},pp={};
   for(const r of all('r')){
     const d=r.date;if(!d)continue;
     G.forEach((g,i)=>{
@@ -1371,28 +1494,37 @@ function sum(){
   const unitText=(UNITS||['台','枚','個','本']).filter(u=>(s.units[u]||0)>0)
     .map(u=>`${s.units[u].toLocaleString('ja-JP',{maximumFractionDigits:1})}${u}`).join(' / ')||'—';
 
-  let paintRateSum=0,paintRateCount=0;
+  let paintRateSum=0,paintRateCount=0,paintRateWeighted=0,paintWeightTotal=0;
   for(const r of all('t')){
     const d=r.date;if(!d||!sumG||d<sumG[0]||d>sumG[1])continue;
     const rate=Number(r.rate);
-    if(Number.isFinite(rate)&&rate>=0&&rate<=100){paintRateSum+=rate;paintRateCount++}
+    if(Number.isFinite(rate)&&rate>=0&&rate<=100){paintRateSum+=rate;paintRateCount++;const w=Number(r.used_paint_kg)||0;if(w>0){paintRateWeighted+=rate*w;paintWeightTotal+=w}}
   }
-  const avgRate=paintRateCount?paintRateSum/paintRateCount:0;
+  const avgRate=paintRateCount?paintRateSum/paintRateCount:0,weightedRate=paintWeightTotal?paintRateWeighted/paintWeightTotal:0;
   $('s-w').textContent=s.qc.toLocaleString('ja-JP',{maximumFractionDigits:1});
   $('s-w-unit').textContent=`総件数 ${s.q.toLocaleString('ja-JP')}件`;
   $('s-w-breakdown').textContent=`原単位内訳：${unitText}`;
   $('s-paint').textContent=fw(s.w);
   $('s-n').innerHTML=`${s.qc>0?(s.n/s.qc*100).toFixed(1):'0.0'} <span class="unit">%</span>`;
   $('s-n-count').innerHTML=`再塗装 <b>${s.n.toLocaleString('ja-JP')}</b> 件`;
-  $('s-n-totalrate').textContent=`総件数による再塗装率 ${s.q>0?(s.n/s.q*100).toFixed(1):'0.0'}%`;
+  $('s-n-totalrate').textContent=`総件数比 ${s.q>0?(s.n/s.q*100).toFixed(1):'0.0'}%`;
   $('s-a').innerHTML=`${avgRate.toFixed(1)} <span class="unit">%</span>`;
-  $('s-a-count').textContent=`測定 ${paintRateCount.toLocaleString('ja-JP')}件の平均`;
+  $('s-a-count').innerHTML=`単純平均 ${paintRateCount.toLocaleString('ja-JP')}件 / 使用量加重平均 <b>${weightedRate.toFixed(1)}%</b>`;
 
   document.querySelectorAll('.pn-sw').forEach(e=>e.textContent=NM[P.sum.k]||'今週');
   const sc=srt(cc),tc=sc.reduce((a,b)=>a+b[1],0),sn=srt(np),tn=sn.reduce((a,b)=>a+b[1],0),sp_=srt(pp).filter(x=>x[1]>0),mx=sp_.length?sp_[0][1]:1;
+  const ngTotal=s.n,ngRate=s.qc>0?ngTotal/s.qc*100:0,topCause=sc.length?sc[0][0]:'—';
+  $('ng-analysis-summary').innerHTML=`<div class="analysis-mini-card"><div class="analysis-mini-label">再塗装件数</div><div class="analysis-mini-value">${ngTotal.toLocaleString('ja-JP')}件</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">実質NG率</div><div class="analysis-mini-value">${ngRate.toFixed(1)}%</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">原因種類</div><div class="analysis-mini-value">${sc.length}種</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">最多原因</div><div class="analysis-mini-value" title="${esc(topCause)}">${esc(topCause)}</div></div>`;
   rk('cause-analysis-list',sc.map(([k,v])=>{const p=(v/tc*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}個)`,p+'%',p]}),'該当期間の再塗装データはありません。');
   rk('product-analysis-list',sn.map(([k,v])=>{const p=(v/tn*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}台)`,p+'%',p]}),'該当期間の再塗装データはありません。');
-  rk('paint-usage-analysis-list',sp_.map(([k,v])=>[`<strong>${esc(k)}</strong>`,fw(v),(v/mx*100).toFixed(1)]),'該当期間の塗料使用データはありません。','linear-gradient(90deg,#0ea5e9,#38bdf8)')
+  rk('paint-usage-analysis-list',sp_.map(([k,v])=>[`<strong>${esc(k)}</strong>`,fw(v),(v/mx*100).toFixed(1)]),'該当期間の塗料使用データはありません。','linear-gradient(90deg,#0ea5e9,#38bdf8)');
+  const productStats={},paintStats={};
+  for(const r of all('r')){if(!r.date||!pg_||r.date<pg_[0]||r.date>pg_[1])continue;const total=Number(r._q)||0,ngMap={};if(Array.isArray(r.ng_products))r.ng_products.forEach(x=>{if(x&&x.name)ngMap[x.name]=(ngMap[x.name]||0)+(Number(x.qty)||0)});else if(r.ng_product)ngMap[r.ng_product]=Number(r.ng_qty)||0;const items=Array.isArray(r.items)?r.items:[];items.forEach(it=>{const k=it.name||'不明',q=Number(it.qty)||0;if(!productStats[k])productStats[k]={q:0,ng:0,w:0};productStats[k].q+=q;productStats[k].ng+=r.status==='NG'?(ngMap[k]||0):0;productStats[k].w+=total>0?(Number(r._w)||0)*q/total:0});const pn=r.paint_name||'未選択';if(!paintStats[pn])paintStats[pn]={w:0,r:0,n:0};paintStats[pn].w+=Number(r._w)||0;if(r.status==='NG')paintStats[pn].n+=Object.values(ngMap).reduce((a,v)=>a+(Number(v)||0),0)}
+  const pRows=Object.entries(productStats).sort((a,b)=>b[1].q-a[1].q).slice(0,10);
+  $('product-performance-list').innerHTML=pRows.length?pRows.map(([k,v])=>{const nr=v.q>0?v.ng/v.q*100:0;return `<div class="cause-item"><div class="cause-header"><span>${esc(k)}</span><span><strong>${v.q.toLocaleString('ja-JP')}台</strong> / NG ${nr.toFixed(1)}%</span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${Math.min(100,nr)}%"></div></div><div style="font-size:9px;color:var(--text-dim);margin-top:3px">塗料使用 ${fw(v.w)}</div></div>`}).join(''):'<div class="empty-sm">対象データがありません。</div>';
+  const paintRows=Object.entries(paintStats).sort((a,b)=>b[1].w-a[1].w).slice(0,10);
+  $('paint-performance-list').innerHTML=paintRows.length?paintRows.map(([k,v])=>{return `<div class="cause-item"><div class="cause-header"><span>${esc(k)}</span><span><strong>${fw(v.w)}</strong></span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${Math.min(100,(v.w/(paintRows[0][1].w||1))*100)}%;background:linear-gradient(90deg,#0ea5e9,#38bdf8)"></div></div></div>`}).join(''):'<div class="empty-sm">対象データがありません。</div>';
+  renderSummaryTrends(sumG);
 }
 
 /* ---------- 一覧 ---------- */
@@ -1400,9 +1532,10 @@ const chip=i=>`<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.un
 tg=m=>m?'<span class="tg m">📊実測</span>':'<span class="tg a">✨自動</span>',
 row=(l,v,c)=>`<div class="card-data-row${c?' '+c:''}"><span class="card-label">${l}</span><span class="card-value-text">${v}</span></div>`,
 summaryItems=(items,fallback='-')=>Array.isArray(items)&&items.length?items.map(i=>`${esc(i.name)} (${esc(i.qty)}${esc(i.unit||'台')})`).join(' / '):fallback,
-recordSummary=(items,operator,usage)=>`<div class="record-summary"><div class="record-summary-item"><span class="record-summary-label">品名（台数）</span><span class="record-summary-value product" title="${esc(summaryItems(items))}">${summaryItems(items)}</span></div><div class="record-summary-item"><span class="record-summary-label">塗装者</span><span class="record-summary-value" title="${esc(operator||'-')}">${esc(operator||'-')}</span></div><div class="record-summary-item"><span class="record-summary-label">使用量</span><span class="record-summary-value usage">${usage}</span></div></div>`,
+recordSummary=(items,operator,usage,paint,bake)=>`<div class="record-summary"><div class="record-summary-item"><span class="record-summary-label">品名（台数）</span><span class="record-summary-value product" title="${esc(summaryItems(items))}">${summaryItems(items)}</span></div><div class="record-summary-item"><span class="record-summary-label">塗料・焼付</span><span class="record-summary-value" title="${esc(paint||'-')}">${esc(paint||'-')} / ${esc(bake||'-')}</span></div><div class="record-summary-item"><span class="record-summary-label">使用量</span><span class="record-summary-value usage">${usage}</span></div></div>`,
 footerActions=(editFn,delFn)=>`<div class="card-footer-actions"><button type="button" class="card-details-toggle" onclick="toggleCardDetails(this)">詳細を見る</button><div class="card-action-right"><button type="button" class="btn-edit" onclick="${editFn}">編集</button><button type="button" class="btn-del" onclick="${delFn}">削除</button></div></div>`;
-function pager(k,n){const p=Math.ceil(n/10)||1;pg[k]=Math.max(1,Math.min(pg[k],p));$('pi-'+k).textContent=`${pg[k]} / ${p} ページ (全 ${n} 件)`;$('pp-'+k).disabled=pg[k]===1;$('pn-'+k).disabled=pg[k]===p}
+function pager(k,n){const size=pageSize[k]||10,p=Math.ceil(n/size)||1;pg[k]=Math.max(1,Math.min(pg[k],p));$('pi-'+k).textContent=`${pg[k]} / ${p} ページ (全 ${n} 件・${size}件表示)`;$('pp-'+k).disabled=pg[k]===1;$('pn-'+k).disabled=pg[k]===p}
+function setPageSize(k,v){const n=Math.max(10,Math.min(50,parseInt(v,10)||10));pageSize[k]=n;pg[k]=1;sched(k==='l'?2:4)}
 function toggleCardDetails(btn){
   const card=btn.closest('.card-item');if(!card)return;
   const open=card.classList.toggle('details-open');
@@ -1412,14 +1545,14 @@ function recHtml(r){
   const ng=r.status==='NG',
   np=Array.isArray(r.ng_products)&&r.ng_products.length?r.ng_products:[{name:r.ng_product||'全品',qty:r.ng_qty||1}],
   cs=Array.isArray(r.ng_details)&&r.ng_details.length?r.ng_details.map(d=>`${esc(d.cause)}: ${esc(d.qty)}個`).join(' / '):`${esc(r.ng_cause||'その他')}: ${esc(r.ng_qty||1)}個`;
-  const recordSource=r.source_type==='auto'?'🔵 自動計算ベース':'🟢 実測入力ベース';
+  const recordSource=r.source_type==='auto'?'🔵 自動計算ベース':r.source_type==='manual'?'🟢 実測入力ベース':'⚪ 旧記録（入力値ベース）';
   return `<div class="card-item${ng?' ng-item':''}"><div class="card-header"><span>📅 ${esc(r.date)}</span><span class="${r.status==='OK'?'badge-ok':'badge-ng'}">${ng?'⚠️ <span class="text-danger">再塗装(NG)</span>':'OK'}</span></div>`+
-  recordSummary(r.items,r.operator,fw(r.paint_weight))+
+  recordSummary(r.items,r.operator,fw(r.paint_weight),r.paint_name||'-',`${r.bake_temp||'-'}℃/${r.bake_time||'-'}分`)+
   `<div class="mobile-card-details"><div class="source-status"><span class="${r.source_type==='auto'?'auto':'real'}">${recordSource}</span><span>実績入力値を基準に表示</span></div>`+
   `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?r.items.map(chip).join(''):'-'}</div><div class="card-data-grid">`+
   row('塗装者:',esc(r.operator))+row('塗装機:',esc(r.machine||'旭サナック'))+
   row(`天候${r.location?`(${esc(r.location)})`:'(福山市)'}:`,`${esc(r.weather)} (${esc(r.temp)}℃ / ${esc(r.humidity)}%)`)+
-  row('塗料:',fw(r.paint_weight))+row('膜厚:',r.thickness!=null&&r.thickness!==''?Number(r.thickness).toFixed(1)+'μm':'未入力')+
+  row('塗料名:',esc(r.paint_name||'未選択'))+row('塗料使用量:',fw(r.paint_weight))+row('膜厚:',r.thickness!=null&&r.thickness!==''?Number(r.thickness).toFixed(1)+'μm':'未入力')+
   row('電気条件:',`${esc(r.voltage)}kV / ${esc(r.current)}μA`)+
   row('吐出/エアー:',`${esc(r.discharge||'-')} FlowRate / ${esc(r.air_flow||'-')}L/min${r.preset_no?` <span class="ptag">P${esc(r.preset_no)}${r.preset_name?'：'+esc(r.preset_name):''}</span>`:''}`)+
   row('焼付条件:',`${esc(r.bake_temp||200)}℃ / ${esc(r.bake_time||20)}分`,'full-row')+`</div>`+
@@ -1432,10 +1565,10 @@ function list(){
   const R=ranges();need('r',['list'],R);lbl('list',R);
   const g=rg('list',R),kw=V('search-input').trim().toLowerCase(),s=A.r.s,ab=$('btn-arch'),
   a=all('r').filter(r=>(!ngF||r.status==='NG')&&inr(r,g)&&(!kw||r._h.includes(kw))).sort((x,y)=>(y.date||'').localeCompare(x.date||'')||(y.timestamp||0)-(x.timestamp||0));
-  ab.style.display=P.list.k==='all'&&s!==2?'':'none';ab.disabled=s===1;ab.textContent=s===1?'読込中…':s===3?'🗂 再試行':'🗂 過去データを読み込む（前年以前）';
+  ab.style.display=P.list.k==='all'&&s!==2?'':'none';ab.disabled=s===1;ab.textContent=s===1?'読込中…':s===3?'🗂 再試行':'🗂 1年以上前のデータを読み込む';
   $('btn-ng').classList.toggle('on',!!ngF);
   pager('l',a.length);
-  $('record-list').innerHTML=a.length?a.slice((pg.l-1)*10,pg.l*10).map(recHtml).join(''):`<div class="empty-msg">${s===1?'過去データを読み込み中…':'該当する実績が見つかりません'}</div>`
+  $('record-list').innerHTML=a.length?a.slice((pg.l-1)*pageSize.l,pg.l*pageSize.l).map(recHtml).join(''):`<div class="empty-msg">${s===1?'過去データを読み込み中…':kw||ngF?'🔎 条件に一致する実績がありません。検索語・NG絞り込み・期間を変更してみてください。':'📋 まだ登録実績がありません。上の実績入力フォームから最初の記録を登録できます。'}</div>`
 }
 function tHtml(r){
   const rate=Number(r.rate)||0,lr=r.loss_rate!==undefined?r.loss_rate:(100-rate).toFixed(1),
@@ -1470,7 +1603,7 @@ function tlist(){
   if(fd){$('l-tk').textContent='対象日: '+fd;if(fd<WIN)loadArch('t')}
   const a=all('t').filter(r=>(fd?r.date===fd:inr(r,g)&&r.date)&&(!kw||r._h.includes(kw))).sort((x,y)=>(y.timestamp||0)-(x.timestamp||0));
   pager('t',a.length);
-  $('tochaku-log-list').innerHTML=a.length?a.slice((pg.t-1)*10,pg.t*10).map(tHtml).join(''):`<div class="empty-msg">${A.t.s===1?'過去データを読み込み中…':'該当するログが見つかりません'}</div>`
+  $('tochaku-log-list').innerHTML=a.length?a.slice((pg.t-1)*pageSize.t,pg.t*pageSize.t).map(tHtml).join(''):`<div class="empty-msg">${A.t.s===1?'過去データを読み込み中…':kw||fd?'🔎 条件に一致する解析ログがありません。検索語・日付・期間を変更してみてください。':'🎯 解析ログはまだありません。塗着率・粉体歩留まり解析を登録するとここに表示されます。'}</div>`
 }
 
 /* ---------- 実績登録フォーム ---------- */
@@ -1504,7 +1637,7 @@ function ngProductUI(v){
     h+=`<div class="ng-product-row">
       <div class="ng-p-no">NG品名 ${i}${i===1?'（必須）':'（任意）'}</div>
       <div><label for="ng_product_select${i}">品名</label><select id="ng_product_select${i}" class="ng-product-select"></select></div>
-      <div><label for="ng_product_qty${i}">NG台数</label><input type="number" id="ng_product_qty${i}" class="ng-product-qty" placeholder="台数" min="1"${i===1?' value="1" required':''}><div class="qty-control mini-qc" aria-label="NG台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-10)" title="10減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-5)" title="5減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-1)" title="1減らす">−1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',1)" title="1増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',5)" title="5増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',10)" title="10増やす">＋10</button></div></div>
+      <div><label for="ng_product_qty${i}">NG台数</label><input type="number" inputmode="numeric" id="ng_product_qty${i}" class="ng-product-qty" placeholder="台数" min="1"${i===1?' value="1" required':''}><div class="qty-control mini-qc" aria-label="NG台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-10)" title="10減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-5)" title="5減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_product_qty${i}',-1)" title="1減らす">−1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',1)" title="1増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',5)" title="5増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_product_qty${i}',10)" title="10増やす">＋10</button></div></div>
       ${i>1?`<button type="button" class="btn-del ng-p-del" onclick="ngProductDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span></span>'}
     </div>`;
   }
@@ -1540,7 +1673,7 @@ function ngCauseUI(v){
   if(!v){v=[];for(let i=1;i<=ngCauseCount;i++){const s=$('ng_cause_select'+i);if(!s)break;v.push([s.value,V('ng_cause_qty'+i)])}}
   let h='';
   for(let i=1;i<=ngCauseCount;i++){
-    h+=`<div class="ng-cause-row"><div class="cause-no">不具合原因 ${i}${i===1?'（必須）':'（任意）'}</div><div class="ng-cause-field"><label for="ng_cause_select${i}">原因</label><select id="ng_cause_select${i}" class="ng-cause-select"></select></div><div class="ng-cause-field qty"><label for="ng_cause_qty${i}">個数</label><input type="number" id="ng_cause_qty${i}" class="ng-cause-qty" placeholder="個数" min="1"${i===1?' value="1" required':''}><div class="qty-control mini-qc" aria-label="個数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-10)" title="10減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-5)" title="5減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-1)" title="1減らす">−1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',1)" title="1増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',5)" title="5増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',10)" title="10増やす">＋10</button></div></div>${i>1?`<button type="button" class="btn-del ng-cause-delete" onclick="ngCauseDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span class="ng-cause-spacer"></span>'}</div>`;
+    h+=`<div class="ng-cause-row"><div class="cause-no">不具合原因 ${i}${i===1?'（必須）':'（任意）'}</div><div class="ng-cause-field"><label for="ng_cause_select${i}">原因</label><select id="ng_cause_select${i}" class="ng-cause-select"></select></div><div class="ng-cause-field qty"><label for="ng_cause_qty${i}">個数</label><input type="number" inputmode="numeric" id="ng_cause_qty${i}" class="ng-cause-qty" placeholder="個数" min="1"${i===1?' value="1" required':''}><div class="qty-control mini-qc" aria-label="個数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-10)" title="10減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-5)" title="5減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('ng_cause_qty${i}',-1)" title="1減らす">−1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',1)" title="1増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',5)" title="5増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('ng_cause_qty${i}',10)" title="10増やす">＋10</button></div></div>${i>1?`<button type="button" class="btn-del ng-cause-delete" onclick="ngCauseDelete(${i})"><i class="fa-solid fa-trash"></i> 削除</button>`:'<span class="ng-cause-spacer"></span>'}</div>`;
   }
   box.innerHTML=h;ngOpts();v.forEach((x,i)=>{if(i<ngCauseCount){if(x[0])setV('ng_cause_select'+(i+1),x[0]);$('ng_cause_qty'+(i+1)).value=x[1]||''}});
   const on=V('status')==='NG';box.querySelectorAll('input,select,.mini-qc button').forEach(e=>e.disabled=!on);
@@ -1550,7 +1683,7 @@ function ngCauseUI(v){
 }
 async function ngCauseRow(d){if(d>0){if(ngCauseCount>=NG_CAUSE_MAX)return;ngCauseCount++;ngCauseUI()}else{if(ngCauseCount<=1)return;const q=$('ng_cause_qty'+ngCauseCount);if(q&&q.value&&!(await uiConfirm('最後の原因入力を削除して行を減らしますか？')))return;ngCauseCount--;ngCauseUI()}}
 function ngCauseDelete(i){const v=[];for(let j=1;j<=ngCauseCount;j++)if(j!==i)v.push([V('ng_cause_select'+j),V('ng_cause_qty'+j)]);ngCauseCount=Math.max(1,ngCauseCount-1);ngCauseUI(v)}
-function busy(f,fn){const b=f.querySelector('.btn-submit');b.disabled=true;return fn().finally(()=>b.disabled=false)}
+function busy(f,fn){if(f.dataset.saving==='1')return Promise.resolve();f.dataset.saving='1';const b=f.querySelector('.btn-submit'),id=f.id==='p-form'?'p':'t',st=$(`${id}-save-state`);b.disabled=true;if(st){st.className='save-state saving';st.textContent='⏳ 保存中… 二重送信を防止しています'}return Promise.resolve().then(fn).then(v=>{if(st){st.className='save-state success';st.textContent='✓ 保存完了'}return v}).catch(e=>{if(st){st.className='save-state error';st.textContent='⚠ 保存に失敗しました'}throw e}).finally(()=>{f.dataset.saving='0';b.disabled=false})}
 const DECIMAL_INPUT_IDS=new Set(['paint_weight','t_used_paint_kg','t_attached_weight_kg','t_area','t_film','t_measured_loss','thickness']);
 function validateIntegerInputs(form){
   const bad=[...form.querySelectorAll('input[type="number"]')].find(el=>{
@@ -1566,6 +1699,7 @@ $('p-form').onsubmit=e=>{
   if(!db)return uiAlert('データベースに接続されていません');
   if(!validateIntegerInputs(e.target))return;
   if(V('bake_temp')===''||V('bake_time')===''){ $('bake_temp').value===''?$('bake_temp').focus():$('bake_time').focus(); return uiAlert('「焼付温度」「焼付時間」は必須です。入力してください。') }
+  const bt=Number(V('bake_temp')),bm=Number(V('bake_time'));if(!Number.isFinite(bt)||!Number.isInteger(bt)||bt<0){$('bake_temp').focus();return uiAlert('「焼付温度」は0以上の整数で入力してください。')}if(!Number.isFinite(bm)||!Number.isInteger(bm)||bm<0){$('bake_time').focus();return uiAlert('「焼付時間」は0以上の整数で入力してください。')}if(!(parseFloat(V('paint_weight'))>0)){$('paint_weight').focus();return uiAlert('「使用塗料」は0より大きい数値で入力してください。')}
   const date=V('date'),items=[];let tq=0;
   for(let i=1;i<=10;i++){const n=V('product'+i).trim();if(n){const q=parseInt(V('quantity'+i))||(i===1?0:1),u=($('unit'+i)&&V('unit'+i))||'台';items.push({name:n,qty:q,unit:u});tq+=q}}
   if(!V('product1').trim()){$('product1').focus();return uiAlert('「品名1」を入力してください。')}
@@ -1594,21 +1728,21 @@ $('p-form').onsubmit=e=>{
     }
     const causeQ=ngD.reduce((s,x)=>s+x.qty,0);
     if(!ngD.length){$('ng_cause_qty1').focus();return uiAlert('不具合原因と個数（1以上）を入力してください。')}
-    if(causeQ!==ngQ)return uiAlert(`NG品名別の合計 ${ngQ}台 と、不具合原因別の合計 ${causeQ}個 が一致していません。内訳を確認してください。`);
+    if(causeQ!==ngQ)return uiAlert(`NG台数の合計 ${ngQ}台 と、不具合原因の個数合計 ${causeQ}個 は一致させてください。1台につき1個の原因として記録する運用です。`);
   }
   const th=V('thickness'),old=editId&&fnd('r',editId),
-  rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),weather_time:V('weather-time')||'12:00',location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,source_type:'manual',bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_products:ngProducts,ng_details:ngD,memo:V('memo')||'-'};
+  rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),weather_time:V('weather-time')||'12:00',location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,paint_name:(V('bake_paint_select')===''?'':(V('bake_paint_select').startsWith('stored:')?(old&&old.paint_name||''):((bakePresets[Number(V('bake_paint_select'))]||{}).name||''))),source_type:'manual',bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_products:ngProducts,ng_details:ngD,memo:V('memo')||'-'};
   const wasEdit=!!editId;
-  busy(e.target,()=>save('r',editId,rec).then(()=>{const chg=date!==today();resetP();setToday();chg&&onDate();window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました')}).catch(er=>uiAlert('保存エラー: '+er.message)))
+  busy(e.target,()=>save('r',editId,rec).then(()=>{const chg=date!==today();resetP();setToday();wx(today(),fillWx);chg&&onDate();window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました')}).catch(er=>uiAlert('保存エラー: '+er.message)))
 };
 function resetP(){
-  $('weather-time').value='12:00';
+  $('weather-time').value='12:00';$('weather').value='晴れ';$('temp').value='';$('humidity').value='';const ws=$('weather-fetch-status');if(ws){ws.className='weather-fetch-status';ws.textContent='当日12:00の天候を自動取得'}
   for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value='';$('unit'+i)&&($('unit'+i).value='台')}sr('p',2);
   $('operator2').value='';$('machine1').value='旭サナック';$('machine2').value='';
-  $('paint_weight').value='';$('bake_paint_select').value='';$('thickness').value='50';$('memo').value='';$('status').value='OK';
+  $('paint_weight').value='';$('bake_paint_select').value='';bakeStatus('',false);$('thickness').value='50';$('memo').value='';$('status').value='OK';
   ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1
 }
-function resetT(d){tf.reset();sr('t',2);$('t_date').value=d;$('t_qty1').value=1;isAtt=0;tEdit=null;sbtn('t',0);tPrev();pg.t=1}
+function resetT(d){tf.reset();sr('t',2);$('t_calc_mode').value='auto';$('t_date').value=d;$('t_qty1').value=1;isAtt=0;tEdit=null;sbtn('t',0);tPrev();pg.t=1}
 function cxEdit(k){if(k==='p'){resetP();setToday();$('bake_temp').value=200;$('bake_time').value=20;onDate()}else resetT(today())}
 async function editRec(id){
   if(!(await adm()))return;const r=fnd('r',id);if(!r)return;
@@ -1624,7 +1758,7 @@ async function editRec(id){
   const pf_=pv();
   $('paint_weight').value=r.paint_weight||'';$('thickness').value=r.thickness!=null?r.thickness:'';
   $('voltage').value=r.voltage||pf_.voltage;$('current').value=r.current||pf_.current;$('discharge').value=r.discharge||pf_.discharge;$('air_flow').value=r.air_flow||pf_.air;
-  $('bake_temp').value=r.bake_temp||200;$('bake_time').value=r.bake_time||20;
+  $('bake_temp').value=r.bake_temp!=null?r.bake_temp:200;$('bake_time').value=r.bake_time!=null?r.bake_time:20;setBakePaintByName(r.paint_name||'');
   $('status').value=r.status||'OK';ngToggle();
   if(r.status==='NG'){
     const np=(Array.isArray(r.ng_products)&&r.ng_products.length?r.ng_products:[{name:r.ng_product||'',qty:r.ng_qty||1}]).slice(0,NG_PRODUCT_MAX);
@@ -1642,25 +1776,15 @@ const MODES=[['実測ロス率指定','📊 実測ロス率指定モード'],['�
 function solve(){
   const g=id=>V(id)===''?null:parseFloat(V(id)),d=parseFloat(V('t_density'))||1.4,kg=parseFloat(V('t_used_paint_kg'))||0,used=kg*1e3,
   A_=isAtt&&V('t_attached_weight_kg')!==''?parseFloat(V('t_attached_weight_kg'))*1e3:null,
-  ml=g('t_measured_loss'),fi=g('t_film'),ar=g('t_area'),aB=V('t_area')==='',fB=V('t_film')==='',
-  o={d,kg,used,A:A_,ml,area:ar,aa:aB,fa:fB,f:0,att:0,rate:0,loss:0,mode:0,guide:'✨ 入力内容から解析が完了しました！',hl:[]};
-  if(ml!==null){
-    o.loss=ml;o.rate=100-ml;o.att=used*o.rate/100;
-    if(ar>0&&fB){o.f=o.att/(ar*d);o.fa=1}
-    else if(fi!==null&&aB){o.area=o.att/(fi*d);o.f=fi;o.aa=1}
-    else if(fi!==null&&ar>0){o.f=fi;o.fa=0}
-    o.guide='✨ 実測ロス率から計算完了しています。保存ボタンを押すか他の数値を調整できます。'
-  }else if(A_!==null){
-    o.mode=1;o.att=A_;o.rate=A_/used*100;o.loss=100-o.rate;
-    if(fi!==null&&aB){o.f=fi;o.fa=0;o.area=A_/(fi*d);o.aa=1;o.guide='✨ 塗膜増量と膜厚から解析完了しました！'}
-    else if(ar>0&&fB){o.f=A_/(ar*d);o.fa=1;o.guide='✨ 塗膜増量と表面積から解析完了しました！'}
-    else if(fi!==null&&ar>0){o.f=fi;o.fa=0}
-    else{o.hl=['t_area','t_film','t_measured_loss'];o.guide='👉 続いて「ワーク総表面積」「平均膜厚」、または「実測ロス率 (%)」のいずれかを入力してください。'}
-  }else if(fi!==null){
-    o.f=fi;o.fa=0;
-    if(!(ar>0)){o.err='area';return o}
-    o.mode=2;o.att=ar*fi*d;o.rate=o.att/used*100;o.loss=100-o.rate;o.guide='✨ 膜厚と表面積から理論塗着率の計算が完了しました！'
-  }else{o.err='wait';return o}
+  ml=g('t_measured_loss'),fi=g('t_film'),ar=g('t_area'),mode=V('t_calc_mode')||'auto',
+  o={d,kg,used,A:A_,ml,area:ar,aa:false,fa:false,f:0,att:0,rate:0,loss:0,mode:0,guide:'✨ 入力内容から解析が完了しました！',hl:[]};
+  const useLoss=()=>{if(ml===null)return false;o.loss=ml;o.rate=100-ml;o.att=used*o.rate/100;o.mode=0;if(ar>0&&fi===null){o.f=o.att/(ar*d);o.fa=1}else if(fi!==null&&ar===null){o.area=o.att/(fi*d);o.aa=1}else if(fi!==null&&ar>0){o.f=fi}o.guide='✨ 実測ロス率を使用して計算しています。';return true};
+  const useAttached=()=>{if(A_===null)return false;o.mode=1;o.att=A_;o.rate=A_/used*100;o.loss=100-o.rate;if(fi!==null&&ar===null){o.f=fi;o.area=A_/(fi*d);o.aa=1}else if(ar>0&&fi===null){o.f=A_/(ar*d);o.fa=1}else if(fi!==null&&ar>0){o.f=fi}o.guide='✨ 実測塗膜増量を使用して計算しています。';return true};
+  const useTheory=()=>{if(fi===null||!(ar>0))return false;o.mode=2;o.f=fi;o.att=ar*fi*d;o.rate=o.att/used*100;o.loss=100-o.rate;o.guide='✨ 膜厚と表面積から理論計算しています。';return true};
+  if(mode==='loss'&&!useLoss()){o.err='loss';return o}
+  if(mode==='attached'&&!useAttached()){o.err='attached';return o}
+  if(mode==='theory'&&!useTheory()){o.err='theory';return o}
+  if(mode==='auto'){if(useLoss()||useAttached()||useTheory())return o;o.err='wait';return o}
   return o
 }
 function tPrev(){
@@ -1679,11 +1803,11 @@ function tPrev(){
     S({...z,r_mode_badge:'未入力'});
     return bad('good',['まず「品名1」と「台数1」を入力してください','「台数1」を入力してください','使用塗料量(kg)と、必要な計測項目を入力してください'][k])
   }
-  const o=solve();
+  const o=solve();const modeHelp={auto:'入力されている実測値を優先して計算します。',loss:'実測ロス率だけを基準に塗着率を算出します。',attached:'焼付後の実測塗膜増量だけを基準に算出します。',theory:'膜厚・表面積・比重から理論値を算出します。'};if($('t_calc_mode_help'))$('t_calc_mode_help').textContent=modeHelp[V('t_calc_mode')||'auto']||modeHelp.auto;
   if(o.err){
     if(!isAtt)$('t_attached_weight_kg').value='';
     const ea=o.area!==null?o.area.toFixed(2)+' m²':'未入力';
-    if(o.err==='area'){
+    if(o.err==='loss'){hl(['t_measured_loss']);gd.textContent='👉 計算モードが「実測ロス率」なので、実測ロス率を入力してください。';S({...z,r_mode_badge:'実測ロス率待ち'});bad('warn','💡 実測ロス率を入力してください。')}else if(o.err==='attached'){hl(['t_attached_weight_kg']);gd.textContent='👉 計算モードが「実測塗膜増量」なので、焼付後の塗膜増量を入力してください。';S({...z,r_mode_badge:'実測塗膜増量待ち'});bad('warn','💡 焼付後の塗膜増量を入力してください。')}else if(o.err==='theory'){hl(['t_area','t_film']);gd.textContent='👉 理論計算には「ワーク総表面積」と「平均膜厚」が必要です。';S({...z,r_mode_badge:'理論計算入力待ち'});bad('warn','💡 表面積と膜厚を入力してください。')}else if(o.err==='area'){
       hl(['t_area','t_measured_loss']);gd.textContent='👉 平均膜厚から計算するため、「ワーク総表面積 (m²)」または「実測ロス率 (%)」を入力してください。';
       S({...z,r_mode_badge:'要面積またはロス入力',r_suikomi_loss:'-',r_rakka_loss:'-',r_expected_area:ea,r_expected_film:o.f.toFixed(1)+' μm [指定]'});
       bad('danger','⚠️ 平均膜厚から計算するには、「ワーク総表面積」または「実測ロス率」を入力してください。')
@@ -1707,7 +1831,7 @@ function tPrev(){
   else bad('danger','🔴 要改善：ブースへの吸い込み・落下粉が多い状態です。')
 }
 const tf=$('tochaku-form');
-['input','change'].forEach(n=>tf.addEventListener(n,e=>{if(e.target.id==='t_attached_weight_kg')isAtt=V('t_attached_weight_kg')!=='';tPrev()}));
+['input','change'].forEach(n=>tf.addEventListener(n,e=>{if(e.target.id==='t_attached_weight_kg')isAtt=V('t_attached_weight_kg')!=='';tPrev()}));$('t_calc_mode')?.addEventListener('change',tPrev);
 tf.onsubmit=async e=>{
   e.preventDefault();
   if(!db)return uiAlert('データベースに接続されていません');
@@ -1717,9 +1841,16 @@ tf.onsubmit=async e=>{
   const items=[];
   for(let i=1;i<=5;i++){const n=V('t_product'+i).trim();if(n)items.push({name:n,qty:parseInt(V('t_qty'+i))||1})}
   if(!(nn('t_used_paint_kg')>0))return uiAlert('「使用した塗料量 (kg)」を0より大きい数値で入力してください。');
+  if(!(nn('t_density')>0))return uiAlert('「塗料比重」は0より大きい数値で指定してください。');
+  if(V('t_attached_weight_kg')!==''&&Number(V('t_attached_weight_kg'))<0)return uiAlert('「焼付後の塗膜増量」は0以上で入力してください。');
+  if(V('t_area')!==''&&Number(V('t_area'))<=0)return uiAlert('「ワーク総表面積」は0より大きい数値で入力してください。');
+  if(V('t_film')!==''&&Number(V('t_film'))<=0)return uiAlert('「平均膜厚」は0より大きい数値で入力してください。');
   const o=solve();
   if(o.err==='wait')return uiAlert('「焼付後の塗膜増量(kg)」「平均膜厚」「実測ロス率」のいずれかを入力してください。');
   if(o.err==='area')return uiAlert('平均膜厚から計算するには、ワーク総表面積を入力してください。');
+  if(o.err==='loss')return uiAlert('計算モードが「実測ロス率」なので、実測ロス率を入力してください。');
+  if(o.err==='attached')return uiAlert('計算モードが「実測塗膜増量」なので、焼付後の塗膜増量を入力してください。');
+  if(o.err==='theory')return uiAlert('計算モードが「理論計算」なので、ワーク総表面積と平均膜厚を入力してください。');
   if(o.ml!==null&&(o.ml<0||o.ml>100))return uiAlert('実測ロス率は0〜100%の範囲で入力してください。');
   if(!(o.rate>=0&&o.rate<=100)){uiAlert(`⚠️ 塗着率 ${o.rate.toFixed(1)}% です。付着量が使用塗料量を超えている可能性があります。計測値を確認してから保存してください。`);return;}
   const lq=Math.max(0,o.used-o.att),old=tEdit&&fnd('t',tEdit),
@@ -1746,7 +1877,7 @@ async function editTk(id){
   let w='';if(u){if(r.attached_weight_kg!=null)w=r.attached_weight_kg;else if(r.attached_weight!=null)w=r.attached_weight/1000}
   $('t_attached_weight_kg').value=w;isAtt=w!=='';
   $('t_area').value=r.area!=null&&!r.area_is_auto?r.area:'';$('t_film').value=r.film!=null&&!r.film_is_auto?r.film:'';
-  $('t_measured_loss').value=r.calc_type==='実測ロス率指定'&&r.loss_rate!==undefined?r.loss_rate:'';
+  $('t_measured_loss').value=r.calc_type==='実測ロス率指定'&&r.loss_rate!==undefined?r.loss_rate:'';$('t_calc_mode').value=r.calc_type==='実測ロス率指定'?'loss':r.calc_type==='実測値(増量ベース)'?'attached':r.calc_type==='理論計算(膜厚換算)'?'theory':'auto';
   tPrev();tf.scrollIntoView({behavior:'smooth'})
 }
 async function delTk(id){if(!(await adm())||!(await uiConfirm('この解析ログを削除しますか？')))return;del('t',id).then(()=>{tEdit===id&&cxEdit('t')}).catch(e=>uiAlert('削除エラー: '+e.message))}
@@ -1761,19 +1892,20 @@ function spArea(){
 }
 function spUI(){
   spArea();$('sub-parts-remain').textContent=Math.max(0,5-sp.length);
-  $('sub-parts-list-container').innerHTML=sp.map((p,i)=>`<div class="sp-row"><select onchange="sp[${i}].type=this.value;if(FIX[this.value])sp[${i}].area=FIX[this.value];spUI()">${SPO.map(o=>`<option value="${o[0]}"${p.type===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select><input type="number" step="1" value="${p.area}" placeholder="平米(m²)" oninput="sp[${i}].area=parseFloat(this.value)||0"${p.type==='custom'||FIX[p.type]?'':' readonly'}><input type="number" min="1" value="${p.qty}" placeholder="個数" oninput="sp[${i}].qty=parseInt(this.value)||1"><button type="button" class="btn-del" onclick="sp.splice(${i},1);spUI();runPaintCalc()">削除</button></div>`).join('')
+  $('sub-parts-list-container').innerHTML=sp.map((p,i)=>`<div class="sp-row"><select onchange="if(sp.some((x,j)=>j!==${i}&&x.type===this.value)){uiAlert('同じ子部品種類が既に登録されています。必要なら既存行の個数を変更してください。');this.value=sp[${i}].type;return}sp[${i}].type=this.value;if(FIX[this.value])sp[${i}].area=FIX[this.value];spUI();runPaintCalc()">${SPO.map(o=>`<option value="${o[0]}"${p.type===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select><input type="number" step="1" value="${p.area}" placeholder="平米(m²)" oninput="sp[${i}].area=parseFloat(this.value)||0"${p.type==='custom'||FIX[p.type]?'':' readonly'}><span class="subpart-auto-tag">${p.type==='custom'?'✏ 手動':'✨ 自動'}</span><input type="number" min="1" value="${p.qty}" placeholder="個数" oninput="sp[${i}].qty=Math.max(1,parseInt(this.value)||1);runPaintCalc()"><button type="button" class="btn-del" onclick="sp.splice(${i},1);spUI();runPaintCalc()">削除</button></div>`).join('')
 }
 function spAdd(){if(sp.length>=5)return uiAlert('子部品は最大5種まで選択可能です。');sp.push({type:'bracket',qty:1,area:.05});spUI();runPaintCalc()}
 function runPaintCalc(){
-  const film=nn('c_film'),den=parseFloat(V('c_density'))||1.4,loss=pf('c_loss',40),t=V('c_work_type'),m=id=>nn(id)/1e3,q=id=>nn(id)||1;let A_=0;
+  const film=nn('c_film'),den=parseFloat(V('c_density'))||0,loss=pf('c_loss',40),t=V('c_work_type'),m=id=>nn(id)/1e3,q=id=>nn(id)||1;let A_=0;
+  if(!(den>0)||film<0||loss<0||loss>100){$('res_area').textContent='入力確認';$('res_actual_kg_display').textContent='—';return}
   if(t==='panel'){
-    const w=m('c_w'),h=m('c_h'),d=m('c_d');let a=(w*h+w*d+h*d)*2;if($('c_panel_double').checked)a*=2;
-    A_=(a+sp.reduce((s,p)=>s+(p.area||0)*(p.qty||1),0))*q('c_qty')
+    const w=m('c_w'),h=m('c_h'),d=m('c_d');let a=(w*h+w*d+h*d)*2;if($('c_panel_double').checked)a*=2;const doorOverlap=$('c_panel_double').checked?sp.filter(p=>p.type==='door').reduce((s,p)=>s+(p.area||0)*(p.qty||1),0):0;
+    A_=Math.max(0,a-doorOverlap+sp.filter(p=>p.type!=='door').reduce((s,p)=>s+(p.area||0)*(p.qty||1),0))*q('c_qty')
   }else if(t==='flat')A_=m('c_flat_w')*m('c_flat_h')*($('c_flat_double').checked?2:1)*q('c_flat_qty');
   else if(t==='angle'){
     const s=V('c_angle_shape'),a=m('c_angle_a'),b=m('c_angle_b');
     A_=(s==='Box'?(a+b)*2:(s==='C'?a+b*2:a+b)*(V('c_angle_surface')==='all'?2:1))*m('c_angle_l')*q('c_angle_qty')
-  }else A_=Math.PI*m('c_pipe_d')*m('c_pipe_l')*q('c_pipe_qty');
+  }else {const outer=Math.PI*m('c_pipe_d')*m('c_pipe_l');A_=outer*(V('c_pipe_surface')==='all'?2:1)*q('c_pipe_qty');}
   const k=(100-loss)/100;
   $('res_area').textContent=A_.toFixed(2);$('res_actual_kg_display').textContent=fw(k>0?A_*film*den/k/1e3:0)
 }
@@ -1783,19 +1915,19 @@ $('c_work_type').onchange=function(){document.querySelectorAll('.calc-work-secti
 
 /* ---------- 初期化 ---------- */
 const unitSel=i=>`<select id="unit${i}" class="unit-sel" title="単位（実質換算に使用。基準:台=1.0）">${UNITS.map(u=>`<option value="${u}"${u==='台'?' selected':''}>${u}</option>`).join('')}</select>`;
-const rows=(a,b,n,t,withUnit)=>{let h='';for(let i=1;i<=n;i++){const f=t&&i===1;const qty=`<div class="qty-control" aria-label="台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-10)" title="10台減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-5)" title="5台減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-1)" title="1台減らす">−1</button><input type="number"${i===1?' class="req"':''} id="${b}${i}" placeholder="台数${i}" min="1"${f?' value="1" required':''}><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',1)" title="1台増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',5)" title="5台増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',10)" title="10台増やす">＋10</button></div>`,nameField=withUnit?`<div class="prod-name-row"><input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>${unitSel(i)}</div>`:`<input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':t?' ※必須':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>`;h+=`<div class="prod-grid" id="${a}-r${i}"${i>2?' hidden':''}>${nameField}${qty}</div>`}return h};
+const rows=(a,b,n,t,withUnit)=>{let h='';for(let i=1;i<=n;i++){const f=t&&i===1;const qty=`<div class="qty-control" aria-label="台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-10)" title="10台減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-5)" title="5台減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-1)" title="1台減らす">−1</button><input type="number" inputmode="numeric"${i===1?' class="req"':''} id="${b}${i}" placeholder="台数${i}" min="1"${f?' value="1" required':''}><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',1)" title="1台増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',5)" title="5台増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',10)" title="10台増やす">＋10</button></div>`,nameField=withUnit?`<div class="prod-name-row"><input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>${unitSel(i)}</div>`:`<input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':t?' ※必須':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>`;h+=`<div class="prod-grid" id="${a}-r${i}"${i>2?' hidden':''}>${nameField}${qty}</div>`}return h};
 const PR={p:['product','quantity',10,'prod-rows'],t:['t_product','t_qty',5,'t-rows']};
 function adjustQty(id,delta){
   const el=$(id);if(!el)return;
   const cur=parseInt(el.value,10)||0;
-  el.value=Math.max(1,cur+delta);
+  el.value=delta<0&&cur<=1?'':Math.max(1,cur+delta);
   el.dispatchEvent(new Event('input',{bubbles:true}));
   el.dispatchEvent(new Event('change',{bubbles:true}));
 }
 function adjustPaintQty(delta){
   const el=$('paint_weight');if(!el)return;
   const cur=parseFloat(el.value)||0;
-  el.value=String(Math.max(0,Math.round((cur+delta)*1000)/1000));
+  const next=Math.round((cur+delta)*1000)/1000;el.value=delta<0&&cur<=0.001?'':String(Math.max(0,next));
   el.dispatchEvent(new Event('input',{bubbles:true}));
   el.dispatchEvent(new Event('change',{bubbles:true}));
 }
@@ -1826,12 +1958,13 @@ $('sum-cards').innerHTML=`<div class="summary-grid-ng summary-dashboard-cards">
     <div class="card-subcount summary-rate-sub" id="s-n-totalrate"></div>
   </div>
   <div class="card">
-    <div class="card-title">平均塗着率</div>
+    <div class="card-title">平均塗着率 <span class="optional-tag">単純平均</span></div>
     <div class="card-value avg-val" id="s-a"></div>
     <div class="card-subcount summary-avg-sub" id="s-a-count"></div>
   </div>
 </div>
-<div class="summary-note">実質換算について：台・枚・個などの数量を、登録済みの換算係数に基づいて「台=1.0」として換算した集計値です。実質再塗装率も、この実質総件数を母数に算出しています。</div>`;
+<div class="summary-note">実質換算について：台・枚・個などの数量を、登録済みの換算係数に基づいて「台=1.0」として換算した集計値です。実質再塗装率も、この実質総件数を母数に算出しています。換算値は統計比較用で、実際の台数・枚数・個数そのものではありません。</div>
+<div id="summary-trends-card" class="summary-trends-card"></div>`;
 document.querySelectorAll('.cause-tabs[data-t]').forEach(e=>{
   const t=e.dataset.t;
   e.innerHTML=e.dataset.k.split(',').map(k=>`<button type="button" class="btn-tab" id="t-${t}-${k}" onclick="setR('${t}','${k}')">${NM[k]}</button>`).join('')+`<button type="button" class="btn-tab" id="t-${t}-custom" onclick="openCal('${t}')">📅 任意</button>`;
@@ -1986,7 +2119,7 @@ const toggleCursor=()=>cur.toggle();
   function syncBadge(){
     const b=$('sync-status-badge');if(!b)return;
     if(!db){b.className='sync-status sync-err';b.textContent='⚠️ データベース未接続';return}
-    if(!navigator.onLine){b.className='sync-status sync-warn';b.textContent='🟡 オフライン（復帰後に自動同期）';return}
+    if(!navigator.onLine){b.className='sync-status sync-warn';b.textContent='🟡 オフライン（接続復帰待ち）';return}
     if(b.classList.contains('sync-err'))return;
     if(!b.textContent||/リアルタイム共有中/.test(b.textContent))setSyncState('check','🔵 接続確認中');
   }
@@ -2000,7 +2133,9 @@ const toggleCursor=()=>cur.toggle();
   });
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
-      document.querySelectorAll('.modal-overlay').forEach(ov=>{if(ov.style.display==='flex')ov.style.display='none'});
+      const ov=[...document.querySelectorAll('.modal-overlay')].find(x=>x.style.display==='flex');
+      if(ov&&ov.dataset.confirmEscape==='true'&&$('causefix-new')&&$('causefix-old')&&$('causefix-new').value.trim()!==$('causefix-old').value){e.preventDefault();e.stopPropagation();uiConfirm('入力中の一括修正内容を破棄して閉じますか？').then(ok=>{if(ok)hide(ov.id)});return}
+      document.querySelectorAll('.modal-overlay').forEach(x=>{if(x.style.display==='flex')x.style.display='none'});
       $('menu')&&$('menu').classList.remove('open')
     }
   });
@@ -2008,12 +2143,13 @@ const toggleCursor=()=>cur.toggle();
   /* 数値入力欄にフォーカス中、ページスクロール用のマウスホイールで値が誤って変化しないようにする */
   document.addEventListener('wheel',e=>{
     const t=document.activeElement;
-    if(t&&t.tagName==='INPUT'&&t.type==='number'&&e.target===t)t.blur()
-  },{passive:true});
+    if(t&&t.tagName==='INPUT'&&t.type==='number'&&e.target===t)e.preventDefault()
+  },{passive:false});
 
   /* スマホで数値入力欄タップ時に小数点入力しやすいテンキー(decimal)を自動表示 */
-  document.querySelectorAll('input[type=number]').forEach(el=>{el.inputMode='decimal'});
+  document.querySelectorAll('input[type=number]').forEach(el=>{el.inputMode=el.step==='1'?'numeric':'decimal'});document.addEventListener('focusin',e=>{const el=e.target;if(el&&el.tagName==='INPUT'&&el.type==='number')el.inputMode=el.step==='1'?'numeric':'decimal'});
 
+  document.addEventListener('input',e=>{if(e.target.id==='bake_temp'||e.target.id==='bake_time'){const sel=$('bake_paint_select');if(sel&&sel.value&&!String(sel.value).startsWith('stored:'))bakeStatus('⚠️ プリセット適用後に焼付条件が手動変更されています。',true)}});
   /* 保存完了を邪魔にならないトースト通知でも案内（実績登録フォーム用） */
   (function(){
     const el=document.createElement('div');
