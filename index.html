@@ -635,7 +635,7 @@ input[type=number]{-moz-appearance:textfield}
                 <div><label>設定電流 (μA)</label><input type="number" id="current" step="1" value="20"></div>
                 <div><label>吐出量 (FlowRate)</label><input type="number" id="discharge" step="1" value="300"></div>
                 <div><label>エアー流量 (L/min)</label><input type="number" id="air_flow" step="1" value="250"></div>
-                <div><label>平均膜厚 (μm)<span class="optional-tag">(任意)</span></label><input type="number" id="thickness" step="1" min="0" value="50" placeholder="例: 50"></div>
+                <div><label>平均膜厚 (μm)<span class="optional-tag">(任意)</span></label><input type="number" id="thickness" step="0.1" min="0" value="50" placeholder="例: 50"></div>
                 <div><label>焼付温度 (℃)</label><input type="number" id="bake_temp" step="1" value="200" required></div>
                 <div><label>焼付時間 (分)</label><input type="number" id="bake_time" step="1" value="20" required></div>
                 <div><label>判定</label><select id="status" onchange="ngToggle()"><option value="OK">OK (全数合格)</option><option value="NG" class="text-danger">再塗装(NG)</option></select></div>
@@ -716,9 +716,9 @@ input[type=number]{-moz-appearance:textfield}
                 </div>
                 <div><label>使用した塗料量 (kg) <span class="optional-tag">※必須</span></label><input type="number" id="t_used_paint_kg" step="0.001" min="0" required placeholder="例: 0.50 (kg)"></div>
                 <div><label>焼付後の塗膜増量 (kg) <span class="auto-calc-badge" id="badge_attached_weight" style="display:none">✨ 自動計算済</span><span class="optional-tag">※膜厚とどちらか</span></label><input type="number" id="t_attached_weight_kg" step="0.001" min="0" placeholder="例: 0.315 (実測値kg)"></div>
-                <div><label>ワーク総表面積 (m²) <span class="auto-calc-badge" id="badge_area" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_area" step="1" min="0" placeholder="例: 1.2 (未入力OK)"></div>
-                <div><label>平均膜厚 (μm) <span class="auto-calc-badge" id="badge_film" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_film" step="1" min="0" placeholder="例: 75"></div>
-                <div class="full"><label>実測ロス率 (%) <span class="optional-tag">※任意（実測値を優先指定して逆算する場合に入力）</span></label><input type="number" id="t_measured_loss" step="1" min="0" max="100" placeholder="例: 35.0 (任意入力)"></div>
+                <div><label>ワーク総表面積 (m²) <span class="auto-calc-badge" id="badge_area" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_area" step="0.01" min="0" placeholder="例: 1.2 (未入力OK)"></div>
+                <div><label>平均膜厚 (μm) <span class="auto-calc-badge" id="badge_film" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_film" step="0.1" min="0" placeholder="例: 75"></div>
+                <div class="full"><label>実測ロス率 (%) <span class="optional-tag">※任意（実測値を優先指定して逆算する場合に入力）</span></label><input type="number" id="t_measured_loss" step="0.1" min="0" max="100" placeholder="例: 35.0 (任意入力)"></div>
               </div>
 
               <div class="tochaku-res-card-dark">
@@ -1506,7 +1506,7 @@ function ngCauseUI(v){
 async function ngCauseRow(d){if(d>0){if(ngCauseCount>=NG_CAUSE_MAX)return;ngCauseCount++;ngCauseUI()}else{if(ngCauseCount<=1)return;const q=$('ng_cause_qty'+ngCauseCount);if(q&&q.value&&!(await uiConfirm('最後の原因入力を削除して行を減らしますか？')))return;ngCauseCount--;ngCauseUI()}}
 function ngCauseDelete(i){const v=[];for(let j=1;j<=ngCauseCount;j++)if(j!==i)v.push([V('ng_cause_select'+j),V('ng_cause_qty'+j)]);ngCauseCount=Math.max(1,ngCauseCount-1);ngCauseUI(v)}
 function busy(f,fn){const b=f.querySelector('.btn-submit');b.disabled=true;return fn().finally(()=>b.disabled=false)}
-const DECIMAL_INPUT_IDS=new Set(['paint_weight','t_used_paint_kg','t_attached_weight_kg']);
+const DECIMAL_INPUT_IDS=new Set(['paint_weight','t_used_paint_kg','t_attached_weight_kg','t_area','t_film','t_measured_loss','thickness']);
 function validateIntegerInputs(form){
   const bad=[...form.querySelectorAll('input[type="number"]')].find(el=>{
     if(DECIMAL_INPUT_IDS.has(el.id)||el.disabled||el.value==='')return false;
