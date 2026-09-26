@@ -515,6 +515,8 @@ input[type=number]{-moz-appearance:textfield}
   .source-status{font-size:10.5px}
   .ng-match-summary{justify-content:flex-start;gap:7px;padding:8px}}
 @media(min-width:768px){.mobile-card-details{display:block!important}}
+.bake-preset-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(90px,.7fr) minmax(90px,.7fr) auto;gap:7px;align-items:end;padding:9px;background:#fff;border:1px solid var(--border-color);border-radius:var(--radius-sm)}
+@media(max-width:600px){.bake-preset-row{grid-template-columns:1fr 1fr;gap:7px}.bake-preset-row .bake-paint{grid-column:1/-1}.bake-preset-row .bake-actions{grid-column:1/-1;display:flex;gap:6px}.bake-preset-row .bake-actions button{flex:1}}
 </style>
 </head>
 <body>
@@ -569,6 +571,7 @@ input[type=number]{-moz-appearance:textfield}
             <div id="menu">
               <button type="button" class="btn-settings" onclick="mn();opSet()">👷 塗装者登録</button>
               <button type="button" class="btn-settings" onclick="mn();lOpen('p')">🏷 品名登録</button>
+              <button type="button" class="btn-settings" onclick="mn();bakeOpen()">🔥 塗料・焼付条件設定</button>
               <button type="button" class="btn-settings" onclick="mn();ufSet()">📐 換算係数設定(台/枚/個/本)</button>
               <button type="button" class="btn-settings" onclick="mn();lOpen('c')">⚙️ 原因内容設定</button>
               <button type="button" class="btn-settings btn-admin-setting" onclick="mn();causeFixOpen()">🛠 過去ログの原因名を一括修正</button>
@@ -596,7 +599,7 @@ input[type=number]{-moz-appearance:textfield}
           <div class="form-section">
             <form id="p-form">
               <div class="form-grid fg4">
-                <div class="s2"><label>日付</label><input type="date" id="date" required autocomplete="off" onchange="onDate()"></div>
+                <div class="s2"><label for="date">日付</label><input type="date" id="date" required autocomplete="off" onchange="onDate()"></div>
                 <div class="s2"><label>天候自動取得 地域選択</label><select id="location-select" onchange="onLoc()">
                     <option value="fukuyama" selected>広島県 福山市 (既定)</option>
                     <option value="hiroshima">広島県 広島市</option>
@@ -624,21 +627,22 @@ input[type=number]{-moz-appearance:textfield}
                   </div>
                 </div>
                 <div class="weather-field"><div class="ph"><label>天気 <span class="auto-calc-badge">✨ 自動取得</span></label><label class="weather-time-label">取得時刻 <input type="time" id="weather-time" value="12:00" step="3600" aria-label="天候取得時刻"></label></div><select id="weather"><option value="晴れ">晴れ</option><option value="曇り">曇り</option><option value="雨">雨</option><option value="雪">雪</option></select><div id="weather-fetch-status" class="weather-fetch-status" aria-live="polite">当日12:00の天候を自動取得</div></div>
-                <div><label>気温 (℃) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="temp" step="1" placeholder="23"></div>
-                <div><label>湿度 (%) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="humidity" step="1" min="0" max="100" placeholder="55"></div>
-                <div><label>使用塗料 (kg) <span class="req-tag">必須</span></label><div class="qty-control paint-qty-control" aria-label="使用塗料 クイック入力"><button type="button" class="qty-step minus" onclick="adjustPaintQty(-5)" title="5kg減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-1)" title="1kg減らす">−1</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-0.1)" title="0.1kg減らす">−0.1</button><input type="number" class="req" id="paint_weight" step="0.001" min="0" required placeholder="例: 5.3"><button type="button" class="qty-step plus" onclick="adjustPaintQty(0.1)" title="0.1kg増やす">＋0.1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(1)" title="1kg増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(5)" title="5kg増やす">＋5</button></div></div>
+                <div><label for="temp">気温 (℃) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="temp" step="1" placeholder="23"></div>
+                <div><label for="humidity">湿度 (%) <span class="auto-calc-badge">✨ 自動取得</span></label><input type="number" id="humidity" step="1" min="0" max="100" placeholder="55"></div>
+                <div><label for="bake_paint_select">塗料名 <span class="optional-tag">※焼付条件プリセット</span></label><select id="bake_paint_select" onchange="applyBakePreset(this.value)"><option value="">-- 塗料を選択（任意） --</option></select></div>
+                <div><label for="paint_weight">使用塗料 (kg) <span class="req-tag">必須</span></label><div class="qty-control paint-qty-control" aria-label="使用塗料 クイック入力"><button type="button" class="qty-step minus" onclick="adjustPaintQty(-5)" title="5kg減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-1)" title="1kg減らす">−1</button><button type="button" class="qty-step minus" onclick="adjustPaintQty(-0.1)" title="0.1kg減らす">−0.1</button><input type="number" class="req" id="paint_weight" step="0.001" min="0" required placeholder="例: 5.3"><button type="button" class="qty-step plus" onclick="adjustPaintQty(0.1)" title="0.1kg増やす">＋0.1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(1)" title="1kg増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustPaintQty(5)" title="5kg増やす">＋5</button></div></div>
                 <div class="full">
                   <button type="button" class="preset-select-btn" onclick="pOpen()"><i class="fa-solid fa-sliders"></i> 🎛 塗装機プリセットから選択（電圧・電流・吐出量・エアー流量を自動入力）</button>
                   <div id="preset-active-badge" class="pb"></div>
                 </div>
-                <div><label>設定電圧 (kV)</label><input type="number" id="voltage" step="1" value="50"></div>
-                <div><label>設定電流 (μA)</label><input type="number" id="current" step="1" value="20"></div>
-                <div><label>吐出量 (FlowRate)</label><input type="number" id="discharge" step="1" value="300"></div>
-                <div><label>エアー流量 (L/min)</label><input type="number" id="air_flow" step="1" value="250"></div>
-                <div><label>平均膜厚 (μm)<span class="optional-tag">(任意)</span></label><input type="number" id="thickness" step="0.1" min="0" value="50" placeholder="例: 50"></div>
-                <div><label>焼付温度 (℃)</label><input type="number" id="bake_temp" step="1" value="200" required></div>
-                <div><label>焼付時間 (分)</label><input type="number" id="bake_time" step="1" value="20" required></div>
-                <div><label>判定</label><select id="status" onchange="ngToggle()"><option value="OK">OK (全数合格)</option><option value="NG" class="text-danger">再塗装(NG)</option></select></div>
+                <div><label for="voltage">設定電圧 (kV)</label><input type="number" id="voltage" step="1" value="50"></div>
+                <div><label for="current">設定電流 (μA)</label><input type="number" id="current" step="1" value="20"></div>
+                <div><label for="discharge">吐出量 (FlowRate)</label><input type="number" id="discharge" step="1" value="300"></div>
+                <div><label for="air_flow">エアー流量 (L/min)</label><input type="number" id="air_flow" step="1" value="250"></div>
+                <div><label for="thickness">平均膜厚 (μm)<span class="optional-tag">(任意)</span></label><input type="number" id="thickness" step="0.1" min="0" value="50" placeholder="例: 50"></div>
+                <div><label for="bake_temp">焼付温度 (℃) <span class="req-tag">必須</span></label><input type="number" id="bake_temp" step="1" value="200" required></div>
+                <div><label for="bake_time">焼付時間 (分) <span class="req-tag">必須</span></label><input type="number" id="bake_time" step="1" value="20" required></div>
+                <div><label for="status">判定</label><select id="status" onchange="ngToggle()"><option value="OK">OK (全数合格)</option><option value="NG" class="text-danger">再塗装(NG)</option></select></div>
                 <div class="full">
                   <div id="ng-section" class="ng-input-container">
                     <div class="ng-title">🚨 <span class="text-danger">再塗装(NG)</span>の詳細を入力してください</div>
@@ -654,7 +658,7 @@ input[type=number]{-moz-appearance:textfield}
                     </div>
                   </div>
                 </div>
-                <div class="full"><label>特記事項・メモ</label><input type="text" id="memo" placeholder="作業特記事項など"></div>
+                <div class="full"><label for="memo">特記事項・メモ</label><input type="text" id="memo" placeholder="作業特記事項など"></div>
               </div>
               <button type="submit" class="btn-submit"></button>
               <button type="button" class="btn-clear" id="cx-p" style="display:none;width:100%;margin-top:8px" onclick="cxEdit('p')">✖ 編集をキャンセル</button>
@@ -705,20 +709,20 @@ input[type=number]{-moz-appearance:textfield}
             <div class="next-guide-banner"><span id="tochaku-guide-text">まず「ワーク品名1」と「台数1」を入力してください（未入力の場合、登録できません）。</span></div>
             <form id="tochaku-form">
               <div class="form-grid">
-                <div class="full"><label>日付</label><input type="date" id="t_date" required></div>
+                <div class="full"><label for="t_date">日付</label><input type="date" id="t_date" required></div>
                 <div class="full">
                   <div class="ph"><label>ワーク品名・塗装台数 (最大5種類まで選択可能)</label><span class="pctl"><b id="pc-t">2 / 5</b><button type="button" class="btn-mini" id="ps-t" onclick="rb('t',-1)" title="最後の行を削除">－</button><button type="button" class="btn-mini" id="pa-t" onclick="rb('t',1)">＋ 追加</button></span></div>
                   <div class="prod-box" id="t-rows"></div>
                 </div>
-                <div><label>塗装担当者</label><select id="t_operator"></select></div>
-                <div><label>塗料比重 (g/cm³)</label>
+                <div><label for="t_operator">塗装担当者</label><select id="t_operator"></select></div>
+                <div><label for="t_density">塗料比重 (g/cm³)</label>
                   <select id="t_density"><option value="1.40" selected>一般ポリエステル樹脂 (1.40)</option><option value="1.50">高比重・ホワイト系 (1.50)</option><option value="1.20">クリア系・低比重 (1.20)</option></select>
                 </div>
-                <div><label>使用した塗料量 (kg) <span class="optional-tag">※必須</span></label><input type="number" id="t_used_paint_kg" step="0.001" min="0" required placeholder="例: 0.50 (kg)"></div>
-                <div><label>焼付後の塗膜増量 (kg) <span class="auto-calc-badge" id="badge_attached_weight" style="display:none">✨ 自動計算済</span><span class="optional-tag">※膜厚とどちらか</span></label><input type="number" id="t_attached_weight_kg" step="0.001" min="0" placeholder="例: 0.315 (実測値kg)"></div>
-                <div><label>ワーク総表面積 (m²) <span class="auto-calc-badge" id="badge_area" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_area" step="0.01" min="0" placeholder="例: 1.2 (未入力OK)"></div>
-                <div><label>平均膜厚 (μm) <span class="auto-calc-badge" id="badge_film" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_film" step="0.1" min="0" placeholder="例: 75"></div>
-                <div class="full"><label>実測ロス率 (%) <span class="optional-tag">※任意（実測値を優先指定して逆算する場合に入力）</span></label><input type="number" id="t_measured_loss" step="0.1" min="0" max="100" placeholder="例: 35.0 (任意入力)"></div>
+                <div><label for="t_used_paint_kg">使用した塗料量 (kg) <span class="optional-tag">※必須</span></label><input type="number" id="t_used_paint_kg" step="0.001" min="0" required placeholder="例: 0.50 (kg)"></div>
+                <div><label for="t_attached_weight_kg">焼付後の塗膜増量 (kg) <span class="auto-calc-badge" id="badge_attached_weight" style="display:none">✨ 自動計算済</span><span class="optional-tag">※膜厚とどちらか</span></label><input type="number" id="t_attached_weight_kg" step="0.001" min="0" placeholder="例: 0.315 (実測値kg)"></div>
+                <div><label for="t_area">ワーク総表面積 (m²) <span class="auto-calc-badge" id="badge_area" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_area" step="0.01" min="0" placeholder="例: 1.2 (未入力OK)"></div>
+                <div><label for="t_film">平均膜厚 (μm) <span class="auto-calc-badge" id="badge_film" style="display:none">✨ 自動計算済</span></label><input type="number" id="t_film" step="0.1" min="0" placeholder="例: 75"></div>
+                <div class="full"><label for="t_measured_loss">実測ロス率 (%) <span class="optional-tag">※任意（実測値を優先指定して逆算する場合に入力）</span></label><input type="number" id="t_measured_loss" step="0.1" min="0" max="100" placeholder="例: 35.0 (任意入力)"></div>
               </div>
 
               <div class="tochaku-res-card-dark">
@@ -788,10 +792,10 @@ input[type=number]{-moz-appearance:textfield}
               <div class="ng-input-container active" style="margin-bottom:12px">
                 <div class="ng-title">📦 本体寸法 (mm)</div>
                 <div class="form-grid">
-                  <div><label>幅 (W)</label><input type="number" id="c_w" min="0" placeholder="例: 800"></div>
-                  <div><label>高さ (H)</label><input type="number" id="c_h" min="0" placeholder="例: 1200"></div>
-                  <div><label>奥行 (D)</label><input type="number" id="c_d" min="0" placeholder="例: 300"></div>
-                  <div><label>本体 台数</label><input type="number" id="c_qty" min="1" value="1"></div>
+                  <div><label for="c_w">幅 (W)</label><input type="number" id="c_w" min="0" placeholder="例: 800"></div>
+                  <div><label for="c_h">高さ (H)</label><input type="number" id="c_h" min="0" placeholder="例: 1200"></div>
+                  <div><label for="c_d">奥行 (D)</label><input type="number" id="c_d" min="0" placeholder="例: 300"></div>
+                  <div><label for="c_qty">本体 台数</label><input type="number" id="c_qty" min="1" value="1"></div>
                   <div class="full" style="display:flex;align-items:center;gap:8px">
                     <input type="checkbox" id="c_panel_double" checked style="width:auto;height:auto">
                     <label style="margin:0;font-size:12px;cursor:pointer" for="c_panel_double">本体内外両面を塗装する</label>
@@ -809,9 +813,9 @@ input[type=number]{-moz-appearance:textfield}
             </div>
             <div id="c_sec_flat" class="calc-work-section" style="display:none">
               <div class="form-grid">
-                <div><label>幅 (W) mm</label><input type="number" id="c_flat_w" min="0" placeholder="例: 1000"></div>
-                <div><label>高さ (H) mm</label><input type="number" id="c_flat_h" min="0" placeholder="例: 1000"></div>
-                <div><label>枚数</label><input type="number" id="c_flat_qty" min="1" value="1"></div>
+                <div><label for="c_flat_w">幅 (W) mm</label><input type="number" id="c_flat_w" min="0" placeholder="例: 1000"></div>
+                <div><label for="c_flat_h">高さ (H) mm</label><input type="number" id="c_flat_h" min="0" placeholder="例: 1000"></div>
+                <div><label for="c_flat_qty">枚数</label><input type="number" id="c_flat_qty" min="1" value="1"></div>
                 <div class="full" style="display:flex;align-items:center;gap:8px">
                   <input type="checkbox" id="c_flat_double" checked style="width:auto;height:auto">
                   <label style="margin:0;font-size:12px;cursor:pointer" for="c_flat_double">表裏両面を塗装する</label>
@@ -820,34 +824,34 @@ input[type=number]{-moz-appearance:textfield}
             </div>
             <div id="c_sec_angle" class="calc-work-section" style="display:none">
               <div class="form-grid">
-                <div class="full"><label>形状タイプ</label>
+                <div class="full"><label for="c_angle_shape">形状タイプ</label>
                   <select id="c_angle_shape"><option value="L">Lアングル (L字)</option><option value="C">Cチャンネル (コの字)</option><option value="Box">角パイプ (ロの字・外周4面のみ計算)</option><option value="FlatBar">フラットバー (平鋼)</option></select>
                 </div>
-                <div><label>辺 A / 背 (mm)</label><input type="number" id="c_angle_a" min="0" placeholder="例: 50"></div>
-                <div><label>辺 B / 袖 (mm)</label><input type="number" id="c_angle_b" min="0" placeholder="例: 50"></div>
-                <div><label>長さ L (mm)</label><input type="number" id="c_angle_l" min="0" placeholder="例: 2000"></div>
-                <div><label>本数</label><input type="number" id="c_angle_qty" min="1" value="1"></div>
-                <div class="full"><label>塗装面</label>
+                <div><label for="c_angle_a">辺 A / 背 (mm)</label><input type="number" id="c_angle_a" min="0" placeholder="例: 50"></div>
+                <div><label for="c_angle_b">辺 B / 袖 (mm)</label><input type="number" id="c_angle_b" min="0" placeholder="例: 50"></div>
+                <div><label for="c_angle_l">長さ L (mm)</label><input type="number" id="c_angle_l" min="0" placeholder="例: 2000"></div>
+                <div><label for="c_angle_qty">本数</label><input type="number" id="c_angle_qty" min="1" value="1"></div>
+                <div class="full"><label for="c_angle_surface">塗装面</label>
                   <select id="c_angle_surface"><option value="all">全周 (表裏 / 内外両面)</option><option value="outer">外周のみ (外側面のみ)</option><option value="inner">内周のみ (内側面のみ)</option></select>
                 </div>
               </div>
             </div>
             <div id="c_sec_pipe" class="calc-work-section" style="display:none">
               <div class="form-grid">
-                <div><label>直径 D (mm)</label><input type="number" id="c_pipe_d" min="0" placeholder="例: 100"></div>
-                <div><label>長さ L (mm)</label><input type="number" id="c_pipe_l" min="0" placeholder="例: 2000"></div>
-                <div class="full"><label>本数</label><input type="number" id="c_pipe_qty" min="1" value="1"></div>
+                <div><label for="c_pipe_d">直径 D (mm)</label><input type="number" id="c_pipe_d" min="0" placeholder="例: 100"></div>
+                <div><label for="c_pipe_l">長さ L (mm)</label><input type="number" id="c_pipe_l" min="0" placeholder="例: 2000"></div>
+                <div class="full"><label for="c_pipe_qty">本数</label><input type="number" id="c_pipe_qty" min="1" value="1"></div>
               </div>
             </div>
           </div>
           <div class="form-section">
             <div class="list-title">⚙️ 塗装条件</div>
             <div class="form-grid">
-              <div><label>目標膜厚 (μm)</label><input type="number" id="c_film" min="0" value="60" required></div>
+              <div><label for="c_film">目標膜厚 (μm)</label><input type="number" id="c_film" min="0" value="60" required></div>
               <div><label>塗料比重 (g/cm³)</label>
                 <select id="c_density"><option value="1.40" selected>一般ポリエステル (1.40)</option><option value="1.50">高比重・ホワイト系 (1.50)</option><option value="1.20">クリア系・低比重 (1.20)</option><option value="1.60">ジンクリッチ (1.60)</option></select>
               </div>
-              <div class="full"><label>ロス率 (%) <span class="optional-tag">※ブースへの吸い込み等（初期値40%）</span></label><input type="number" id="c_loss" min="0" max="100" value="40" required></div>
+              <div class="full"><label for="c_loss">ロス率 (%) <span class="optional-tag">※ブースへの吸い込み等（初期値40%）</span></label><input type="number" id="c_loss" min="0" max="100" value="40" required></div>
             </div>
           </div>
         </div>
@@ -888,6 +892,14 @@ input[type=number]{-moz-appearance:textfield}
   <div class="product-list" id="modal-cause-list"></div>
   <div class="product-add-group"><input type="text" id="new-cause-name" placeholder="新しい原因を入力" style="flex:1"><button type="button" class="btn-settings btn-add" onclick="lAdd('c')">追加</button></div>
   <div style="font-size:11px;color:var(--text-dim);margin-top:8px;text-align:right" id="cause-count">0 / 50 件</div>
+</div></div>
+
+<div id="bake-preset-modal" class="modal-overlay"><div class="modal-content" style="max-width:640px">
+  <div class="modal-header"><div class="modal-title">🔥 塗料・焼付条件設定 (最大50パターン)</div><button class="btn-close" onclick="hide('bake-preset-modal')">×</button></div>
+  <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;line-height:1.5">現在登録されている塗料名と焼付温度・時間は全ユーザーが閲覧できます。追加・編集・削除には管理者パスワードが必要です。</div>
+  <div class="product-list" id="bake-preset-list"></div>
+  <button type="button" class="btn-settings btn-add" onclick="bakeAdd()" style="width:100%;height:42px">＋ 塗料・焼付条件を追加</button>
+  <div style="font-size:11px;color:var(--text-dim);margin-top:8px;text-align:right" id="bake-preset-count">0 / 50 件</div>
 </div></div>
 
 <div id="machine-preset-modal" class="modal-overlay"><div class="modal-content" style="max-width:640px">
@@ -959,6 +971,7 @@ causes=['ブツ・ゴミ・毛など','湧き','マスキング跡','弾き','�
 UNITS=['台','枚','個','本'],unitFactors={台:1,枚:0.3,個:0.15,本:0.4},
 uf=u=>{const v=unitFactors[u];return typeof v==='number'&&v>0?v:1},
 presets=Array.from({length:10},(_,i)=>({no:i+1,name:'プリセット'+(i+1),voltage:50,current:20,discharge:300,air:250})),
+bakePresets=[],
 selNo=null,selName='',pRe=0,cfgOk=0,started=0,curTab='main',editId=null,tEdit=null,isAtt=0,psig='',wt=0,ngF=0,lastDay='',autoD='',tm=0,dirty=7,db=null;
 
 try{
@@ -977,6 +990,7 @@ db&&CFG().onSnapshot(d=>{
   if(Array.isArray(x.products))prods=x.products;
   if(Array.isArray(x.causes))causes=x.causes;
   if(arr(x.machinePresets))presets=x.machinePresets;
+  if(Array.isArray(x.bakePresets))bakePresets=x.bakePresets.slice(0,50);
   if(x.unitFactors&&typeof x.unitFactors==='object')UNITS.forEach(u=>{if(typeof x.unitFactors[u]==='number'&&x.unitFactors[u]>0)unitFactors[u]=x.unitFactors[u]});
   if(x.selectedPresetNo!==undefined)selNo=x.selectedPresetNo;
   if(x.selectedPresetName!==undefined)selName=x.selectedPresetName;
@@ -985,7 +999,7 @@ db&&CFG().onSnapshot(d=>{
 
 /* ---------- 共通UI ---------- */
 function opts(id,a,f){const s=$(id),v=s.value;s.innerHTML='';if(f!=null)s.appendChild(new Option(f,''));a.forEach(x=>s.appendChild(new Option(x,x)));if(v&&a.includes(v))s.value=v}
-function fill(){opts('operator1',ops);opts('t_operator',ops);opts('operator2',ops,'-- 2人目なし --');opts('registered-products',prods);}
+function fill(){opts('operator1',ops);opts('t_operator',ops);opts('operator2',ops,'-- 2人目なし --');opts('registered-products',prods);fillBakePresets();}
 function setV(id,v){const s=$(id);if(s.tagName==='SELECT'&&v&&v!=='-'&&![...s.options].some(o=>o.value===v))s.appendChild(new Option(v,v));s.value=v==null?'':v}
 const appDialog=(()=>{
   const O=$('app-dialog-overlay'),D=$('app-dialog'),T=$('app-dialog-title').querySelector('span'),M=$('app-dialog-message'),I=$('app-dialog-input'),A=$('app-dialog-actions'),C=$('app-dialog-cancel'),K=$('app-dialog-ok');
@@ -1188,6 +1202,37 @@ function pApply(i){
   db&&setCfg({selectedPresetNo:selNo,selectedPresetName:selName}).catch(e=>uiAlert('保存エラー: '+e.message))
 }
 
+/* ---------- 塗料・焼付条件プリセット ---------- */
+function fillBakePresets(){
+  const s=$('bake_paint_select');if(!s)return;const v=s.value;
+  s.innerHTML='<option value="">-- 塗料を選択（任意） --</option>'+bakePresets.map((p,i)=>`<option value="${i}">${esc(p.name)}（${esc(p.temp)}℃ / ${esc(p.time)}分）</option>`).join('');
+  if(v!==''&&bakePresets[v])s.value=v;
+}
+function applyBakePreset(i){const p=bakePresets[Number(i)];if(!p)return;$('bake_temp').value=p.temp;$('bake_time').value=p.time}
+function bakeOpen(){show('bake-preset-modal');bakeList()}
+function bakeList(){
+  const box=$('bake-preset-list');if(!box)return;
+  box.innerHTML=bakePresets.length?bakePresets.map((p,i)=>`<div class="bake-preset-row"><div class="bake-paint"><label for="bp-name-${i}">塗料名</label><input id="bp-name-${i}" type="text" value="${esc(p.name)}" maxlength="50" readonly></div><div><label for="bp-temp-${i}">焼付温度 ℃</label><input id="bp-temp-${i}" type="number" value="${esc(p.temp)}" readonly></div><div><label for="bp-time-${i}">焼付時間 分</label><input id="bp-time-${i}" type="number" value="${esc(p.time)}" readonly></div><div class="bake-actions"><button type="button" class="btn-edit" onclick="bakeEdit(${i})">編集</button><button type="button" class="btn-del" onclick="bakeDel(${i})">削除</button></div></div>`).join(''):'<div class="empty-sm">登録されている塗料・焼付条件はありません。</div>';
+  $('bake-preset-count').textContent=`${bakePresets.length} / 50 件`;
+}
+async function bakeAdd(){
+  if(!db||!(await adm()))return;if(bakePresets.length>=50)return uiAlert('塗料・焼付条件は最大50パターンまで登録できます。');
+  const n=await uiPrompt('塗料名を入力してください:');if(n===null)return;const name=n.trim();if(!name)return uiAlert('塗料名を入力してください。');
+  if(bakePresets.some(p=>String(p.name).trim()===name))return uiAlert('同じ塗料名が既に登録されています。');
+  const t=await uiPrompt('焼付温度 (℃):','200');if(t===null)return;const temp=Number(t);if(!Number.isFinite(temp))return uiAlert('焼付温度は数値で入力してください。');
+  const tm=await uiPrompt('焼付時間 (分):','20');if(tm===null)return;const time=Number(tm);if(!Number.isFinite(time))return uiAlert('焼付時間は数値で入力してください。');
+  bakePresets.push({name,temp,time});await setCfg({bakePresets});fillBakePresets();bakeList();uiAlert('塗料・焼付条件を登録しました。')
+}
+async function bakeEdit(i){
+  if(!db||!(await adm()))return;const p=bakePresets[i];if(!p)return;
+  const n=await uiPrompt('塗料名を変更:',p.name);if(n===null)return;const name=n.trim();if(!name)return uiAlert('塗料名を入力してください。');
+  if(bakePresets.some((x,j)=>j!==i&&String(x.name).trim()===name))return uiAlert('同じ塗料名が既に登録されています。');
+  const t=await uiPrompt('焼付温度 (℃):',p.temp);if(t===null)return;const temp=Number(t);if(!Number.isFinite(temp))return uiAlert('焼付温度は数値で入力してください。');
+  const tm=await uiPrompt('焼付時間 (分):',p.time);if(tm===null)return;const time=Number(tm);if(!Number.isFinite(time))return uiAlert('焼付時間は数値で入力してください。');
+  bakePresets[i]={name,temp,time};await setCfg({bakePresets});fillBakePresets();bakeList();uiAlert('塗料・焼付条件を更新しました。')
+}
+async function bakeDel(i){if(!db||!(await adm()))return;const p=bakePresets[i];if(!p)return;if(!(await uiConfirm(`「${p.name}」の焼付条件を削除しますか？`)))return;bakePresets.splice(i,1);await setCfg({bakePresets});fillBakePresets();bakeList();uiAlert('塗料・焼付条件を削除しました。')}
+
 /* ---------- タブ ---------- */
 function tab(t){curTab=t;['main','tochaku','calc'].forEach(k=>{$('tab-content-'+k).style.display=k===t?'block':'none';$('tab-nav-'+k).classList.toggle('active',k===t)});flush()}
 
@@ -1210,7 +1255,7 @@ function listen(c,n){
   setSyncState('check','🔵 接続確認中');
   db.collection(n).where('date','>=',WIN).onSnapshot(s=>{
     s.docChanges().forEach(x=>{const i=x.doc.id;x.type==='removed'?M[c].delete(i):M[c].set(i,prep(c,{docId:i,...x.doc.data()}))});
-    cache[c]=0;sched(c==='r'?3:4);
+    cache[c]=0;sched(c==='r'?3:5);
     if(navigator.onLine)setSyncState('ok','🟢 同期中');
   },e=>{
     console.error(n,e);
@@ -1520,6 +1565,7 @@ $('p-form').onsubmit=e=>{
   e.preventDefault();
   if(!db)return uiAlert('データベースに接続されていません');
   if(!validateIntegerInputs(e.target))return;
+  if(V('bake_temp')===''||V('bake_time')===''){ $('bake_temp').value===''?$('bake_temp').focus():$('bake_time').focus(); return uiAlert('「焼付温度」「焼付時間」は必須です。入力してください。') }
   const date=V('date'),items=[];let tq=0;
   for(let i=1;i<=10;i++){const n=V('product'+i).trim();if(n){const q=parseInt(V('quantity'+i))||(i===1?0:1),u=($('unit'+i)&&V('unit'+i))||'台';items.push({name:n,qty:q,unit:u});tq+=q}}
   if(!V('product1').trim()){$('product1').focus();return uiAlert('「品名1」を入力してください。')}
@@ -1559,7 +1605,7 @@ function resetP(){
   $('weather-time').value='12:00';
   for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value='';$('unit'+i)&&($('unit'+i).value='台')}sr('p',2);
   $('operator2').value='';$('machine1').value='旭サナック';$('machine2').value='';
-  $('paint_weight').value='';$('thickness').value='50';$('memo').value='';$('status').value='OK';
+  $('paint_weight').value='';$('bake_paint_select').value='';$('thickness').value='50';$('memo').value='';$('status').value='OK';
   ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1
 }
 function resetT(d){tf.reset();sr('t',2);$('t_date').value=d;$('t_qty1').value=1;isAtt=0;tEdit=null;sbtn('t',0);tPrev();pg.t=1}
