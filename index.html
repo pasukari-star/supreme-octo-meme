@@ -342,6 +342,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 @media(max-width:600px){.ng-cause-row{grid-template-columns:minmax(0,1fr) 78px auto}
   .ng-cause-delete{padding:0 9px}}
 @media(min-width:992px){body{padding-top:24px}
+  .container{max-width:1280px;margin-left:auto;margin-right:auto}
   .header-bar{margin-bottom:22px}
   .main-nav-tabs{max-width:920px;margin-left:auto;margin-right:auto}
   .summary-grid-ng{gap:16px}
@@ -570,6 +571,7 @@ input[type=number]{-moz-appearance:textfield}
               <button type="button" class="btn-settings" onclick="mn();lOpen('p')">🏷 品名登録</button>
               <button type="button" class="btn-settings" onclick="mn();ufSet()">📐 換算係数設定(台/枚/個/本)</button>
               <button type="button" class="btn-settings" onclick="mn();lOpen('c')">⚙️ 原因内容設定</button>
+              <button type="button" class="btn-settings btn-admin-setting" onclick="mn();causeFixOpen()">🛠 過去ログの原因名を一括修正</button>
               <button type="button" class="btn-settings" onclick="mn();pwSet('password','新しいログインパスワード:','ログインパスワードを変更しました！')">🔑 パスワード設定</button>
               <button type="button" class="btn-settings btn-admin-setting" onclick="mn();pwSet('adminPassword','新しい管理者パスワード:','管理者パスワードを変更しました！')">👑 管理者パス設定</button>
             </div>
@@ -909,6 +911,20 @@ input[type=number]{-moz-appearance:textfield}
   </div>
 </div></div>
 
+<div id="causefix-modal" class="modal-overlay"><div class="modal-content" style="max-width:440px">
+  <div class="modal-header"><div class="modal-title">🛠 過去ログの原因名を一括修正</div><button class="btn-close" onclick="hide('causefix-modal')">×</button></div>
+  <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.5">過去ログに実際に登録されている原因名を一覧から選び、正しい表記へ一括修正します。</div>
+  <div id="causefix-body">
+    <div style="margin-bottom:12px"><label style="font-size:11px;font-weight:700;color:var(--text-dim);display:block;margin-bottom:4px">修正前（過去ログの表記を選択）</label><select id="causefix-old" style="width:100%" onchange="$('causefix-new').value=this.value"></select></div>
+    <div style="margin-bottom:14px"><label style="font-size:11px;font-weight:700;color:var(--text-dim);display:block;margin-bottom:4px">修正後の表記</label><input type="text" id="causefix-new" style="width:100%"></div>
+  </div>
+  <div id="causefix-empty" style="display:none;font-size:12px;color:var(--text-dim);text-align:center;padding:12px 0">過去ログに登録されている不具合原因が見つかりませんでした。</div>
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <button type="button" class="btn-settings btn-add" id="causefix-apply" onclick="causeFixApply()" style="flex:1;font-weight:700">この内容で修正する</button>
+    <button type="button" class="btn-settings" onclick="hide('causefix-modal')" style="flex:1;height:42px">キャンセル</button>
+  </div>
+</div></div>
+
 <div id="app-dialog-overlay" aria-hidden="true">
   <div id="app-dialog" role="dialog" aria-modal="true" aria-labelledby="app-dialog-title">
     <div id="app-dialog-title">💬 <span></span></div>
@@ -1080,8 +1096,76 @@ async function lOpen(t){if(!db)return uiAlert('データベースに接続され
 function lst(t){const o=T[t],a=o.a();$(o.m).innerHTML=a.map((v,i)=>`<div class="product-item"><span style="flex:1;word-break:break-all">${esc(v)}</span><button type="button" class="btn-edit" onclick="lEd('${t}',${i})">編集</button><button type="button" class="btn-del" onclick="lDel('${t}',${i})">削除</button></div>`).join('');$(o.c).textContent=a.length+' / 50 件'}
 function lSave(t){setCfg({[T[t].k]:T[t].a()}).catch(e=>uiAlert('保存エラー: '+e.message));lst(t)}
 function lAdd(t){const o=T[t],i=$(o.i),n=i.value.trim(),a=o.a();if(!n)return;if(a.includes(n))return uiAlert(o.du);if(a.length>=50)return uiAlert(o.mx);a.push(n);i.value='';lSave(t)}
-async function lEd(t,i){const o=T[t],a=o.a(),n=await uiPrompt(o.ed,a[i]);if(n===null)return;const v=n.trim();if(!v)return;if(a.includes(v)&&v!==a[i])return uiAlert(o.dd);a[i]=v;lSave(t)}
+async function lEd(t,i){const o=T[t],a=o.a(),old=a[i],n=await uiPrompt(o.ed,old);if(n===null)return;const v=n.trim();if(!v)return;if(a.includes(v)&&v!==old)return uiAlert(o.dd);a[i]=v;lSave(t);if(t==='c'&&v!==old)await syncCauseRename(old,v)}
 async function lDel(t,i){const o=T[t];if(!(await uiConfirm(o.rm)))return;o.a().splice(i,1);lSave(t)}
+/* 「原因内容設定」で原因名を編集した際、Firestore上の過去ログ（records全件）に登録済みの原因名も自動で同期する */
+async function syncCauseRename(oldName,newName){
+  if(!db||!oldName||!newName||oldName===newName)return;
+  try{
+    const snap=await db.collection(COL.r).get();
+    const targets=[];
+    snap.forEach(doc=>{
+      const d=doc.data();
+      const hit=(Array.isArray(d.ng_details)&&d.ng_details.some(x=>x&&x.cause===oldName))||d.ng_cause===oldName;
+      if(hit)targets.push({ref:doc.ref,data:d})
+    });
+    if(!targets.length)return;
+    for(let i=0;i<targets.length;i+=400){
+      const batch=db.batch();
+      targets.slice(i,i+400).forEach(({ref,data})=>{
+        const upd={};
+        if(Array.isArray(data.ng_details))upd.ng_details=data.ng_details.map(x=>x&&x.cause===oldName?{...x,cause:newName}:x);
+        if(data.ng_cause===oldName)upd.ng_cause=newName;
+        batch.update(ref,upd)
+      });
+      await batch.commit()
+    }
+    [A.r.m,M.r].forEach(m=>m.forEach(r=>{
+      let ch=0;
+      if(Array.isArray(r.ng_details))r.ng_details.forEach(x=>{if(x&&x.cause===oldName){x.cause=newName;ch=1}});
+      if(r.ng_cause===oldName){r.ng_cause=newName;ch=1}
+      if(ch)prep('r',r)
+    }));
+    cache.r=0;sched(7);
+    uiAlert(`原因名「${oldName}」→「${newName}」を過去ログ ${targets.length}件に同期しました。`)
+  }catch(e){uiAlert('過去ログへの原因名同期に失敗しました: '+e.message)}
+}
+/* 既に食い違ってしまった過去ログの原因名（例:設定は変更済みだが過去ログは旧表記のまま）を、実際に過去ログで使われている表記の一覧から選んで一括修正するツール */
+async function causeFixOpen(){
+  if(!db||!(await adm()))return;
+  const sel=$('causefix-old');
+  sel.innerHTML='<option value="">読み込み中...</option>';
+  $('causefix-new').value='';
+  $('causefix-apply').disabled=true;
+  $('causefix-body').style.display='block';$('causefix-empty').style.display='none';
+  show('causefix-modal');
+  try{
+    const snap=await db.collection(COL.r).get();
+    const names=new Set();
+    snap.forEach(doc=>{
+      const d=doc.data();
+      if(Array.isArray(d.ng_details))d.ng_details.forEach(x=>{if(x&&x.cause)names.add(x.cause)});
+      if(d.ng_cause)names.add(d.ng_cause)
+    });
+    causes.forEach(c=>names.add(c));
+    const list=[...names].sort((a,b)=>a.localeCompare(b,'ja'));
+    if(!list.length){
+      $('causefix-body').style.display='none';$('causefix-empty').style.display='block';return
+    }
+    sel.innerHTML=list.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
+    sel.value=list[0];$('causefix-new').value=list[0];$('causefix-apply').disabled=false
+  }catch(e){
+    hide('causefix-modal');uiAlert('過去ログの読込に失敗しました: '+e.message)
+  }
+}
+async function causeFixApply(){
+  const oldName=$('causefix-old').value,newName=$('causefix-new').value.trim();
+  if(!oldName)return;
+  if(!newName)return uiAlert('修正後の表記を入力してください。');
+  if(newName===oldName)return uiAlert('変更前後が同じ表記です。');
+  hide('causefix-modal');
+  await syncCauseRename(oldName,newName)
+}
 
 /* ---------- 塗装機プリセット ---------- */
 function pv(){const p=presets.find(p=>p.no===selNo);return{voltage:p?p.voltage:50,current:p?p.current:20,discharge:p?p.discharge:300,air:p?p.air:250}}
