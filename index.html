@@ -315,7 +315,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 @media(min-width:992px){
   .summary-grid-ng {
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 18px;
     align-items: stretch; /* カードの高さを揃える */
   }
 
@@ -335,6 +335,10 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
     min-height: auto;
     margin: 0;
   }
+
+  /* サブ表示の行数がカードごとに異なっても、タイトル・数値の位置は4枚で揃える */
+  #sum-cards .summary-dashboard-cards .card-title { min-height: 34px; display: flex; align-items: center; justify-content: center; }
+  #sum-cards .summary-dashboard-cards .card-value { min-height: 44px; display: flex; align-items: center; justify-content: center; }
 
   /* 強調したい1・3番目のカード（総件数・再塗装率）のフォント調整 */
   #sum-cards .summary-dashboard-cards .card:nth-child(1) .card-value,
@@ -1578,7 +1582,7 @@ const trAdaptB=(arr,mode)=>arr.map(x=>({v:x.v,wk:!!x.weekend,dow:mode==='day'?pd
 function renderTrendPanel(kind,data,meta){
   const isNg=kind==='ng',cls=isNg?'ng':'qty',title=isNg?'再塗装発生の推移':'塗装数量の推移';
   const boxId='trbox-'+cls+'-'+(++TR_GID);meta.boxId=boxId;
-  const rawRow=isNg?'':`<div class="summary-trend-rawtotal">総件数 ${(meta.rawTotal||0).toLocaleString('ja-JP')}件</div>`;
+  const rawRow=`<div class="summary-trend-rawtotal"${isNg?' style="visibility:hidden"':''}>総件数 ${(meta.rawTotal||0).toLocaleString('ja-JP')}件</div>`;
   if(!data.length)return `<div class="summary-trend-panel"><div class="summary-trend-head"><div class="summary-trend-name">${title}</div><div class="summary-trend-total ${cls}">${isNg?'合計 0件':'実質合計 0件'}</div></div>${rawRow}<div class="summary-trend-empty">対象期間のデータがありません。</div></div>`;
   const total=isNg?meta.total.toLocaleString('ja-JP'):meta.total.toLocaleString('ja-JP',{maximumFractionDigits:1});
   return `<div class="summary-trend-panel"><div class="summary-trend-head"><div class="summary-trend-name">${title}</div><div class="summary-trend-total ${cls}">${isNg?'合計 ':'実質合計 '}${total}件</div></div>${rawRow}<div class="summary-trend-chartbox" id="${boxId}"></div><div class="summary-trend-meta">${meta.footer}</div></div>`;
@@ -1613,7 +1617,7 @@ function sum(){
   need('r',['sum','cause','paint'],R);
   if(sumG&&sumG[0]<WIN)loadArch('r');
   lbl('sum',R);lbl('cause',R);lbl('paint',R);
-  const G=[R.lastweek,R.week,R.month,R.year,sumG].filter(Boolean),S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0,units:{}})),cg=rg('cause',R)||R.week,pg_=rg('paint',R)||R.week,cc={},np={},pp={};
+  const cg=rg('cause',R)||R.week,pg_=rg('paint',R)||R.week,G=[R.lastweek,R.week,R.month,R.year,sumG,cg].filter(Boolean),S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0,units:{}})),cc={},np={},pp={};
   for(const r of all('r')){
     const d=r.date;if(!d)continue;
     G.forEach((g,i)=>{
@@ -1662,7 +1666,8 @@ function sum(){
 
   document.querySelectorAll('.pn-sw').forEach(e=>e.textContent=NM[P.sum.k]||'今週');
   const sc=srt(cc),tc=sc.reduce((a,b)=>a+b[1],0),sn=srt(np),tn=sn.reduce((a,b)=>a+b[1],0),sp_=srt(pp).filter(x=>x[1]>0),mx=sp_.length?sp_[0][1]:1;
-  const ngTotal=s.n,ngRate=s.qc>0?ngTotal/s.qc*100:0,topCause=sc.length?sc[0][0]:'—';
+  const cgIndex=G.findIndex(g=>g[0]===cg[0]&&g[1]===cg[1]),cgS=cgIndex>=0?S[cgIndex]:{n:0,qc:0};
+  const ngTotal=cgS.n,ngRate=cgS.qc>0?ngTotal/cgS.qc*100:0,topCause=sc.length?sc[0][0]:'—';
   $('ng-analysis-summary').innerHTML=`<div class="analysis-mini-card"><div class="analysis-mini-label">再塗装件数</div><div class="analysis-mini-value">${ngTotal.toLocaleString('ja-JP')}件</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">実質NG率</div><div class="analysis-mini-value">${ngRate.toFixed(1)}%</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">原因種類</div><div class="analysis-mini-value">${sc.length}種</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">最多原因</div><div class="analysis-mini-value" title="${esc(topCause)}">${esc(topCause)}</div></div>`;
   rk('cause-analysis-list',sc.map(([k,v])=>{const p=(v/tc*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}個)`,p+'%',p]}),'該当期間の再塗装データはありません。');
   rk('product-analysis-list',sn.map(([k,v])=>{const p=(v/tn*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}台)`,p+'%',p]}),'該当期間の再塗装データはありません。');
