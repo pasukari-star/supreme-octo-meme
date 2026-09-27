@@ -312,17 +312,45 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
   .summary-grid-ng>.card:nth-child(2){grid-area:s1}
   .summary-grid-ng>.card:nth-child(4){grid-area:s2}
 }
-@media(min-width:992px){.summary-grid-ng{grid-template-columns:1.25fr .85fr 1.25fr .85fr}}
-#sum-cards .summary-dashboard-cards .card:nth-child(1),
-#sum-cards .summary-dashboard-cards .card:nth-child(3){z-index:1}
-#sum-cards .summary-dashboard-cards .card:nth-child(1) .card-value,
-#sum-cards .summary-dashboard-cards .card:nth-child(3) .card-value{font-weight:900}
-#sum-cards .summary-dashboard-cards .card:nth-child(2),
-#sum-cards .summary-dashboard-cards .card:nth-child(4){padding:11px 8px;min-height:96px}
-#sum-cards .summary-dashboard-cards .card:nth-child(2) .card-title,
-#sum-cards .summary-dashboard-cards .card:nth-child(4) .card-title{font-size:11px;min-height:24px}
-#sum-cards .summary-dashboard-cards .card:nth-child(2) .card-value,
-#sum-cards .summary-dashboard-cards .card:nth-child(4) .card-value{font-size:20px;min-height:25px}
+@media(min-width:992px){
+  .summary-grid-ng {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    align-items: stretch; /* カードの高さを揃える */
+  }
+
+  #sum-cards .summary-dashboard-cards .card {
+    padding: 22px 16px;
+    min-height: auto; /* 不自然な固定高さを解除 */
+    justify-content: flex-start; /* 上詰めにして余白を自然にする */
+    gap: 6px;
+  }
+
+  /* テキストの固定高さと過剰なFlexboxを解除し、自然な中央揃えに */
+  #sum-cards .summary-dashboard-cards .card-title,
+  #sum-cards .summary-dashboard-cards .card-value,
+  #sum-cards .summary-dashboard-cards .summary-total-sub,
+  #sum-cards .summary-dashboard-cards .summary-rate-sub {
+    display: block;
+    min-height: auto;
+    margin: 0;
+  }
+
+  /* 強調したい1・3番目のカード（総件数・再塗装率）のフォント調整 */
+  #sum-cards .summary-dashboard-cards .card:nth-child(1) .card-value,
+  #sum-cards .summary-dashboard-cards .card:nth-child(3) .card-value {
+    font-size: 34px;
+    font-weight: 900;
+  }
+
+  /* 控えめにしたい2・4番目のカード（塗料使用量・塗着率）のフォント調整 */
+  #sum-cards .summary-dashboard-cards .card:nth-child(2) .card-value,
+  #sum-cards .summary-dashboard-cards .card:nth-child(4) .card-value {
+    font-size: 26px;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+}
 
 /* 選択された追加改善: 分析・状態表示・空状態・ページ表示 */
 .analysis-mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0 14px}
