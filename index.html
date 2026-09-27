@@ -52,8 +52,6 @@ body{background:radial-gradient(circle at 8% 0%,rgba(14,165,233,.10),transparent
 .unit{font-size:11px;font-weight:400;color:var(--text-dim);margin-left:2px}
 .card-subcount{font-size:11px;font-weight:700;color:var(--text-dim);margin-top:5px;letter-spacing:.3px}
 .card-subcount b{font-size:13px;font-weight:800;color:var(--accent-danger);margin:0 2px}
-.card-subcount.qc-sub{margin-top:2px}
-.card-subcount.qc-sub b{color:var(--accent-indigo)}
 .plbl{font-size:10.5px;color:var(--accent-cyan);font-weight:700;margin-top:6px;text-align:right}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -124,8 +122,6 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .mini>div:last-child{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-top:4px;word-break:break-all}
 .eval-badge{font-size:11.5px;padding:10px 14px;border-radius:var(--radius-sm);margin-top:14px;font-weight:700;text-align:center}
 .eval-good{background:rgba(5,150,105,.2);color:#34d399;border:1px solid rgba(5,150,105,.4)}
-.eval-warn{background:rgba(217,119,6,.2);color:#fbbf24;border:1px solid rgba(217,119,6,.4)}
-.eval-danger{background:rgba(225,29,72,.2);color:#f87171;border:1px solid rgba(225,29,72,.4)}
 .next-guide-banner{background:linear-gradient(135deg,rgba(2,132,199,.12),rgba(79,70,229,.12));border:1.5px solid rgba(2,132,199,.6);padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:16px;font-size:12.5px;color:var(--accent-cyan);font-weight:700;display:flex;align-items:center;gap:8px}
 .input-highlight{border:2px solid var(--accent-cyan)!important;background-color:rgba(224,242,254,.5)!important;box-shadow:0 0 12px rgba(2,132,199,.3)!important}
 .auto-calc-badge{font-size:9px;background:rgba(2,132,199,.12);color:var(--accent-cyan);padding:1px 5px;border-radius:4px;font-weight:700;margin-left:auto;border:1px solid rgba(2,132,199,.25);white-space:nowrap}
@@ -206,7 +202,6 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .qty-control input[type=number]{width:58px;min-width:58px;height:36px;text-align:center;font-weight:800;font-size:14px;border:2px solid rgba(2,132,199,.35);box-sizing:border-box}.paint-qty-control{grid-template-columns:repeat(6,minmax(0,1fr));gap:2px}.paint-qty-control .qty-step{height:22px;padding:0 1px;font-size:8px;border-radius:5px;min-width:0}.paint-qty-control input[type=number]{grid-column:1/-1;grid-row:2;width:100%;min-width:0;height:36px}
 .mini-qc{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2px;margin-top:4px}
 .mini-qc .qty-step{height:18px;font-size:8px;padding:0;border-radius:5px}
-#t-rows .prod-grid{grid-template-columns:minmax(0,1fr)}
 #t-rows .prod-grid>input[type=text]{font-size:14px;height:40px}
 #t-rows .qty-control{grid-template-columns:repeat(3,minmax(0,1fr)) 64px repeat(3,minmax(0,1fr));min-width:0}
 #t-rows .qty-control input[type=number]{width:64px;min-width:64px;height:36px;font-size:14px}
@@ -214,9 +209,9 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .prod-grid input{height:34px;padding:6px 8px;font-size:12px}
 .prod-grid input[type=number]{padding:6px 2px;text-align:center;-moz-appearance:textfield}
 .prod-grid input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-@media(max-width:991px) and (min-width:701px){.prod-box{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.prod-grid,#t-rows .prod-grid{grid-template-columns:minmax(0,1fr)}.qty-control,#t-rows .qty-control{min-width:0}}
+@media(max-width:991px) and (min-width:701px){.prod-box{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.qty-control,#t-rows .qty-control{min-width:0}}
 @media(max-width:700px){.prod-box{grid-template-columns:minmax(0,1fr);gap:7px;padding:7px}
-  .prod-grid,#t-rows .prod-grid{grid-template-columns:minmax(0,1fr);gap:6px;padding:7px}
+  .prod-grid,#t-rows .prod-grid{gap:6px;padding:7px}
   .prod-grid input[type=text],#t-rows .prod-grid>input[type=text]{height:42px;font-size:14px}
   .unit-sel{height:42px;width:56px;font-size:13px}
   .qty-control,#t-rows .qty-control{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;min-width:0}
@@ -313,7 +308,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 .analysis-list-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .analysis-list-panel{background:rgba(255,255,255,.72);border:1px solid var(--border-color);border-radius:10px;padding:10px;min-width:0}
 .analysis-list-title{font-size:11px;font-weight:800;color:var(--text-main);margin-bottom:7px;line-height:1.45;overflow-wrap:anywhere}
-.summary-trends-card{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}.summary-trends-title{display:none}.summary-trends-period{display:none}.summary-trend-grid{display:contents}.summary-trend-panel{min-width:0;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:14px 16px 10px;overflow:hidden;box-shadow:var(--shadow-glow)}.summary-trend-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;min-width:0}.summary-trend-name{font-size:15px;font-weight:800;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.summary-trend-total{font-size:20px;font-weight:900;white-space:nowrap}.summary-trend-total.qty{color:#1687b7}.summary-trend-total.ng{color:#d6294d}.summary-trend-svg{display:block;width:100%;height:auto;aspect-ratio:700/270;overflow:visible}.summary-trend-meta{font-size:11px;color:var(--text-dim);line-height:1.5;margin-top:3px;white-space:normal;overflow-wrap:anywhere}.summary-trend-meta strong{color:var(--text-main)}.summary-trend-empty{min-height:190px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:12px;text-align:center}
+.summary-trends-card{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 16px}.summary-trends-title{display:none}.summary-trends-period{display:none}.summary-trend-grid{display:contents}.summary-trend-panel{min-width:0;border:1px solid #e8eef5;border-radius:14px;padding:12px 14px 10px;background:linear-gradient(180deg,#fbfdff,#fff)}.summary-trend-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px;min-width:0}.summary-trend-name{font-size:13px;font-weight:800;color:#334155}.summary-trend-total{font-family:'Plus Jakarta Sans','Noto Sans JP',sans-serif;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;color:#0f1f33}.summary-trend-chartbox{position:relative;min-height:170px}.summary-trend-svg{display:block;width:100%;height:auto;overflow:visible}.summary-trend-svg text{font-family:'Plus Jakarta Sans','Noto Sans JP',sans-serif}.summary-trend-meta{font-size:11.5px;color:#64748b;line-height:1.5;margin-top:4px;font-variant-numeric:tabular-nums;white-space:normal;overflow-wrap:anywhere}.summary-trend-meta strong{color:var(--text-main)}.summary-trend-empty{min-height:190px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:12px;text-align:center}.summary-trend-chartbox .tip{position:absolute;z-index:5;transform:translateX(-50%);display:flex;gap:8px;align-items:baseline;padding:5px 10px;border-radius:9px;background:#0f172a;color:#fff;font-size:11px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 8px 20px rgba(15,23,42,.28)}.summary-trend-chartbox .tip.on{opacity:1}.summary-trend-chartbox .tip b{font-size:13px}
 .bulk-product-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:280px;overflow:auto;padding:2px}.bulk-product-option{display:flex;align-items:center;gap:7px;min-width:0;padding:8px 9px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11px;font-weight:700;color:var(--text-main);cursor:pointer}.bulk-product-option input{flex:0 0 auto;width:17px;height:17px;margin:0}.bulk-product-option span{min-width:0;overflow-wrap:anywhere}.bulk-editor-count{font-size:10.5px;color:var(--text-dim);font-weight:700}.bulk-editor-fields{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(100px,.7fr));gap:8px;margin-top:12px}.bulk-editor-fields>div{min-width:0}.bulk-editor-fields select,.bulk-editor-fields input{width:100%;box-sizing:border-box}.bulk-editor-note{font-size:10.5px;color:var(--text-dim);line-height:1.55;margin-top:10px;padding:9px 10px;background:rgba(2,132,199,.06);border:1px solid rgba(2,132,199,.14);border-radius:8px}
 .bulk-bake-actions{position:sticky;bottom:0;display:flex;gap:8px;margin-top:12px;padding:10px 0 2px;background:#fff;border-top:1px solid var(--border-color);z-index:3}.bulk-bake-actions button{flex:1;min-width:0;height:44px;font-weight:800}.bulk-bake-actions button:first-child{box-shadow:0 3px 10px rgba(2,132,199,.12)}
 @media(max-width:767px){.bulk-bake-actions{flex-direction:column;gap:6px;margin-top:10px;padding-top:9px}.bulk-bake-actions button{width:100%;min-height:44px;height:44px}.bulk-editor-note{font-size:10px;line-height:1.5}.modal-content{padding:16px;max-width:calc(100vw - 24px)}#bulk-bake-modal .modal-title{font-size:15px;line-height:1.35}#bulk-bake-modal .modal-header{margin-bottom:12px}#bulk-bake-modal .ph{gap:6px}.bulk-product-list{max-height:220px}.bulk-editor-fields{margin-top:10px;gap:7px}}
@@ -390,7 +385,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 @media(min-width:1280px){.pc-two-columns{grid-template-columns:minmax(650px,1.05fr) minmax(520px,.95fr);gap:28px}
   .form-section{padding:20px 22px}}
 html,body{width:100%;max-width:100%;overflow-x:hidden}
-.container,.header-bar,.main-nav-tabs,.tab-content,.form-section,.list-section,.card,.prod-box,.prod-grid,.qty-control,.ng-input-container{max-width:100%;min-width:0}
+.container,.header-bar,.main-nav-tabs,.form-section,.list-section,.card,.prod-box,.prod-grid,.qty-control,.ng-input-container{max-width:100%;min-width:0}
 input,select,button,textarea{max-width:100%}
 @media(max-width:767px){body{padding-top:8px}
   .container{width:100%;margin:0 auto}
@@ -411,7 +406,6 @@ input,select,button,textarea{max-width:100%}
   .container{width:min(100%,900px)}
   .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .prod-box{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-  .prod-grid{grid-template-columns:minmax(0,1fr)}
   .qty-control{grid-template-columns:repeat(3,minmax(0,1fr)) 58px repeat(3,minmax(0,1fr));min-width:0}}
 .btn-report{background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff!important;border:1px solid transparent;padding:8px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;box-shadow:0 3px 10px rgba(79,70,229,.28);transition:.18s ease}
 .btn-report:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 5px 14px rgba(79,70,229,.36)}
@@ -543,8 +537,8 @@ input[type=number]{-moz-appearance:textfield}
 .bake-preset-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(90px,.7fr) minmax(90px,.7fr) auto;gap:7px;align-items:end;padding:9px;background:#fff;border:1px solid var(--border-color);border-radius:var(--radius-sm)}
 @media(max-width:600px){.bake-preset-row{grid-template-columns:1fr 1fr;gap:7px}.bake-preset-row .bake-paint{grid-column:1/-1}.bake-preset-row .bake-actions{grid-column:1/-1;display:flex;gap:6px}.bake-preset-row .bake-actions button{flex:1}}
 .calc-note{font-size:11px;color:var(--text-dim);line-height:1.5;margin-top:6px;padding:8px 10px;background:rgba(2,132,199,.06);border:1px solid rgba(2,132,199,.12);border-radius:var(--radius-sm)}
-.calc-mode-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:9px 11px;background:#f8fafc;border:1px solid var(--border-color);border-radius:9px;font-size:11px}.calc-mode-box select{flex:1;min-width:210px}.calc-mode-help{color:var(--text-dim);line-height:1.45}.calc-source-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:5px;font-size:9px;font-weight:800;margin-left:4px}.calc-source-input{background:rgba(2,132,199,.1);color:#0369a1}.calc-source-measured{background:rgba(5,150,105,.1);color:#047857}.calc-source-auto{background:rgba(124,58,237,.1);color:#6d28d9}.calc-overlap-note{background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.25);color:#92400e;border-radius:8px;padding:8px 10px;font-size:10.5px;line-height:1.5;margin-top:8px}.subpart-auto-tag{font-size:9px;color:var(--accent-indigo);font-weight:800}.weather-refresh-btn{height:28px;padding:0 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:10px;font-weight:700;cursor:pointer}.sync-detail{font-size:9.5px;color:var(--text-dim);margin-top:2px}.ng-match-summary{position:sticky;bottom:8px;z-index:5;box-shadow:0 4px 14px rgba(15,23,42,.08)}@media(max-width:600px){.calc-mode-box{align-items:stretch}.calc-mode-box select{min-width:0;width:100%}.weather-refresh-btn{width:100%}}
-@media(max-width:767px){.analysis-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.analysis-mini-card{padding:8px}.analysis-mini-label{font-size:9.5px}.analysis-mini-value{font-size:15px}.analysis-list-grid{grid-template-columns:1fr;gap:8px}.analysis-list-panel{padding:9px}.cause-header{gap:6px}.cause-header>span:last-child{white-space:nowrap;font-size:10.5px}.summary-trends-card{grid-template-columns:1fr;gap:10px;margin-bottom:12px}.summary-trend-panel{padding:11px 10px 9px;border-radius:14px}.summary-trend-name{font-size:14px}.summary-trend-total{font-size:18px}.summary-trend-meta{font-size:10.5px}.bulk-product-list{grid-template-columns:1fr;max-height:240px}.bulk-editor-fields{grid-template-columns:1fr}.bulk-editor-fields>div{width:100%}}
+.calc-mode-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:9px 11px;background:#f8fafc;border:1px solid var(--border-color);border-radius:9px;font-size:11px}.calc-mode-box select{flex:1;min-width:210px}.calc-mode-help{color:var(--text-dim);line-height:1.45}.calc-source-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:5px;font-size:9px;font-weight:800;margin-left:4px}.calc-source-input{background:rgba(2,132,199,.1);color:#0369a1}.calc-source-measured{background:rgba(5,150,105,.1);color:#047857}.calc-overlap-note{background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.25);color:#92400e;border-radius:8px;padding:8px 10px;font-size:10.5px;line-height:1.5;margin-top:8px}.subpart-auto-tag{font-size:9px;color:var(--accent-indigo);font-weight:800}.weather-refresh-btn{height:28px;padding:0 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:10px;font-weight:700;cursor:pointer}.ng-match-summary{position:sticky;bottom:8px;z-index:5;box-shadow:0 4px 14px rgba(15,23,42,.08)}@media(max-width:600px){.calc-mode-box{align-items:stretch}.calc-mode-box select{min-width:0;width:100%}.weather-refresh-btn{width:100%}}
+@media(max-width:767px){.analysis-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.analysis-mini-card{padding:8px}.analysis-mini-label{font-size:9.5px}.analysis-mini-value{font-size:15px}.analysis-list-grid{grid-template-columns:1fr;gap:8px}.analysis-list-panel{padding:9px}.cause-header{gap:6px}.cause-header>span:last-child{white-space:nowrap;font-size:10.5px}.summary-trends-card{grid-template-columns:1fr;gap:10px;margin-bottom:12px}.summary-trend-panel{padding:10px 10px 8px;border-radius:14px}.bulk-product-list{grid-template-columns:1fr;max-height:240px}.bulk-editor-fields{grid-template-columns:1fr}.bulk-editor-fields>div{width:100%}}
 @media(min-width:768px){.analysis-list-panel{overflow:hidden}.analysis-list-panel .cause-header{gap:8px}.analysis-list-panel .cause-header>span:first-child{min-width:0;overflow-wrap:anywhere}.analysis-list-panel .cause-header>span:last-child{flex:0 0 auto;white-space:nowrap}}
 </style>
 </head>
@@ -1432,19 +1426,101 @@ const ngConv=r=>{
 function trendBucket(date,span){if(span<=14)return date;const d=pd(date);if(span<=90){d.setDate(d.getDate()-((d.getDay()+6)%7));return ds(d)}return date.slice(0,7)}
 function trendLabel(key,mode){if(mode==='day'){const d=pd(key);return `${d.getMonth()+1}/${d.getDate()}`}if(mode==='week'){const d=pd(key),e=D(d,6);return `${d.getMonth()+1}/${d.getDate()}～${e.getMonth()+1}/${e.getDate()}`}const [y,m]=key.split('-');return `${y}/${Number(m)}`}
 function trendWeekday(key){return '日月火水木金土'[pd(key).getDay()]}
+/* ---- グラフ描画：SIRIUS週報・月報・年報出力ビュー(pasukari_Runner)と同一デザインのSVGトレンドチャート ---- */
+let TR_GID=0,TR_LAST_G=null;
+const TR_HALO='paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round';
+function trNiceScale(m){
+  if(!(m>0))return{max:4,step:1};
+  const raw=m/4,p=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/p,nf=f<=1?1:f<=2?2:f<=5?5:10;
+  let step=nf*p;if(step<1)step=1;
+  return{max:Math.max(step*2,Math.ceil(m/step-1e-9)*step),step};
+}
+function trSmoothPath(pts){
+  const n=pts.length;if(n<2)return '';
+  const dx=[],m=[],t=new Array(n);
+  for(let i=0;i<n-1;i++){dx.push(pts[i+1][0]-pts[i][0]);m.push((pts[i+1][1]-pts[i][1])/dx[i])}
+  t[0]=m[0];t[n-1]=m[n-2];
+  for(let i=1;i<n-1;i++)t[i]=(m[i-1]*m[i]<=0)?0:(m[i-1]+m[i])/2;
+  for(let i=0;i<n-1;i++){
+    if(m[i]===0){t[i]=0;t[i+1]=0;continue}
+    const a=t[i]/m[i],b=t[i+1]/m[i],s=a*a+b*b;
+    if(s>9){const k=3/Math.sqrt(s);t[i]=k*a*m[i];t[i+1]=k*b*m[i]}
+  }
+  let d=`M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for(let i=0;i<n-1;i++){const h=dx[i],x0=pts[i][0],y0=pts[i][1],x1=pts[i+1][0],y1=pts[i+1][1];d+=` C${(x0+h/3).toFixed(1)},${(y0+t[i]*h/3).toFixed(1)} ${(x1-h/3).toFixed(1)},${(y1-t[i+1]*h/3).toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)}`}
+  return d;
+}
+function trChartSVG(b,o){
+  const W=o.W,H=o.H,n=b.length,uid='trc'+(++TR_GID),two=n<=8;
+  const PL=32,PR=10,PT=24,PB=two?38:27,iw=W-PL-PR,ih=H-PT-PB,bw=n?iw/n:iw;
+  const vals=b.map(x=>Number(x.v)||0),mx=Math.max(0,...vals),sc=trNiceScale(mx),max=sc.max;
+  const X=i=>PL+bw*(i+.5),Y=v=>PT+ih-(v/max)*ih,base=PT+ih;
+  const xs=vals.map((_,i)=>X(i)),ys=vals.map(v=>Y(v));
+  const c1=o.c1,c2=o.c2;
+  let peak=-1;vals.forEach((v,i)=>{if(v>0&&(peak<0||v>vals[peak]))peak=i});
+  let s=`<defs><linearGradient id="${uid}a" gradientUnits="userSpaceOnUse" x1="0" y1="${PT}" x2="0" y2="${base}"><stop offset="0" stop-color="${c1}" stop-opacity=".34"/><stop offset="1" stop-color="${c1}" stop-opacity="0"/></linearGradient>`+
+    `<linearGradient id="${uid}l" gradientUnits="userSpaceOnUse" x1="${PL}" y1="0" x2="${W-PR}" y2="0"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs>`;
+  b.forEach((x,i)=>{if(x.wk)s+=`<rect x="${(PL+bw*i).toFixed(1)}" y="${PT}" width="${bw.toFixed(1)}" height="${ih}" fill="#eef2f7"/>`});
+  for(let v=0;v<=max+1e-9;v+=sc.step){const y=Y(v);s+=`<line x1="${PL}" x2="${W-PR}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${v===0?'#94a3b8':'#d9e2ec'}" stroke-width="${v===0?1.2:1}" ${v===0?'':'stroke-dasharray="3 4"'}/><text x="${PL-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end" font-size="10" fill="#64748b">${Math.round(v*10)/10}</text>`}
+  const label=(i,v)=>`<text x="${xs[i].toFixed(1)}" y="${(ys[i]-11).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="800" fill="#0f1f33" style="${TR_HALO}">${v}</text>`;
+  const act=vals.filter(v=>v>0);
+  if(o.avg&&act.length>=2){const av=act.reduce((a,c)=>a+c,0)/act.length,y=Y(av);s+=`<line x1="${PL}" x2="${W-PR}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#f59e0b" stroke-width="1.3" stroke-dasharray="5 4"/><text x="${W-PR-2}" y="${(y-5).toFixed(1)}" text-anchor="end" font-size="10" font-weight="700" fill="#b45309" style="${TR_HALO}">平均 ${Math.round(av*10)/10}</text>`}
+  if(n>1){
+    const d=trSmoothPath(xs.map((x,i)=>[x,ys[i]]));
+    s+=`<path d="${d} L${xs[n-1].toFixed(1)},${base} L${xs[0].toFixed(1)},${base} Z" fill="url(#${uid}a)"/>`;
+    s+=`<path d="${d}" fill="none" stroke="url(#${uid}l)" stroke-opacity=".16" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`;
+    s+=`<path d="${d}" fill="none" stroke="url(#${uid}l)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  const dots=n<=16;
+  vals.forEach((v,i)=>{
+    if(i===peak)s+=`<circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="9" fill="${c2}" opacity=".16"/><circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="5" fill="${c2}" stroke="#fff" stroke-width="2"/>`;
+    else if(dots)s+=v>0?`<circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="3.6" fill="#fff" stroke="${c2}" stroke-width="2"/>`:`<circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="2.4" fill="#cbd5e1"/>`;
+  });
+  vals.forEach((v,i)=>{if(v>0&&(two||i===peak))s+=label(i,Number.isInteger(v)?v:(Math.round(v*10)/10))});
+  const step=n<=14?1:Math.ceil(n/7),dowCol=d=>d===0?'#e11d48':d===6?'#0284c7':'#64748b';
+  b.forEach((x,i)=>{
+    if(!(i%step===0||(i===n-1&&(n-1)%step>=Math.ceil(step/2))))return;
+    s+=`<text x="${xs[i].toFixed(1)}" y="${base+15}" text-anchor="middle" font-size="10" fill="${dowCol(x.dow)}" font-weight="${two?700:500}">${esc(x.label)}</text>`;
+    if(two&&x.sub)s+=`<text x="${xs[i].toFixed(1)}" y="${base+28}" text-anchor="middle" font-size="9.5" fill="${dowCol(x.dow)}">${esc(x.sub)}</text>`;
+  });
+  if(mx===0)s+=`<text x="${(PL+iw/2).toFixed(1)}" y="${(PT+ih/2).toFixed(1)}" text-anchor="middle" font-size="12" fill="#94a3b8">${esc(o.empty)}</text>`;
+  s+=`<line class="tr-guide" x1="0" x2="0" y1="${PT}" y2="${base}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" visibility="hidden"/>`;
+  b.forEach((x,i)=>{s+=`<rect class="tr-hit" data-i="${i}" x="${(PL+bw*i).toFixed(1)}" y="${PT-6}" width="${bw.toFixed(1)}" height="${ih+6}" fill="transparent"/>`});
+  return{svg:`<svg class="summary-trend-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label)}">${s}</svg>`,xs,ys};
+}
+function trMountChart(box,b,unit,o){
+  if(!box)return;
+  const w=Math.round(box.clientWidth||520),W=Math.max(260,Math.min(720,w)),H=Math.round(Math.max(170,Math.min(240,W*.42)));
+  const a=trChartSVG(b,{...o,W,H});
+  box.innerHTML=a.svg+'<div class="tip"></div>';
+  box._m={W,xs:a.xs,ys:a.ys,items:b,unit};
+  trBindTip(box);
+}
+function trBindTip(box){
+  if(box._tipBound)return;box._tipBound=true;
+  const show=e=>{
+    const h=e.target.closest&&e.target.closest('.tr-hit'),m=box._m,tip=box.querySelector('.tip'),svg=box.querySelector('svg');
+    if(!h||!m||!tip||!svg)return trHideTip(box);
+    const i=+h.getAttribute('data-i'),it=m.items[i],k=svg.getBoundingClientRect().width/m.W,v=Number(it.v)||0;
+    tip.innerHTML=`<span>${esc(it.title||it.label)}</span><b>${Number.isInteger(v)?v.toLocaleString():(Math.round(v*10)/10).toLocaleString()}${m.unit}</b>`;
+    tip.classList.add('on');
+    const bwid=box.clientWidth,tw=tip.offsetWidth,th=tip.offsetHeight;
+    tip.style.left=Math.min(Math.max(m.xs[i]*k,tw/2+2),bwid-tw/2-2)+'px';
+    tip.style.top=Math.max(2,m.ys[i]*k-th-12)+'px';
+    const g=svg.querySelector('.tr-guide');if(g){g.setAttribute('x1',m.xs[i]);g.setAttribute('x2',m.xs[i]);g.setAttribute('visibility','visible')}
+  };
+  ['pointerover','pointermove','pointerdown'].forEach(t=>box.addEventListener(t,show));
+  box.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')trHideTip(box)});
+}
+function trHideTip(box){const t=box.querySelector('.tip');if(t)t.classList.remove('on');const g=box.querySelector('.tr-guide');if(g)g.setAttribute('visibility','hidden')}
+document.addEventListener('pointerdown',e=>{document.querySelectorAll('.summary-trend-chartbox').forEach(b=>{if(!b.contains(e.target))trHideTip(b)})});
+const trAdaptB=(arr,mode)=>arr.map(x=>({v:x.v,wk:!!x.weekend,dow:mode==='day'?pd(x.key).getDay():-1,label:x.label,sub:mode==='day'?trendWeekday(x.key):'',title:x.title}));
 function renderTrendPanel(kind,data,meta){
-  const isNg=kind==='ng',cls=isNg?'ng':'qty',title=isNg?'再塗装発生の推移':'塗装数量の推移',unit=isNg?'件':'数量';
+  const isNg=kind==='ng',cls=isNg?'ng':'qty',title=isNg?'再塗装発生の推移':'塗装数量の推移';
+  const boxId='trbox-'+cls+'-'+(++TR_GID);meta.boxId=boxId;
   if(!data.length)return `<div class="summary-trend-panel"><div class="summary-trend-head"><div class="summary-trend-name">${title}</div><div class="summary-trend-total ${cls}">${isNg?'合計 0件':'実質合計 0件'}</div></div><div class="summary-trend-empty">対象期間のデータがありません。</div></div>`;
-  const max=Math.max(...data.map(x=>x.v),0),avg=Number.isFinite(meta.avg)?meta.avg:0,rawMax=Math.max(1,max,avg),yMax=rawMax<=5?5:Math.ceil(rawMax*1.2/20)*20,W=700,H=270,L=42,R=12,T=18,B=52,CH=H-T-B,CW=W-L-R,step=data.length>1?CW/(data.length-1):0,pts=data.map((x,i)=>({x:data.length===1?L+CW/2:L+i*step,y:T+CH-(x.v/yMax)*CH,...x}));
-  const grid=[0,1/3,2/3,1].map(p=>{const y=T+CH*(1-p),v=yMax*p;return `<line x1="${L}" x2="${W-R}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#dbe3ec" stroke-dasharray="5 6"/><text x="${L-7}" y="${(y+4).toFixed(1)}" text-anchor="end" fill="#64748b" font-size="11">${Math.abs(v-Math.round(v))<.05?Math.round(v):v.toFixed(1)}</text>`}).join('');
-  const weekend=meta.mode==='day'?data.map((x,i)=>{const day=pd(x.key).getDay();if(day!==6&&day!==0)return '';const x0=Math.max(L,pts[i].x-step*.5),x1=Math.min(W-R,pts[i].x+step*.5);return `<rect x="${x0.toFixed(1)}" y="${T}" width="${Math.max(0,x1-x0).toFixed(1)}" height="${CH}" fill="#eef2f7"/>`}).join(''):'';
-  const line=pts.length<2?`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`:pts.map((p,i)=>{if(i===0)return`M ${p.x.toFixed(1)} ${p.y.toFixed(1)}`;const a=pts[i-1],b=p,cx=(a.x+b.x)/2;return` C ${cx.toFixed(1)} ${a.y.toFixed(1)}, ${cx.toFixed(1)} ${b.y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`}).join(''),area=`${L},${T+CH} ${pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')} ${W-R},${T+CH}`,avgY=T+CH-(Math.min(yMax,avg)/yMax)*CH;
-  const avgLine=avg>0?`<line x1="${L}" x2="${W-R}" y1="${avgY.toFixed(1)}" y2="${avgY.toFixed(1)}" stroke="#d59b3b" stroke-width="2" stroke-dasharray="8 6"/><text x="${W-R-2}" y="${(avgY-6).toFixed(1)}" text-anchor="end" fill="#a66d25" font-size="11" font-weight="700">平均 ${avg.toFixed(1).replace(/\.0$/,'')}</text>`:'';
-  const labels=pts.map((p,i)=>{const show=data.length<=14||i===0||i===data.length-1||i%Math.ceil(data.length/10)===0;if(!show)return '';const day=meta.mode==='day'?trendWeekday(p.key):'';const dow=meta.mode==='day'?pd(p.key).getDay():-1;const fill=dow===0?'#d6294d':dow===6?'#1687b7':'#64748b';return `<text x="${p.x.toFixed(1)}" y="${H-18}" text-anchor="middle" fill="${fill}" font-size="11" font-weight="800"><tspan x="${p.x.toFixed(1)}" dy="0">${esc(p.label)}</tspan>${day?`<tspan x="${p.x.toFixed(1)}" dy="13">${day}</tspan>`:''}</text>`}).join('');
-  const values=pts.map(p=>p.v>0?`<text x="${p.x.toFixed(1)}" y="${Math.max(12,p.y-10).toFixed(1)}" text-anchor="middle" fill="#172033" font-size="12" font-weight="900">${Number.isInteger(p.v)?p.v:p.v.toFixed(1)}</text>`:'').join('');
-  const circles=pts.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${data.length<=14?6.5:4.8}" fill="#fff" stroke="${isNg?'#df3158':'#3659d7'}" stroke-width="4"><title>${esc(p.title)}: ${Number.isInteger(p.v)?p.v:p.v.toFixed(1)}${unit}</title></circle>`).join('');
   const total=isNg?meta.total.toLocaleString('ja-JP'):meta.total.toLocaleString('ja-JP',{maximumFractionDigits:1});
-  return `<div class="summary-trend-panel"><div class="summary-trend-head"><div class="summary-trend-name">${title}</div><div class="summary-trend-total ${cls}">${isNg?'合計 ':'実質合計 '}${total}${isNg?'件':'件'}</div></div><svg class="summary-trend-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}"><defs><linearGradient id="trend-fill-${kind}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${isNg?'#f4728b':'#4f8eea'}" stop-opacity=".32"/><stop offset="100%" stop-color="${isNg?'#f4728b':'#4f8eea'}" stop-opacity=".04"/></linearGradient></defs>${weekend}${grid}${avgLine}<polygon points="${area}" fill="url(#trend-fill-${kind})"/><path d="${line}" fill="none" stroke="${isNg?'#df3158':'#3659d7'}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".16"/><path d="${line}" fill="none" stroke="${isNg?'#df3158':'#3659d7'}" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>${circles}${values}${labels}</svg><div class="summary-trend-meta">${meta.footer}</div></div>`;
+  return `<div class="summary-trend-panel"><div class="summary-trend-head"><div class="summary-trend-name">${title}</div><div class="summary-trend-total ${cls}">${isNg?'合計 ':'実質合計 '}${total}件</div></div><div class="summary-trend-chartbox" id="${boxId}"></div><div class="summary-trend-meta">${meta.footer}</div></div>`;
 }
 function renderSummaryTrends(g){
   const box=$('summary-trends-card');if(!box)return;if(!g){box.innerHTML='';return}
@@ -1457,7 +1533,19 @@ function renderSummaryTrends(g){
   keys.sort();keys.forEach(k=>{if(!buckets[k])buckets[k]={q:0,n:0}});
   const qty=keys.map(key=>({key,v:+buckets[key].q.toFixed(1),label:trendLabel(key,mode),weekend:mode==='day'&&[0,6].includes(pd(key).getDay()),title:trendLabel(key,mode)})),ng=keys.map(key=>({key,v:+buckets[key].n.toFixed(1),label:trendLabel(key,mode),weekend:mode==='day'&&[0,6].includes(pd(key).getDay()),title:trendLabel(key,mode)})),totalQ=qty.reduce((s,x)=>s+x.v,0),activeQ=qty.filter(x=>x.v>0),totalN=ng.reduce((s,x)=>s+x.v,0),activeN=ng.filter(x=>x.v>0),avgQ=activeQ.length?totalQ/activeQ.length:0,avgN=activeN.length?totalN/activeN.length:0,maxQ=qty.reduce((a,b)=>b.v>a.v?b:a,{v:0,key:g[0]}),maxN=ng.reduce((a,b)=>b.v>a.v?b:a,{v:0,key:g[0]});
   const fmtDate=k=>mode==='month'?k.replace('-','/'):trendLabel(k,mode),footerQ=`最大 <strong>${maxQ.v.toLocaleString('ja-JP',{maximumFractionDigits:1})}数量</strong>（${fmtDate(maxQ.key)}） ／ 稼働${mode==='day'?'日':'期間'}平均 <strong>${avgQ.toLocaleString('ja-JP',{maximumFractionDigits:1})}数量</strong>`,footerN=`発生日 <strong>${activeN.length}日</strong> ／ 最多 <strong>${maxN.v.toLocaleString('ja-JP',{maximumFractionDigits:1})}件</strong>（${fmtDate(maxN.key)}） ／ 発生日平均 <strong>${avgN.toLocaleString('ja-JP',{maximumFractionDigits:1})}件</strong>`;
-  box.innerHTML=`<div class="summary-trends-title"><span>📈 実績推移</span><span class="summary-trends-period">${g[0]} ～ ${g[1]} ・ ${mode==='day'?'日別':mode==='week'?'週別':'月別'}</span></div><div class="summary-trend-grid">${renderTrendPanel('qty',qty,{mode,total:totalQ,avg:avgQ,footer:footerQ})}${renderTrendPanel('ng',ng,{mode,total:totalN,avg:avgN,footer:footerN})}</div>`;
+  const metaQ={mode,total:totalQ,avg:avgQ,footer:footerQ},metaN={mode,total:totalN,avg:avgN,footer:footerN};
+  const htmlQ=renderTrendPanel('qty',qty,metaQ),htmlN=renderTrendPanel('ng',ng,metaN);
+  box.innerHTML=`<div class="summary-trends-title"><span>📈 実績推移</span><span class="summary-trends-period">${g[0]} ～ ${g[1]} ・ ${mode==='day'?'日別':mode==='week'?'週別':'月別'}</span></div><div class="summary-trend-grid">${htmlQ}${htmlN}</div>`;
+  if(qty.length)trMountChart($(metaQ.boxId),trAdaptB(qty,mode),'数量',{c1:'#0ea5e9',c2:'#4f46e5',avg:true,empty:'対象期間のデータがありません。',label:'塗装数量の推移'});
+  if(ng.length)trMountChart($(metaN.boxId),trAdaptB(ng,mode),'件',{c1:'#fb7185',c2:'#e11d48',avg:true,empty:'対象期間の再塗装はありません。',label:'再塗装発生の推移'});
+  TR_LAST_G=g;
+  if(!box._trObserved){
+    box._trObserved=true;
+    if('ResizeObserver' in window){
+      let trLw=box.clientWidth;
+      new ResizeObserver(es=>{const nw=Math.round(es[0].contentRect.width);if(Math.abs(nw-trLw)>3){trLw=nw;if(TR_LAST_G)renderSummaryTrends(TR_LAST_G)}}).observe(box);
+    }else window.addEventListener('resize',()=>{if(TR_LAST_G)renderSummaryTrends(TR_LAST_G)});
+  }
 }
 function sum(){
   const R=ranges(),sumG=rg('sum',R);
@@ -1519,9 +1607,9 @@ function sum(){
   rk('product-analysis-list',sn.map(([k,v])=>{const p=(v/tn*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}台)`,p+'%',p]}),'該当期間の再塗装データはありません。');
   rk('paint-usage-analysis-list',sp_.map(([k,v])=>[`<strong>${esc(k)}</strong>`,fw(v),(v/mx*100).toFixed(1)]),'該当期間の塗料使用データはありません。','linear-gradient(90deg,#0ea5e9,#38bdf8)');
   const productStats={},paintStats={};
-  for(const r of all('r')){if(!r.date||!pg_||r.date<pg_[0]||r.date>pg_[1])continue;const total=Number(r._q)||0,ngMap={};if(Array.isArray(r.ng_products))r.ng_products.forEach(x=>{if(x&&x.name)ngMap[x.name]=(ngMap[x.name]||0)+(Number(x.qty)||0)});else if(r.ng_product)ngMap[r.ng_product]=Number(r.ng_qty)||0;const items=Array.isArray(r.items)?r.items:[];items.forEach(it=>{const k=it.name||'不明',q=Number(it.qty)||0;if(!productStats[k])productStats[k]={q:0,ng:0,w:0};productStats[k].q+=q;productStats[k].ng+=r.status==='NG'?(ngMap[k]||0):0;productStats[k].w+=total>0?(Number(r._w)||0)*q/total:0});const pn=r.paint_name||'未選択';if(!paintStats[pn])paintStats[pn]={w:0,r:0,n:0};paintStats[pn].w+=Number(r._w)||0;if(r.status==='NG')paintStats[pn].n+=Object.values(ngMap).reduce((a,v)=>a+(Number(v)||0),0)}
+  for(const r of all('r')){if(!r.date||!pg_||r.date<pg_[0]||r.date>pg_[1])continue;const total=Number(r._q)||0,ngMap={};if(Array.isArray(r.ng_products))r.ng_products.forEach(x=>{if(x&&x.name)ngMap[x.name]=(ngMap[x.name]||0)+(Number(x.qty)||0)});else if(r.ng_product)ngMap[r.ng_product]=Number(r.ng_qty)||0;const items=Array.isArray(r.items)?r.items:[];items.forEach(it=>{const k=it.name||'不明',q=Number(it.qty)||0;if(!productStats[k])productStats[k]={q:0,ng:0,w:0,u:it.unit||'台'};productStats[k].q+=q;productStats[k].ng+=r.status==='NG'?(ngMap[k]||0):0;productStats[k].w+=total>0?(Number(r._w)||0)*q/total:0});const pn=r.paint_name||'未選択';if(!paintStats[pn])paintStats[pn]={w:0,r:0,n:0};paintStats[pn].w+=Number(r._w)||0;if(r.status==='NG')paintStats[pn].n+=Object.values(ngMap).reduce((a,v)=>a+(Number(v)||0),0)}
   const pRows=Object.entries(productStats).sort((a,b)=>b[1].q-a[1].q).slice(0,10);
-  $('product-performance-list').innerHTML=pRows.length?pRows.map(([k,v])=>{const nr=v.q>0?v.ng/v.q*100:0;return `<div class="cause-item"><div class="cause-header"><span>${esc(k)}</span><span><strong>${v.q.toLocaleString('ja-JP')}台</strong> / NG ${nr.toFixed(1)}%</span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${Math.min(100,nr)}%"></div></div><div style="font-size:9px;color:var(--text-dim);margin-top:3px">塗料使用 ${fw(v.w)}</div></div>`}).join(''):'<div class="empty-sm">対象データがありません。</div>';
+  $('product-performance-list').innerHTML=pRows.length?pRows.map(([k,v])=>{const nr=v.q>0?v.ng/v.q*100:0;return `<div class="cause-item"><div class="cause-header"><span>${esc(k)}</span><span><strong>${v.q.toLocaleString('ja-JP')}${esc(v.u||'台')}</strong> / NG ${nr.toFixed(1)}%</span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${Math.min(100,nr)}%"></div></div><div style="font-size:9px;color:var(--text-dim);margin-top:3px">塗料使用 ${fw(v.w)}</div></div>`}).join(''):'<div class="empty-sm">対象データがありません。</div>';
   const paintRows=Object.entries(paintStats).sort((a,b)=>b[1].w-a[1].w).slice(0,10);
   $('paint-performance-list').innerHTML=paintRows.length?paintRows.map(([k,v])=>{return `<div class="cause-item"><div class="cause-header"><span>${esc(k)}</span><span><strong>${fw(v.w)}</strong></span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${Math.min(100,(v.w/(paintRows[0][1].w||1))*100)}%;background:linear-gradient(90deg,#0ea5e9,#38bdf8)"></div></div></div>`}).join(''):'<div class="empty-sm">対象データがありません。</div>';
   renderSummaryTrends(sumG);
@@ -2128,13 +2216,24 @@ const toggleCursor=()=>cur.toggle();
   setTimeout(syncBadge,300);setTimeout(syncBadge,2000);
 
   /* モーダル：背景クリック／Escapeキーで閉じられるように（既存の閉じるボタンの動作はそのまま） */
+  /* data-confirm-escape="true" のモーダルは、入力途中の内容がある間は背景クリック／Escapeどちらでも確認してから閉じる */
+  function modalHasUnsaved(ov){
+    if(!ov)return false;
+    if(ov.id==='causefix-modal')return!!($('causefix-new')&&$('causefix-old')&&$('causefix-new').value.trim()!==$('causefix-old').value);
+    if(ov.id==='bulk-bake-modal')return!!(bulkBakeSelected().length||V('bulk-bake-temp')||V('bulk-bake-time')||V('bulk-bake-paint'));
+    return false;
+  }
+  function closeModalWithConfirm(ov){
+    if(ov.dataset.confirmEscape==='true'&&modalHasUnsaved(ov)){uiConfirm('入力中の内容を破棄して閉じますか？').then(ok=>{if(ok)ov.style.display='none'});return}
+    ov.style.display='none';
+  }
   document.querySelectorAll('.modal-overlay').forEach(ov=>{
-    ov.addEventListener('mousedown',e=>{if(e.target===ov)ov.style.display='none'})
+    ov.addEventListener('mousedown',e=>{if(e.target===ov)closeModalWithConfirm(ov)})
   });
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
       const ov=[...document.querySelectorAll('.modal-overlay')].find(x=>x.style.display==='flex');
-      if(ov&&ov.dataset.confirmEscape==='true'&&$('causefix-new')&&$('causefix-old')&&$('causefix-new').value.trim()!==$('causefix-old').value){e.preventDefault();e.stopPropagation();uiConfirm('入力中の一括修正内容を破棄して閉じますか？').then(ok=>{if(ok)hide(ov.id)});return}
+      if(ov&&ov.dataset.confirmEscape==='true'&&modalHasUnsaved(ov)){e.preventDefault();e.stopPropagation();uiConfirm('入力中の内容を破棄して閉じますか？').then(ok=>{if(ok)hide(ov.id)});return}
       document.querySelectorAll('.modal-overlay').forEach(x=>{if(x.style.display==='flex')x.style.display='none'});
       $('menu')&&$('menu').classList.remove('open')
     }
