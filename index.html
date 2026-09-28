@@ -176,7 +176,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .sp-row{display:grid;grid-template-columns:2fr 1fr auto 1fr auto;gap:6px;align-items:center;background:#fff;padding:8px;border-radius:6px;border:1px solid #cbd5e1}
 .sp-row select,.sp-row input,.sp-row .btn-del{height:36px;font-size:12px}
 @media(max-width:600px){.card-data-grid{grid-template-columns:1fr;gap:6px}.card-data-row.full-row{grid-column:span 1}.form-grid{grid-template-columns:1fr}.full{grid-column:span 1}.multi-select-grid-2{grid-template-columns:1fr}}
-@media(min-width:992px){.header-bar{flex-direction:row;justify-content:space-between;text-align:left;padding-bottom:18px}.header-title-box{align-items:flex-start}.app-title{font-size:21px;text-align:left}.header-info-row{justify-content:flex-start}.header-btn-group{width:auto;justify-content:flex-end;flex-wrap:nowrap}.summary-grid-ng{grid-template-columns:repeat(4,1fr);gap:14px}.card-value{font-size:23px}.pc-two-columns{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}.cause-list{max-height:200px}.form-grid{gap:10px}#menu{right:0;transform:none}}
+@media(min-width:992px){.header-bar{flex-direction:row;justify-content:space-between;text-align:left;padding-bottom:18px}.header-title-box{align-items:flex-start}.app-title{font-size:21px;text-align:left}.header-info-row{justify-content:flex-start}.header-btn-group{width:auto;justify-content:flex-end;flex-wrap:nowrap}.summary-grid-ng{grid-template-columns:repeat(4,1fr)}.card-value{font-size:23px}.pc-two-columns{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}.cause-list{max-height:200px}.form-grid{gap:10px}#menu{right:0;transform:none}}
 .form-grid.fg4{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 10px}
 .fg4>.full{grid-column:1/-1}
 .fg4>.s2{grid-column:span 2}
@@ -306,7 +306,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 #sum-cards .summary-dashboard-cards .avg-val{color:var(--accent-success)}
 /* 総件数・再塗装（重要指標）を優先的に見せ、使用量・塗着率は控えめなサイズに */
 @media(max-width:991px){
-  .summary-grid-ng{grid-template-areas:"p1 p2" "s1 s2"}
+  .summary-grid-ng{grid-template-areas:"p1 p2" "s1 s2";gap:12px}
   .summary-grid-ng>.card:nth-child(1){grid-area:p1}
   .summary-grid-ng>.card:nth-child(3){grid-area:p2}
   .summary-grid-ng>.card:nth-child(2){grid-area:s1}
@@ -315,7 +315,6 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
 @media(min-width:992px){
   .summary-grid-ng {
     grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
     align-items: stretch; /* カードの高さを揃える */
   }
 
@@ -421,7 +420,7 @@ input.req:focus{box-shadow:0 0 0 3px rgba(2,132,199,.28)}
   .container{max-width:1280px;margin-left:auto;margin-right:auto}
   .header-bar{margin-bottom:22px}
   .main-nav-tabs{max-width:920px;margin-left:auto;margin-right:auto}
-  .summary-grid-ng{gap:16px}
+  .summary-grid-ng{gap:18px}
   .pc-two-columns{grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);gap:22px}
   #tab-content-main>.list-section{margin-top:22px}
   .form-section{padding:18px 20px}
@@ -1642,7 +1641,7 @@ function sum(){
     if(d>=pg_[0]&&d<=pg_[1]&&r._w>0&&r._q>0&&Array.isArray(r.items))r.items.forEach(i=>{const k=i.name||'不明';pp[k]=(pp[k]||0)+r._w*(Number(i.qty)||0)/r._q})
   }
 
-  const selectedIndex=G.findIndex((g,i)=>i===4 || (sumG&&g[0]===sumG[0]&&g[1]===sumG[1]));
+  const selectedIndex=sumG?G.findIndex(g=>g[0]===sumG[0]&&g[1]===sumG[1]):-1;
   const si=selectedIndex>=0?selectedIndex:1,s=S[si];
   const unitText=(UNITS||['台','枚','個','本']).filter(u=>(s.units[u]||0)>0)
     .map(u=>`${s.units[u].toLocaleString('ja-JP',{maximumFractionDigits:1})}${u}`).join(' / ')||'—';
