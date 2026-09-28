@@ -618,6 +618,45 @@ body.editing-record #manual-entry-wrap{display:block}
 .quick-register-row{display:flex;gap:6px;margin-top:8px}.quick-next,.quick-submit{flex:1;min-height:42px;border:0;border-radius:8px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-indigo));color:#fff;font-size:12px;font-weight:900;cursor:pointer}.quick-back-step{min-width:84px}.quick-submit{font-size:13px}
 @media(max-width:767px){.quick-manual-label{margin-top:2px;padding:6px 8px;min-height:42px}.quick-manual-label .quick-action-btn{min-height:36px;padding:4px 9px}#quick-entry{margin-left:-2px;margin-right:-2px;padding:8px}.quick-entry-title span{display:none}.quick-progress{grid-template-columns:repeat(5,minmax(0,1fr))}.quick-progress button{min-height:34px;font-size:9px}.quick-summary{grid-template-columns:1.35fr .65fr}.quick-summary-box:nth-child(3),.quick-summary-box:nth-child(4){grid-column:span 1}.quick-select-grid{grid-template-columns:1fr}.quick-product-row{grid-template-columns:minmax(0,1fr);gap:4px}.quick-qty{grid-template-columns:48px minmax(60px,1fr) 48px}.quick-product-row input,.quick-field select,.quick-field input{min-height:42px}.quick-number-control{grid-template-columns:56px minmax(70px,1fr) 56px}.quick-number-control button{min-height:44px}.quick-register-row{flex-direction:row}.quick-back-step{min-width:72px;min-height:44px}.quick-next,.quick-submit{min-height:44px}.quick-product-presets{max-height:96px;overflow:auto}}
 @media(min-width:992px){#quick-entry{max-width:980px;margin:0 auto 12px}}
+
+/* ---------- 週次振り返りレポート ---------- */
+/* ウィークリーレポート：閲覧はモーダル、編集・削除のみ管理者認証 */
+.weekly-report-card.open{position:fixed;inset:12px;z-index:1200;margin:0;max-width:none;border-radius:18px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.28),0 0 0 100vmax rgba(15,23,42,.48);overflow:hidden;display:flex;flex-direction:column}
+.weekly-report-card.open::before{content:"";position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:-1}
+.weekly-report-card.open .weekly-report-body{display:block;overflow:auto;flex:1;padding:14px 16px 22px;background:linear-gradient(180deg,#f8fafc,#fff)}
+.weekly-report-card.open .weekly-report-head{padding:14px 16px;background:#fff;border-bottom:1px solid rgba(99,102,241,.12)}
+.weekly-report-card.open .weekly-report-title strong{font-size:15px}
+.weekly-report-card.open .weekly-report-status{padding:8px 16px;background:#fff}
+#weekly-report-close{display:none}
+.weekly-report-card.open #weekly-report-close{display:inline-flex}
+.weekly-report-card.open .weekly-report-actions{align-items:center}
+.weekly-report-card.open .weekly-report-week{font-size:15px}
+.weekly-report-card.open .weekly-report-toolbar{padding:10px 12px;border:1px solid rgba(99,102,241,.12);border-radius:12px;background:#fff;position:sticky;top:0;z-index:2;box-shadow:0 4px 12px rgba(15,23,42,.05)}
+.weekly-report-card.open .weekly-report-stats{gap:8px}
+.weekly-report-card.open .weekly-report-stat{padding:10px 12px;border-radius:10px;background:#fff}
+.weekly-report-card.open .weekly-report-stat b{font-size:18px}
+.weekly-report-card.open .weekly-report-stat span{font-size:9px}
+.weekly-report-card.open .weekly-report-grid{gap:10px}
+.weekly-report-card.open .weekly-report-field label{font-size:10.5px}
+.weekly-report-card.open .weekly-report-field input,.weekly-report-card.open .weekly-report-field select,.weekly-report-card.open .weekly-report-field textarea{font-size:12px;border-radius:9px;padding:9px 10px}
+.weekly-report-card.open .weekly-report-field textarea{min-height:100px}
+.weekly-report-card.open .weekly-report-field textarea.large{min-height:120px}
+.weekly-report-card.open .weekly-report-note{font-size:9px}
+.weekly-report-card.open .weekly-report-save-row{max-width:720px;margin-left:auto;margin-right:auto}
+.weekly-report-field input:disabled,.weekly-report-field select:disabled,.weekly-report-field textarea.wr-locked{opacity:1;color:var(--text-main);background:#fff;cursor:default}
+.weekly-report-field textarea.wr-locked{resize:none}
+.weekly-report-card.open .weekly-report-admin-row{position:sticky;top:0;z-index:4;background:#fff;padding:6px 0;border-bottom:1px solid rgba(99,102,241,.10)}.weekly-report-card.open #weekly-report-edit{min-height:40px;font-size:11px}.weekly-report-field .wr-locked{cursor:pointer}
+@media(max-width:767px){.weekly-report-card.open{inset:0;border-radius:0}.weekly-report-card.open .weekly-report-head{padding:12px}.weekly-report-card.open .weekly-report-body{padding:10px}.weekly-report-card.open .weekly-report-title span{display:none}.weekly-report-card.open .weekly-report-week{font-size:13px}.weekly-report-card.open .weekly-report-toolbar{position:relative}.weekly-report-card.open .weekly-report-mini-actions{width:100%}.weekly-report-card.open .weekly-report-mini-actions .weekly-report-btn{flex:1;min-width:calc(50% - 4px);min-height:38px}.weekly-report-card.open .weekly-report-grid{grid-template-columns:1fr}.weekly-report-card.open .weekly-report-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.weekly-report-card.open .weekly-report-field textarea{min-height:94px}}
+.weekly-report-card{margin:10px 0 14px;border:1px solid rgba(99,102,241,.18);border-radius:12px;background:linear-gradient(180deg,rgba(248,250,252,.98),#fff);box-shadow:0 3px 12px rgba(15,23,42,.04);overflow:hidden}
+.weekly-report-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;cursor:pointer}
+.weekly-report-title{display:flex;align-items:center;gap:7px;min-width:0}.weekly-report-title strong{font-size:12.5px;color:var(--accent-indigo)}.weekly-report-title span{font-size:9.5px;color:var(--text-dim);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weekly-report-actions{display:flex;gap:5px;flex:0 0 auto}.weekly-report-btn{min-height:32px;padding:4px 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:10px;font-weight:800;cursor:pointer}.weekly-report-btn.primary{background:linear-gradient(135deg,var(--accent-indigo),var(--accent-cyan));border-color:transparent;color:#fff}.weekly-report-btn.danger{color:var(--accent-danger)}
+.weekly-report-status{padding:0 11px 8px;font-size:10px;color:var(--text-dim);font-weight:800}.weekly-report-status.has-prev{color:var(--accent-cyan)}.weekly-report-body{display:none;border-top:1px solid rgba(99,102,241,.12);padding:9px 11px 11px}.weekly-report-card.open .weekly-report-body{display:block}
+.weekly-report-toolbar{display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap;margin-bottom:8px}.weekly-report-week{font-size:10.5px;font-weight:900;color:var(--text-main)}.weekly-report-mini-actions{display:flex;gap:4px;flex-wrap:wrap}
+.weekly-report-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px}.weekly-report-stat{padding:6px 7px;border:1px solid rgba(99,102,241,.12);border-radius:7px;background:#f8fafc}.weekly-report-stat b{display:block;font-size:12px}.weekly-report-stat span{display:block;margin-top:1px;font-size:8.5px;color:var(--text-dim);font-weight:700}
+.weekly-report-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.weekly-report-field{min-width:0}.weekly-report-field.full{grid-column:1/-1}.weekly-report-field label{display:block;margin:0 0 3px;font-size:9.5px;font-weight:800;color:var(--text-muted)}.weekly-report-field input,.weekly-report-field textarea,.weekly-report-field select{width:100%;min-width:0;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:11px;padding:6px 8px;box-sizing:border-box}.weekly-report-field input,.weekly-report-field select{min-height:38px}.weekly-report-field textarea{min-height:72px;resize:vertical;line-height:1.5}.weekly-report-field textarea.large{min-height:88px}
+.weekly-report-note{margin:6px 0 0;font-size:8.5px;color:var(--text-dim);line-height:1.45}.weekly-report-save-row{display:flex;gap:6px;margin-top:8px}.weekly-report-save-row button{flex:1;min-height:40px}.weekly-report-history{display:none;margin-top:9px;border-top:1px dashed var(--border-color);padding-top:8px}.weekly-report-history.open{display:block}.weekly-report-history-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:5px}.weekly-report-history-head strong{font-size:10px}.weekly-report-search{min-height:30px;padding:4px 7px;border:1px solid var(--border-color);border-radius:7px;font-size:10px;width:160px}.weekly-report-list{display:flex;flex-direction:column;gap:5px;max-height:270px;overflow:auto}.weekly-report-item{padding:7px 8px;border:1px solid rgba(15,23,42,.08);border-radius:7px;background:#fff;cursor:pointer}.weekly-report-item:hover{border-color:rgba(99,102,241,.3)}.weekly-report-item-top{display:flex;align-items:center;justify-content:space-between;gap:6px}.weekly-report-item-week{font-size:10px;font-weight:900}.weekly-report-item-author{font-size:8.5px;color:var(--text-dim);font-weight:700}.weekly-report-item-preview{margin-top:3px;font-size:9px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.weekly-report-empty{padding:8px;text-align:center;font-size:9px;color:var(--text-dim)}
+@media(max-width:767px){.weekly-report-head{padding:8px}.weekly-report-title span{display:none}.weekly-report-actions .weekly-report-btn{min-height:34px}.weekly-report-status{padding:0 8px 7px}.weekly-report-body{padding:8px}.weekly-report-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.weekly-report-grid{grid-template-columns:1fr}.weekly-report-field.full{grid-column:auto}.weekly-report-field textarea{min-height:78px}.weekly-report-search{width:100%}.weekly-report-history-head{align-items:stretch;flex-direction:column}.weekly-report-save-row{flex-direction:row}}
 </style>
 </head>
 <body>
@@ -696,6 +735,51 @@ body.editing-record #manual-entry-wrap{display:block}
       <div class="plbl" id="l-sum" style="margin-bottom:10px"></div>
       <div id="sum-cards"></div>
 
+
+      <section class="weekly-report-card" id="weekly-report-card" aria-label="ウィークリーレポート">
+        <div class="weekly-report-head" id="weekly-report-head">
+          <div class="weekly-report-title"><strong>📝 ウィークリーレポート</strong><span id="weekly-report-head-status">週単位で記録・共有</span></div>
+          <div class="weekly-report-actions"><button type="button" class="weekly-report-btn primary" id="weekly-report-open">👁 レポートを見る</button><button type="button" class="weekly-report-btn" id="weekly-report-close" aria-label="閉じる">✕</button></div>
+        </div>
+        <div class="weekly-report-status" id="weekly-report-status">先週のレポートはまだありません。</div>
+        <div class="weekly-report-body">
+          <div class="weekly-report-toolbar">
+            <div class="weekly-report-week" id="weekly-report-week">今週</div>
+            <div class="weekly-report-mini-actions">
+              <button type="button" class="weekly-report-btn" id="weekly-report-prev">← 前週</button>
+              <button type="button" class="weekly-report-btn" id="weekly-report-current">今週</button>
+              <button type="button" class="weekly-report-btn" id="weekly-report-next-week">次週 →</button>
+              <button type="button" class="weekly-report-btn" id="weekly-report-copy">↩ 前週を下書き</button>
+              <button type="button" class="weekly-report-btn" id="weekly-report-history-btn">📚 レポート履歴</button>
+            </div>
+          </div>
+          <div class="weekly-report-admin-row" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+            <span id="weekly-report-mode" style="font-size:9px;font-weight:800;color:var(--text-dim);align-self:center;margin-right:auto">閲覧モード</span>
+            <button type="button" class="weekly-report-btn" id="weekly-report-edit">🔐 管理者として編集</button>
+            <button type="button" class="weekly-report-btn danger" id="weekly-report-delete" disabled>🗑 削除</button>
+          </div>
+          <div class="weekly-report-stats" id="weekly-report-stats">
+            <div class="weekly-report-stat"><b id="wr-stat-records">0</b><span>実績件数</span></div>
+            <div class="weekly-report-stat"><b id="wr-stat-qty">0</b><span>生産数</span></div>
+            <div class="weekly-report-stat"><b id="wr-stat-paint">0</b><span>使用塗料 kg</span></div>
+            <div class="weekly-report-stat"><b id="wr-stat-ng">0</b><span>再塗装 NG</span></div>
+          </div>
+          <div class="weekly-report-grid">
+            <div class="weekly-report-field"><label for="weekly-report-author">記入者</label><select id="weekly-report-author"><option value="">-- 選択 --</option></select></div>
+            <div class="weekly-report-field"><label for="weekly-report-date">記入日</label><input type="date" id="weekly-report-date"></div>
+            <div class="weekly-report-field full"><label for="weekly-report-done">今週できたこと・良かったこと</label><textarea id="weekly-report-done" class="large" placeholder="例：段取りを見直して、○○の作業時間を短縮できた。"></textarea></div>
+            <div class="weekly-report-field"><label for="weekly-report-issue">気づき・課題</label><textarea id="weekly-report-issue" placeholder="困ったこと、改善したいこと、原因など"></textarea></div>
+            <div class="weekly-report-field"><label for="weekly-report-next">来週やること</label><textarea id="weekly-report-next" placeholder="来週の重点項目、試したい改善など"></textarea></div>
+            <div class="weekly-report-field full"><label for="weekly-report-share">共有メモ（任意）</label><textarea id="weekly-report-share" placeholder="他の人に伝えておきたいこと、引き継ぎなど"></textarea></div>
+          </div>
+          <div class="weekly-report-note">※入力途中はこの端末にも自動保存します。登録すると他の利用者にも共有され、週ごとに整理して見返せます。</div>
+          <div class="weekly-report-save-row"><button type="button" class="weekly-report-btn primary" id="weekly-report-save">✓ ウィークリーレポートを保存</button><button type="button" class="weekly-report-btn danger" id="weekly-report-clear">クリア</button></div>
+          <div class="weekly-report-history" id="weekly-report-history">
+            <div class="weekly-report-history-head"><strong>📚 過去の振り返り</strong><input class="weekly-report-search" id="weekly-report-search" type="search" placeholder="🔍 週・記入者・内容で検索"></div>
+            <div class="weekly-report-list" id="weekly-report-list"></div>
+          </div>
+        </div>
+      </section>
       <div class="pc-two-columns">
         <div>
           <div class="form-section">
@@ -1229,7 +1313,7 @@ function showApp(){
   $('login-screen').style.display='none';$('app-screen').style.display='block';
   setToday();if(!V('t_date'))$('t_date').value=today();
   if(started)return;started=1;
-  if(db){listen('r','records');listen('t','tochaku_records')}
+  if(db){listen('r','records');listen('t','tochaku_records')}setTimeout(()=>{try{initWeeklyReport()}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}},0)
   applyPreset(1);badge();tPrev();
   wx(today(),w=>{$('weather').value=w.weather;if(!V('temp'))$('temp').value=w.temp;if(!V('humidity'))$('humidity').value=w.humidity});
   sched(7)
@@ -2462,6 +2546,99 @@ const toggleCursor=()=>cur.toggle();
       h=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(16px)'},2400)
     };
   })();
+})();
+
+
+/* ---------- ウィークリーレポート：週単位の閲覧・管理者編集・削除 ---------- */
+(function(){
+  const q=id=>document.getElementById(id),FIELD_IDS=['weekly-report-author','weekly-report-date','weekly-report-done','weekly-report-issue','weekly-report-next','weekly-report-share'];
+  const WR_COL='weekly_reports';
+  let wrReady=false,wrBound=false,wrDocs=[],wrUnsub=null,wrSelectedStart='',wrEditing=false;
+  const wrYmd=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`};
+  const wrWeekFromStart=start=>{const m=new Date(`${start}T00:00:00`),e=new Date(m);e.setDate(m.getDate()+6);return{start:wrYmd(m),end:wrYmd(e)}};
+  const wrCurrentWeek=()=>{const d=new Date(),day=d.getDay()||7,m=new Date(d);m.setHours(0,0,0,0);m.setDate(d.getDate()-day+1);return wrWeekFromStart(wrYmd(m))};
+  const wrShift=(start,n)=>{const d=new Date(`${start}T00:00:00`);d.setDate(d.getDate()+n*7);return wrYmd(d)};
+  const wrVal=id=>q(id)?.value||'';
+  const wrSet=(id,v)=>{const e=q(id);if(e)e.value=v==null?'':String(v)};
+  const wrEsc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const wrDraftKey=()=>`weeklyReportDraft:${wrSelectedStart}`;
+  const wrWeekLabel=(s,e)=>`${s.replaceAll('-','/')} ～ ${e.replaceAll('-','/')}`;
+  const wrSaveDraft=()=>{if(!wrSelectedStart)return;try{localStorage.setItem(wrDraftKey(),JSON.stringify(Object.fromEntries(FIELD_IDS.map(id=>[id,wrVal(id)]))))}catch(_){} };
+  const wrLoadDraft=()=>{if(!wrSelectedStart)return null;try{return JSON.parse(localStorage.getItem(wrDraftKey())||'null')}catch(_){return null}};
+  const wrClearDraft=()=>{try{localStorage.removeItem(wrDraftKey())}catch(_){} };
+  function wrFillOperators(){const s=q('weekly-report-author');if(!s)return;const cur=s.value;s.innerHTML='<option value="">-- 選択 --</option>';[...(Array.isArray(ops)?ops:[])].map(x=>String(x||'').trim()).filter(Boolean).sort((a,b)=>a.localeCompare(b,'ja')).forEach(n=>s.appendChild(new Option(n,n)));s.value=cur}
+  function wrStats(){const w=wrWeekFromStart(wrSelectedStart||wrCurrentWeek().start),rows=all('r').filter(x=>{const d=String(x.date||'');return d>=w.start&&d<=w.end});const qty=rows.reduce((a,x)=>a+(Number(x.total_qty)||Number(x._q)||0),0),paint=rows.reduce((a,x)=>a+(Number(x.paint_weight)||Number(x._w)||0),0),ng=rows.filter(x=>String(x.status||'').toUpperCase()==='NG').length;[['wr-stat-records',rows.length],['wr-stat-qty',qty],['wr-stat-paint',paint.toFixed(1).replace(/\.0$/,'')],['wr-stat-ng',ng]].forEach(([id,v])=>{if(q(id))q(id).textContent=v})}
+  function wrHit(){return wrDocs.find(x=>x.week_start===wrSelectedStart)||null}
+  function wrSetEditable(v){
+    wrEditing=!!v;
+    const hit=wrHit();
+    const canWrite=wrEditing || !hit;
+    ['weekly-report-author','weekly-report-date','weekly-report-done','weekly-report-issue','weekly-report-next','weekly-report-share'].forEach(id=>{
+      const e=q(id);
+      if(!e)return;
+      e.disabled=!canWrite;
+      e.readOnly=!canWrite;
+      e.setAttribute('aria-disabled',String(!canWrite));
+      e.setAttribute('aria-readonly',String(!canWrite));
+      e.classList.toggle('wr-locked',!canWrite);
+    });
+    const save=q('weekly-report-save'),clear=q('weekly-report-clear'),del=q('weekly-report-delete'),edit=q('weekly-report-edit'),mode=q('weekly-report-mode');
+    if(save)save.disabled=!canWrite;
+    if(clear)clear.disabled=!canWrite;
+    if(del)del.disabled=!hit;
+    if(edit){edit.textContent=hit?(wrEditing?'🔓 編集中':'🔐 編集'):'新規作成';edit.classList.toggle('primary',!!hit&&!wrEditing)}
+    if(mode)mode.textContent=wrEditing?'編集モード（管理者認証済み）':hit?'閲覧モード（閲覧自由）':'新規作成モード（パスワード不要）';
+  }
+  async function wrEdit(){
+    if(wrEditing)return true;
+    if(!wrHit()){wrSetEditable(true);return true}
+    if(!(await adm()))return false;
+    wrSetEditable(true);
+    q('weekly-report-done')?.focus({preventScroll:true});
+    appToast?.('管理者認証済み。編集できます。');
+    return true
+  }
+  function wrSetCurrentBase(){const w=wrWeekFromStart(wrSelectedStart||wrCurrentWeek().start);wrSelectedStart=w.start;q('weekly-report-week').textContent=`${wrWeekLabel(w.start,w.end)} のレポート`;wrStats();wrFillOperators()}
+  function wrLoadSelected(){wrSetCurrentBase();const hit=wrHit(),draft=wrLoadDraft();if(hit){wrSet('weekly-report-author',hit.author||'');wrSet('weekly-report-date',hit.report_date||today());wrSet('weekly-report-done',hit.done||'');wrSet('weekly-report-issue',hit.issue||'');wrSet('weekly-report-next',hit.next||'');wrSet('weekly-report-share',hit.share||'');wrClearDraft()}else if(draft){FIELD_IDS.forEach(id=>wrSet(id,draft[id]||''))}else{wrSet('weekly-report-author','');wrSet('weekly-report-date',today());['weekly-report-done','weekly-report-issue','weekly-report-next','weekly-report-share'].forEach(id=>wrSet(id,''))}wrSetEditable(false);wrStatus(hit)}
+  function wrStatus(hit){const st=q('weekly-report-status'),hs=q('weekly-report-head-status');if(!st)return;const cur=wrCurrentWeek().start,prevStart=wrShift(cur,-1),prev=wrDocs.find(x=>x.week_start===prevStart);st.classList.toggle('has-prev',!!prev);if(prev){st.textContent='先週のレポートがあります。';if(hs)hs.textContent='先週レポートあり'}else{st.textContent='先週のレポートはまだありません。';if(hs)hs.textContent='先週レポート未作成'}}
+  function wrOpen(){const c=q('weekly-report-card');if(!c)return;c.classList.add('open');if(!wrSelectedStart)wrSelectedStart=wrCurrentWeek().start;wrLoadSelected()}
+  function wrRenderList(){const box=q('weekly-report-list');if(!box)return;const term=(wrVal('weekly-report-search')||'').trim().toLowerCase();const list=wrDocs.filter(x=>!term||[x.week_start,x.week_end,x.author,x.done,x.issue,x.next,x.share].join(' ').toLowerCase().includes(term)).sort((a,b)=>String(b.week_start).localeCompare(String(a.week_start)));if(!list.length){box.innerHTML='<div class="weekly-report-empty">登録済みのウィークリーレポートはありません。</div>';return}box.innerHTML=list.slice(0,52).map(x=>`<div class="weekly-report-item" data-wr-open="${wrEsc(x.week_start)}"><div class="weekly-report-item-top"><span class="weekly-report-item-week">${wrEsc(wrWeekLabel(x.week_start||'',x.week_end||''))}</span><span class="weekly-report-item-author">${wrEsc(x.author||'記入者未設定')}</span></div><div class="weekly-report-item-preview">${wrEsc(x.done||x.issue||x.next||x.share||'内容なし')}</div></div>`).join('')}
+  async function wrCopyPrevious(){const prevStart=wrShift(wrSelectedStart,-1),prev=wrDocs.find(x=>x.week_start===prevStart);if(!prev)return appToast?.('前週のウィークリーレポートがありません。');if(wrHit()&&!wrEditing){if(!(await wrEdit()))return;}['author','done','issue','next','share'].forEach(k=>wrSet(`weekly-report-${k}`,prev[k]||''));wrSet('weekly-report-date',today());wrSaveDraft();appToast?.('前週の内容を下書きにしました。編集して保存する場合は「編集」を押してください。')}
+  async function wrSave(){const hit=wrHit();if(hit&&!wrEditing)return;const w=wrWeekFromStart(wrSelectedStart),done=wrVal('weekly-report-done').trim(),issue=wrVal('weekly-report-issue').trim(),next=wrVal('weekly-report-next').trim(),share=wrVal('weekly-report-share').trim(),author=wrVal('weekly-report-author'),date=wrVal('weekly-report-date')||today();if(!done&&!issue&&!next&&!share)return uiAlert('内容が空です。この週のレポートを保存する場合は、1項目以上入力してください。');if(!db)return uiAlert('データベースに接続できていないため保存できません。');const payload={week_start:w.start,week_end:w.end,author,report_date:date,done,issue,next,share,updated_at:Date.now()};const existing=wrHit();try{if(existing)await db.collection(WR_COL).doc(existing.docId).set(payload,{merge:true});else await db.collection(WR_COL).doc(w.start).set({...payload,created_at:Date.now()});wrClearDraft();wrSetEditable(false);appToast?.(`${wrWeekLabel(w.start,w.end)}のレポートを保存しました。`);wrLoadSelected()}catch(e){console.error(e);uiAlert('ウィークリーレポートの保存に失敗しました。通信状態を確認してください。')}}
+  async function wrDelete(){const hit=wrHit();if(!hit)return;if(!(await adm()))return;const ok=await uiConfirm(`${wrWeekLabel(hit.week_start,hit.week_end)}のウィークリーレポートを削除しますか？\nこの操作は元に戻せません。`);if(!ok)return;try{await db.collection(WR_COL).doc(hit.docId).delete();wrClearDraft();wrSetEditable(false);appToast?.('ウィークリーレポートを削除しました。');wrLoadSelected()}catch(e){console.error(e);uiAlert('削除に失敗しました。通信状態を確認してください。')}}
+  function wrClear(){if(wrHit()&&!wrEditing)return;const go=()=>{['weekly-report-done','weekly-report-issue','weekly-report-next','weekly-report-share'].forEach(id=>wrSet(id,''));wrSaveDraft();appToast?.('入力欄をクリアしました。');};if(typeof uiConfirm==='function')uiConfirm('現在の入力内容をクリアしますか？').then(ok=>{if(ok)go()});else if(confirm('現在の入力内容をクリアしますか？'))go()}
+  function wrSelectWeek(start){wrSelectedStart=wrWeekFromStart(start).start;wrLoadSelected();const c=q('weekly-report-card');if(c&&!c.classList.contains('open'))c.classList.add('open')}
+  function wrBind(){
+    if(wrBound)return;
+    const c=q('weekly-report-card');if(!c)return;
+    wrBound=true;wrSelectedStart=wrCurrentWeek().start;
+    FIELD_IDS.forEach(id=>{
+      const e=q(id);if(!e)return;
+      e.addEventListener('input',()=>{if(wrEditing)wrSaveDraft()});
+      e.addEventListener('focus',async()=>{
+        if(wrEditing)return;
+        const ok=await wrEdit();
+        if(!ok)setTimeout(()=>{try{e.blur()}catch(_){}},0);
+      });
+    });
+    q('weekly-report-open')?.addEventListener('click',wrOpen);
+    q('weekly-report-close')?.addEventListener('click',()=>{c.classList.remove('open');wrSetEditable(false)});
+    q('weekly-report-head')?.addEventListener('click',e=>{if(e.target.closest('button'))return;c.classList.toggle('open');if(c.classList.contains('open'))wrLoadSelected()});
+    q('weekly-report-prev')?.addEventListener('click',()=>wrSelectWeek(wrShift(wrSelectedStart||wrCurrentWeek().start,-1)));
+    q('weekly-report-current')?.addEventListener('click',()=>wrSelectWeek(wrCurrentWeek().start));
+    q('weekly-report-next-week')?.addEventListener('click',()=>wrSelectWeek(wrShift(wrSelectedStart||wrCurrentWeek().start,1)));
+    q('weekly-report-copy')?.addEventListener('click',wrCopyPrevious);
+    q('weekly-report-history-btn')?.addEventListener('click',()=>{q('weekly-report-history')?.classList.toggle('open');wrRenderList()});
+    q('weekly-report-search')?.addEventListener('input',wrRenderList);
+    q('weekly-report-edit')?.addEventListener('click',wrEdit);
+    q('weekly-report-save')?.addEventListener('click',wrSave);
+    q('weekly-report-delete')?.addEventListener('click',wrDelete);
+    q('weekly-report-clear')?.addEventListener('click',wrClear);
+    q('weekly-report-list')?.addEventListener('click',e=>{const item=e.target.closest('[data-wr-open]');if(!item)return;wrSelectWeek(item.dataset.wrOpen);q('weekly-report-history')?.classList.remove('open')});
+    c.addEventListener('click',e=>{if(e.target===c){c.classList.remove('open');wrSetEditable(false)}});
+    try{wrLoadSelected()}catch(e){console.warn('ウィークリーレポート初期表示に失敗',e)}
+  }
+  window.initWeeklyReport=function(){if(wrReady)return;wrReady=true;try{wrBind()}catch(e){console.error('ウィークリーレポートUI初期化失敗:',e);return}if(!db){wrStatus(null);return}try{wrUnsub=db.collection(WR_COL).orderBy('week_start','desc').limit(52).onSnapshot(s=>{try{wrDocs=[];s.forEach(d=>wrDocs.push({docId:d.id,...d.data()}));if(!wrEditing)wrLoadSelected();wrRenderList()}catch(e){console.warn('ウィークリーレポート表示更新失敗',e)}},e=>{console.warn('ウィークリーレポート読込失敗',e);try{wrStatus(wrHit())}catch(_){}})}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}};
 })();
 
 /* ---------- 簡易実績登録：5段階ステップ（既存保存処理を使用） ---------- */
