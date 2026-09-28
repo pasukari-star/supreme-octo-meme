@@ -595,6 +595,29 @@ input[type=number]{-moz-appearance:textfield}
 .calc-mode-box{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:9px 11px;background:#f8fafc;border:1px solid var(--border-color);border-radius:9px;font-size:11px}.calc-mode-box select{flex:1;min-width:210px}.calc-mode-help{color:var(--text-dim);line-height:1.45}.calc-source-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:5px;font-size:9px;font-weight:800;margin-left:4px}.calc-source-input{background:rgba(2,132,199,.1);color:#0369a1}.calc-source-measured{background:rgba(5,150,105,.1);color:#047857}.calc-overlap-note{background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.25);color:#92400e;border-radius:8px;padding:8px 10px;font-size:10.5px;line-height:1.5;margin-top:8px}.subpart-auto-tag{font-size:9px;color:var(--accent-indigo);font-weight:800}.weather-refresh-btn{height:28px;padding:0 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:10px;font-weight:700;cursor:pointer}.ng-match-summary{position:sticky;bottom:8px;z-index:5;box-shadow:0 4px 14px rgba(15,23,42,.08)}@media(max-width:600px){.calc-mode-box{align-items:stretch}.calc-mode-box select{min-width:0;width:100%}.weather-refresh-btn{width:100%}}
 @media(max-width:767px){.analysis-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.analysis-mini-card{padding:8px}.analysis-mini-label{font-size:9.5px}.analysis-mini-value{font-size:15px}.analysis-list-grid{grid-template-columns:1fr;gap:8px}.analysis-list-panel{padding:9px}.cause-header{gap:6px}.cause-header>span:last-child{white-space:nowrap;font-size:10.5px}.summary-trends-card{grid-template-columns:1fr;gap:10px;margin-bottom:12px}.summary-trend-panel{padding:10px 10px 8px;border-radius:14px}.bulk-product-list{grid-template-columns:1fr;max-height:240px}.bulk-editor-fields{grid-template-columns:1fr}.bulk-editor-fields>div{width:100%}}
 @media(min-width:768px){.analysis-list-panel{overflow:hidden}.analysis-list-panel .cause-header{gap:8px}.analysis-list-panel .cause-header>span:first-child{min-width:0;overflow-wrap:anywhere}.analysis-list-panel .cause-header>span:last-child{flex:0 0 auto;white-space:nowrap}}
+
+/* 手動登録：通常は見出し1列だけ表示し、必要時のみ詳細を展開 */
+#manual-entry-wrap{display:none}
+#manual-entry-wrap.manual-open{display:block}
+.quick-manual-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 8px;padding:7px 9px;border-radius:8px;background:#f8fafc;border:1px solid var(--border-color);font-size:10.5px;font-weight:800;color:var(--text-muted);min-height:38px;box-sizing:border-box}
+.quick-manual-label>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quick-manual-label .quick-action-btn{flex:0 0 auto;min-height:32px;white-space:nowrap}
+body.editing-record #quick-entry{display:none}
+body.editing-record #manual-entry-start{display:flex}
+body.editing-record #manual-entry-wrap{display:block}
+
+/* 簡易実績登録：5段階ステップ入力（手動登録とは独立） */
+#quick-entry{background:rgba(240,249,255,.96);border:1px solid rgba(2,132,199,.22);border-radius:12px;padding:10px;margin-bottom:12px;box-shadow:0 3px 12px rgba(15,23,42,.05)}
+.quick-entry-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.quick-entry-title{display:flex;align-items:center;gap:7px;min-width:0;flex:1}.quick-entry-title strong{font-size:13px;color:var(--accent-cyan);white-space:nowrap}.quick-entry-title span{font-size:10px;color:var(--text-dim);font-weight:700}.quick-entry-actions{display:flex;gap:5px;flex:0 0 auto}.quick-action-btn,.quick-back-step{min-height:34px;padding:5px 10px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:10.5px;font-weight:800;cursor:pointer}.quick-action-clear{color:var(--accent-danger);border-color:rgba(225,29,72,.28)}
+.quick-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-bottom:8px}.quick-progress button{min-height:30px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-dim);font-size:9.5px;font-weight:800;cursor:pointer}.quick-progress button.active{background:rgba(2,132,199,.1);border-color:rgba(2,132,199,.35);color:var(--accent-cyan)}.quick-progress button.done{color:var(--text-main)}
+.quick-summary{display:grid;grid-template-columns:1.7fr .9fr 1fr 1.2fr;gap:6px;margin-bottom:8px}.quick-summary-box{min-width:0;padding:6px 7px;border:1px solid rgba(2,132,199,.14);border-radius:7px;background:#fff}.quick-summary-label{display:block;font-size:8.5px;font-weight:800;color:var(--text-muted);margin-bottom:2px}.quick-summary-value{display:block;font-size:10.5px;font-weight:800;color:var(--text-main);min-height:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.quick-summary-value.empty{color:var(--text-dim);font-weight:700}
+.quick-step-panel{display:none;border:1px solid rgba(2,132,199,.16);border-radius:9px;background:#fff;padding:9px}.quick-step-panel.active{display:block}.quick-step-title{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:7px}.quick-step-title strong{font-size:12px}.quick-step-title span{font-size:9px;color:var(--text-dim);font-weight:700}.quick-step-help{font-size:9.5px;color:var(--text-dim);margin:0 0 7px;line-height:1.4}
+.quick-product-row{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(150px,.8fr) auto;gap:5px;align-items:center;margin-top:5px}.quick-product-row:first-child{margin-top:0}.quick-product-row input{width:100%;min-width:0;min-height:38px;padding:5px 7px;border:1px solid var(--border-color);border-radius:7px;background:#fff;font-size:11px}.quick-product-row input[readonly]{background:#f8fafc;cursor:pointer}.quick-qty{display:grid;grid-template-columns:42px minmax(55px,1fr) 42px;gap:3px;align-items:center}.quick-qty input{text-align:center}.quick-step-btn,.quick-remove-btn,.quick-add-btn,.quick-option-btn{min-height:38px;padding:4px 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:11px;font-weight:900;cursor:pointer}.quick-step-btn{font-size:16px}.quick-remove-btn{color:var(--accent-danger)}.quick-add-btn{margin-top:7px;color:var(--accent-cyan);border-color:rgba(2,132,199,.25)}
+.quick-product-presets{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;max-height:86px;overflow:auto;padding:2px}.quick-option-btn{min-height:34px;font-size:10px}.quick-option-btn.selected{background:rgba(2,132,199,.1);border-color:rgba(2,132,199,.4);color:var(--accent-cyan)}
+.quick-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.quick-field{min-width:0}.quick-field-label{display:block;font-size:9.5px;font-weight:800;color:var(--text-muted);margin-bottom:3px}.quick-field select,.quick-field input{width:100%;min-width:0;min-height:40px;padding:5px 7px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:11px}.quick-field input{text-align:center}.quick-number-control{display:grid;grid-template-columns:48px minmax(60px,1fr) 48px;gap:4px;align-items:center}.quick-number-control button{min-height:40px;border:1px solid var(--border-color);border-radius:7px;background:#fff;font-size:15px;font-weight:900;cursor:pointer}.quick-number-control input{text-align:center}
+.quick-register-row{display:flex;gap:6px;margin-top:8px}.quick-next,.quick-submit{flex:1;min-height:42px;border:0;border-radius:8px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-indigo));color:#fff;font-size:12px;font-weight:900;cursor:pointer}.quick-back-step{min-width:84px}.quick-submit{font-size:13px}
+@media(max-width:767px){.quick-manual-label{margin-top:2px;padding:6px 8px;min-height:42px}.quick-manual-label .quick-action-btn{min-height:36px;padding:4px 9px}#quick-entry{margin-left:-2px;margin-right:-2px;padding:8px}.quick-entry-title span{display:none}.quick-progress{grid-template-columns:repeat(5,minmax(0,1fr))}.quick-progress button{min-height:34px;font-size:9px}.quick-summary{grid-template-columns:1.35fr .65fr}.quick-summary-box:nth-child(3),.quick-summary-box:nth-child(4){grid-column:span 1}.quick-select-grid{grid-template-columns:1fr}.quick-product-row{grid-template-columns:minmax(0,1fr);gap:4px}.quick-qty{grid-template-columns:48px minmax(60px,1fr) 48px}.quick-product-row input,.quick-field select,.quick-field input{min-height:42px}.quick-number-control{grid-template-columns:56px minmax(70px,1fr) 56px}.quick-number-control button{min-height:44px}.quick-register-row{flex-direction:row}.quick-back-step{min-width:72px;min-height:44px}.quick-next,.quick-submit{min-height:44px}.quick-product-presets{max-height:96px;overflow:auto}}
+@media(min-width:992px){#quick-entry{max-width:980px;margin:0 auto 12px}}
 </style>
 </head>
 <body>
@@ -676,8 +699,68 @@ input[type=number]{-moz-appearance:textfield}
       <div class="pc-two-columns">
         <div>
           <div class="form-section">
-            <form id="p-form">
-              <div class="form-grid fg4">
+            <form id="p-form"><div id="quick-entry" aria-label="簡易実績登録">
+  <div class="quick-entry-head">
+    <div class="quick-entry-title"><strong>⚡ 簡易登録</strong><span>5段階・戻る／クリア対応</span></div>
+    <div class="quick-entry-actions"><button type="button" class="quick-action-btn" id="quick-back-top">← 戻る</button><button type="button" class="quick-action-btn quick-action-clear" id="quick-clear">🗑 クリア</button></div>
+  </div>
+  <div class="quick-progress" aria-label="入力ステップ">
+    <button type="button" data-q-step="0">1 品名・数</button><button type="button" data-q-step="1">2 塗装者</button><button type="button" data-q-step="2">3 塗装機</button><button type="button" data-q-step="3">4 塗料・量</button><button type="button" data-q-step="4">5 確認・登録</button>
+  </div>
+  <div class="quick-summary" aria-label="入力内容">
+    <div class="quick-summary-box"><span class="quick-summary-label">品名・数</span><span class="quick-summary-value empty" id="quick-summary-product">未入力</span></div>
+    <div class="quick-summary-box"><span class="quick-summary-label">塗装者</span><span class="quick-summary-value empty" id="quick-summary-operator">未入力</span></div>
+    <div class="quick-summary-box"><span class="quick-summary-label">塗装機</span><span class="quick-summary-value empty" id="quick-summary-machine">未入力</span></div>
+    <div class="quick-summary-box"><span class="quick-summary-label">塗料・使用量</span><span class="quick-summary-value empty" id="quick-summary-paint">未入力</span></div>
+  </div>
+
+  <section class="quick-step-panel active" data-q-panel="0">
+    <div class="quick-step-title"><strong>1. 品名と数</strong><span>最大10種類</span></div>
+    <p class="quick-step-help">登録品・過去ログは並び順で表示。未登録の品名も直接入力できます。数は＋／−で入力。</p>
+    <div id="quick-product-presets" class="quick-product-presets" aria-label="登録済み品名"></div>
+    <div id="quick-product-rows"></div>
+    <button type="button" class="quick-add-btn" id="quick-product-add">＋ 品名を追加</button>
+    <div class="quick-register-row"><button type="button" class="quick-next" data-q-next="1">次へ → 塗装者</button></div>
+  </section>
+
+  <section class="quick-step-panel" data-q-panel="1">
+    <div class="quick-step-title"><strong>2. 塗装者</strong><span>2名まで</span></div>
+    <div class="quick-select-grid">
+      <div class="quick-field"><label class="quick-field-label" for="quick-operator1">塗装者①</label><select id="quick-operator1"><option value="">-- 選択 --</option></select></div>
+      <div class="quick-field"><label class="quick-field-label" for="quick-operator2">塗装者②（任意）</label><select id="quick-operator2"><option value="">-- なし --</option></select></div>
+    </div>
+    <div class="quick-register-row"><button type="button" class="quick-back-step" data-q-back="0">← 戻る</button><button type="button" class="quick-next" data-q-next="2">次へ → 塗装機</button></div>
+  </section>
+
+  <section class="quick-step-panel" data-q-panel="2">
+    <div class="quick-step-title"><strong>3. 塗装機</strong><span>2台まで</span></div>
+    <div class="quick-select-grid">
+      <div class="quick-field"><label class="quick-field-label" for="quick-machine1">塗装機①</label><select id="quick-machine1"><option value="旭サナック">旭サナック</option><option value="ワグナー">ワグナー</option><option value="ワグナーカップガン">ワグナーカップガン</option></select></div>
+      <div class="quick-field"><label class="quick-field-label" for="quick-machine2">塗装機②（任意）</label><select id="quick-machine2"><option value="">-- なし --</option><option value="旭サナック">旭サナック</option><option value="ワグナー">ワグナー</option><option value="ワグナーカップガン">ワグナーカップガン</option></select></div>
+    </div>
+    <div class="quick-register-row"><button type="button" class="quick-back-step" data-q-back="1">← 戻る</button><button type="button" class="quick-next" data-q-next="3">次へ → 塗料・量</button></div>
+  </section>
+
+  <section class="quick-step-panel" data-q-panel="3">
+    <div class="quick-step-title"><strong>4. 塗料と使用量</strong><span>0.1kg単位・正数</span></div>
+    <div class="quick-field"><label class="quick-field-label" for="quick-paint">塗料名</label><select id="quick-paint"><option value="">-- 塗料を選択 --</option></select></div>
+    <div class="quick-field" style="margin-top:7px"><label class="quick-field-label" for="quick-paint-weight">使用量 (kg)</label><div class="quick-number-control"><button type="button" data-q-paint-delta="-0.1">−0.1</button><input type="number" id="quick-paint-weight" inputmode="decimal" step="0.1" min="0.1" placeholder="0.1"><button type="button" data-q-paint-delta="0.1">＋0.1</button></div></div>
+    <div class="quick-product-presets" aria-label="使用量クイック入力"><button type="button" class="quick-option-btn" data-q-paint-delta="-5">−5kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="-1">−1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="-0.1">−0.1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="0.1">＋0.1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="1">＋1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="5">＋5kg</button></div>
+    <div class="quick-register-row"><button type="button" class="quick-back-step" data-q-back="2">← 戻る</button><button type="button" class="quick-next" data-q-next="4">次へ → 確認</button></div>
+  </section>
+
+  <section class="quick-step-panel" data-q-panel="4">
+    <div class="quick-step-title"><strong>5. 確認・登録</strong><span>判定はOKで登録</span></div>
+    <p class="quick-step-help" id="quick-confirm-text">入力内容を確認してください。</p>
+    <div class="quick-register-row"><button type="button" class="quick-back-step" data-q-back="3">← 戻る</button><button type="button" class="quick-submit" id="quick-submit">✓ OKで登録</button></div>
+  </section>
+</div>
+<div class="quick-manual-label" id="manual-entry-start">
+  <span>📝 手動登録（詳細入力）</span>
+  <button type="button" class="quick-action-btn" id="quick-manual-open-2" aria-expanded="false">詳細入力へ</button>
+</div>
+<div id="manual-entry-wrap">
+<div class="form-grid fg4" id="manual-entry">
                 <div class="s2"><label for="date">日付</label><input type="date" id="date" required autocomplete="off" onchange="onDate()"></div>
                 <div class="s2"><label for="location-select">天候自動取得 地域選択</label><select id="location-select" onchange="onLoc()">
                     <option value="fukuyama" selected>広島県 福山市 (既定)</option>
@@ -742,6 +825,7 @@ input[type=number]{-moz-appearance:textfield}
               <button type="submit" class="btn-submit"></button>
               <div class="save-state" id="p-save-state" aria-live="polite"></div>
               <button type="button" class="btn-clear" id="cx-p" style="display:none;width:100%;margin-top:8px" onclick="cxEdit('p')">✖ 編集をキャンセル</button>
+</div>
             </form>
           </div>
         </div>
@@ -1848,9 +1932,13 @@ function ngCauseUI(v){
 async function ngCauseRow(d){if(d>0){if(ngCauseCount>=NG_CAUSE_MAX)return;ngCauseCount++;ngCauseUI()}else{if(ngCauseCount<=1)return;const q=$('ng_cause_qty'+ngCauseCount);if(q&&q.value&&!(await uiConfirm('最後の原因入力を削除して行を減らしますか？')))return;ngCauseCount--;ngCauseUI()}}
 function ngCauseDelete(i){const v=[];for(let j=1;j<=ngCauseCount;j++)if(j!==i)v.push([V('ng_cause_select'+j),V('ng_cause_qty'+j)]);ngCauseCount=Math.max(1,ngCauseCount-1);ngCauseUI(v)}
 function busy(f,fn){if(f.dataset.saving==='1')return Promise.resolve();f.dataset.saving='1';const b=f.querySelector('.btn-submit'),id=f.id==='p-form'?'p':'t',st=$(`${id}-save-state`);b.disabled=true;if(st){st.className='save-state saving';st.textContent='⏳ 保存中… 二重送信を防止しています'}return Promise.resolve().then(fn).then(v=>{if(st){st.className='save-state success';st.textContent='✓ 保存完了'}return v}).catch(e=>{if(st){st.className='save-state error';st.textContent='⚠ 保存に失敗しました'}throw e}).finally(()=>{f.dataset.saving='0';b.disabled=false})}
-const DECIMAL_INPUT_IDS=new Set(['paint_weight','t_used_paint_kg','t_attached_weight_kg','t_area','t_film','t_measured_loss','thickness']);
+const DECIMAL_INPUT_IDS=new Set(['paint_weight','quick-paint-weight','t_used_paint_kg','t_attached_weight_kg','t_area','t_film','t_measured_loss','thickness']);
 function validateIntegerInputs(form){
   const bad=[...form.querySelectorAll('input[type="number"]')].find(el=>{
+    /* 簡易登録中は非表示の詳細入力を検証対象から外す。
+       簡易登録は必要項目だけを既存フォームへ同期して保存する。 */
+    const manualWrap=el.closest('#manual-entry-wrap');
+    if(manualWrap && !manualWrap.classList.contains('manual-open'))return false;
     if(DECIMAL_INPUT_IDS.has(el.id)||el.disabled||el.value==='')return false;
     const n=Number(el.value);return !Number.isFinite(n)||!Number.isInteger(n);
   });
@@ -1899,18 +1987,39 @@ $('p-form').onsubmit=e=>{
   const wasEdit=!!editId;
   busy(e.target,()=>save('r',editId,rec).then(()=>{const chg=date!==today();resetP();setToday();wx(today(),fillWx);chg&&onDate();window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました')}).catch(er=>uiAlert('保存エラー: '+er.message)))
 };
+function toggleManualEntry(force){
+  const wrap=$('manual-entry-wrap'),btn=$('quick-manual-open-2'),quick=$('quick-entry');
+  if(!wrap||!btn)return false;
+  const open=force===undefined?!wrap.classList.contains('manual-open'):!!force;
+  wrap.classList.toggle('manual-open',open);
+  btn.setAttribute('aria-expanded',String(open));
+  btn.textContent=open?'詳細入力を閉じる':'詳細入力へ';
+  if(quick&&!document.body.classList.contains('editing-record'))quick.style.display='';
+  return open;
+}
+function showRecordEditMode(){
+  document.body.classList.add('editing-record');
+  const quick=$('quick-entry');if(quick)quick.style.display='none';
+  toggleManualEntry(true);
+}
+function leaveRecordEditMode(){
+  document.body.classList.remove('editing-record');
+  const quick=$('quick-entry');if(quick)quick.style.display='';
+  toggleManualEntry(false);
+}
+
 function resetP(){
   $('weather-time').value='12:00';$('weather').value='晴れ';$('temp').value='';$('humidity').value='';const ws=$('weather-fetch-status');if(ws){ws.className='weather-fetch-status';ws.textContent='当日12:00の天候を自動取得'}
   for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value='';$('unit'+i)&&($('unit'+i).value='台')}sr('p',2);
   $('operator2').value='';$('machine1').value='旭サナック';$('machine2').value='';
   $('paint_weight').value='';$('bake_paint_select').value='';bakeStatus('',false);$('thickness').value='50';$('memo').value='';$('status').value='OK';
-  ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1
+  ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1;leaveRecordEditMode()
 }
 function resetT(d){tf.reset();sr('t',2);$('t_calc_mode').value='auto';$('t_date').value=d;$('t_qty1').value=1;isAtt=0;tEdit=null;sbtn('t',0);tPrev();pg.t=1}
 function cxEdit(k){if(k==='p'){resetP();setToday();$('bake_temp').value=200;$('bake_time').value=20;onDate()}else resetT(today())}
 async function editRec(id){
   if(!(await adm()))return;const r=fnd('r',id);if(!r)return;
-  tab('main');editId=id;pRe=0;sbtn('p',1);
+  tab('main');editId=id;pRe=0;sbtn('p',1);showRecordEditMode();
   $('date').value=r.date||today();
   const hasW=r.temp!=null&&r.temp!=='-'&&r.temp!=='';
   setV('weather',r.weather||'晴れ');$('weather-time').value=r.weather_time||'12:00';$('temp').value=r.temp!=='-'&&r.temp!=null?r.temp:'';$('humidity').value=r.humidity!=='-'&&r.humidity!=null?r.humidity:'';
@@ -1931,7 +2040,7 @@ async function editRec(id){
     ngCauseCount=d.length;ngCauseUI(d.map(x=>[x.cause||'',x.qty||'']));
   }
   $('memo').value=r.memo!=='-'?r.memo||'':'';
-  $('p-form').scrollIntoView({behavior:'smooth'})
+  $('manual-entry-start')?.scrollIntoView({behavior:'smooth',block:'start'})
 }
 async function delRec(id){if(!(await adm())||!(await uiConfirm('この実績を削除しますか？')))return;del('r',id).then(()=>{editId===id&&cxEdit('p')}).catch(e=>uiAlert('削除エラー: '+e.message))}
 
@@ -2353,6 +2462,129 @@ const toggleCursor=()=>cur.toggle();
       h=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(16px)'},2400)
     };
   })();
+})();
+
+/* ---------- 簡易実績登録：5段階ステップ（既存保存処理を使用） ---------- */
+(function(){
+  const q=id=>document.getElementById(id),MAX=10;
+  let step=0,rowCount=1,currentRow=1,bound=false,historyReady=false,historyPromise=null,paintHistory={},historyProducts=new Set();
+  const products=()=>Array.isArray(prods)?prods.map(x=>String(x).trim()).filter(Boolean):[];
+  const set=(id,v)=>{const e=q(id);if(e)e.value=v==null?'':v};
+  const sortNames=(arr)=>[...new Set(arr.map(x=>String(x||'').trim()).filter(Boolean))].sort((a,b)=>{
+    const aa=a.replace(/^\s+/,'').toUpperCase(),bb=b.replace(/^\s+/,'').toUpperCase();
+    const ad=/^[0-9]/.test(aa),bd=/^[0-9]/.test(bb),al=/^[A-Z]/.test(aa),bl=/^[A-Z]/.test(bb);
+    const rank=x=>x[0]?(/^[0-9]/.test(x[0])?0:(/^[A-Z]/.test(x[0])?1:2)):3;
+    const ra=rank(aa),rb=rank(bb);if(ra!==rb)return ra-rb;
+    return aa.localeCompare(bb,'ja',{numeric:true,sensitivity:'base'});
+  });
+  async function loadPaintHistory(){
+    if(historyReady)return paintHistory;
+    if(historyPromise)return historyPromise;
+    historyPromise=(async()=>{
+      const map={};
+      try{
+        const rows=[];
+        all('r').forEach(r=>rows.push(r));
+        if(db){const snap=await db.collection(COL.r).orderBy('timestamp','desc').limit(500).get();snap.forEach(d=>rows.push({docId:d.id,...d.data()}));}
+        rows.sort((a,b)=>(Number(b.timestamp)||0)-(Number(a.timestamp)||0));
+        rows.forEach(r=>{const paint=String(r.paint_name||'').trim();if(!paint||!Array.isArray(r.items))return;r.items.forEach(it=>{const name=String(it&&it.name||'').trim();if(!name)return;historyProducts.add(name);if(paint&&!map[name])map[name]=paint})});
+      }catch(e){console.warn('簡易登録：過去ログから塗料名の取得に失敗',e)}
+      paintHistory=map;historyReady=true;return map;
+    })();
+    return historyPromise;
+  }
+  function paintPresets(preferName){
+    const s=q('quick-paint');if(!s)return;
+    const cur=preferName||s.value,names=sortNames([...(Array.isArray(bakePresets)?bakePresets:[]).map(x=>x.name),...Object.values(paintHistory)]);
+    s.innerHTML='<option value="">-- 塗料を選択 --</option>';
+    names.slice(0,80).forEach(n=>s.appendChild(new Option(n,n)));
+    if(cur&&names.includes(cur))s.value=cur;
+  }
+  function productButtons(){
+    const box=q('quick-product-presets');if(!box)return;
+    const list=sortNames([...products(),...historyProducts]);
+    box.innerHTML=list.slice(0,80).map(n=>`<button type="button" class="quick-option-btn" data-q-product="${esc(n)}">${esc(n)}</button>`).join('');
+  }
+  function productRows(){
+    const box=q('quick-product-rows');if(!box)return;const old={};
+    for(let i=1;i<=MAX;i++)old[i]=[q('quick-product-'+i)?.value||V('product'+i)||'',q('quick-qty-'+i)?.value||V('quantity'+i)||''];
+    box.innerHTML='';
+    for(let i=1;i<=rowCount;i++){
+      const r=document.createElement('div');r.className='quick-product-row';
+      r.innerHTML=`<input type="text" id="quick-product-${i}" list="registered-products" autocomplete="off" placeholder="品名${i}${i===1?'（必須）':''}"><div class="quick-qty"><button type="button" class="quick-step-btn" data-q-delta="-1" data-q-index="${i}">−</button><input type="number" id="quick-qty-${i}" inputmode="numeric" min="1" step="1" placeholder="数${i}"><button type="button" class="quick-step-btn" data-q-delta="1" data-q-index="${i}">＋</button></div>${i>1?`<button type="button" class="quick-remove-btn" data-q-remove="${i}">×</button>`:'<span></span>'}`;
+      box.appendChild(r);set('quick-product-'+i,old[i][0]);set('quick-qty-'+i,old[i][1]);
+    }
+    syncProducts();applyTouchNumericMode();update();
+  }
+  function operators(){
+    ['quick-operator1','quick-operator2'].forEach((id,i)=>{const s=q(id);if(!s)return;const cur=s.value||V(i?'operator2':'operator1')||'';s.innerHTML=i?'<option value="">-- なし --</option>':'<option value="">-- 選択 --</option>';sortNames(Array.isArray(ops)?ops:[]).forEach(n=>s.appendChild(new Option(n,n)));s.value=cur});
+  }
+  function syncProducts(){if(typeof sr==='function')sr('p',Math.max(1,rowCount));for(let i=1;i<=MAX;i++){const a=q('quick-product-'+i),b=q('quick-qty-'+i),pa=q('product'+i),pb=q('quantity'+i);if(pa&&pb){pa.value=a?.value||'';pb.value=b?.value||'';pa.dispatchEvent(new Event('input',{bubbles:true}));pb.dispatchEvent(new Event('input',{bubbles:true}))}}}
+  function syncAll(){
+    syncProducts();set('operator1',q('quick-operator1')?.value||'');set('operator2',q('quick-operator2')?.value||'');set('machine1',q('quick-machine1')?.value||'旭サナック');set('machine2',q('quick-machine2')?.value||'');
+    const pn=q('quick-paint')?.value||'';if(pn&&typeof setBakePaintByName==='function')setBakePaintByName(pn);else set('bake_paint_select','');
+    const w=q('quick-paint-weight')?.value||'';set('paint_weight',w);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}));set('status','OK');ngToggle();
+  }
+  function update(){
+    const ps=[];for(let i=1;i<=rowCount;i++){const n=q('quick-product-'+i)?.value?.trim(),v=q('quick-qty-'+i)?.value;if(n)ps.push(v?`${n} × ${v}`:n)}
+    const op=[q('quick-operator1')?.value,q('quick-operator2')?.value].filter(Boolean).join('・'),ma=[q('quick-machine1')?.value,q('quick-machine2')?.value].filter(Boolean).join('・'),pa=[q('quick-paint')?.value,q('quick-paint-weight')?.value?`${q('quick-paint-weight').value}kg`:'' ].filter(Boolean).join(' / ');
+    const put=(id,v)=>{const e=q(id);if(!e)return;e.textContent=v||'未入力';e.classList.toggle('empty',!v)};put('quick-summary-product',ps.join(' / '));put('quick-summary-operator',op);put('quick-summary-machine',ma);put('quick-summary-paint',pa);const c=q('quick-confirm-text');if(c)c.textContent=`品名・数：${ps.join(' / ')||'未入力'} ｜ 塗装者：${op||'未入力'} ｜ 塗装機：${ma||'未入力'} ｜ 塗料・使用量：${pa||'未入力'} ｜ 判定：OK`;
+  }
+  function setStep(n){
+    step=Math.max(0,Math.min(4,n));
+    const root=q('quick-entry');
+    root?.querySelectorAll('[data-q-panel]').forEach(e=>e.classList.toggle('active',Number(e.dataset.qPanel)===step));
+    root?.querySelectorAll('[data-q-step]').forEach(e=>{const i=Number(e.dataset.qStep);e.classList.toggle('active',i===step);e.classList.toggle('done',i<step)});
+    update();
+    if(step===3){const first=q('quick-product-1')?.value.trim();if(first){loadPaintHistory().then(map=>{paintPresets(map[first]||q('quick-paint')?.value||'');productButtons();update()})}else paintPresets();}
+  }
+  function valid(n){
+    if(n===0){syncProducts();for(let i=1;i<=rowCount;i++){const p=q('quick-product-'+i)?.value.trim(),v=q('quick-qty-'+i)?.value;if((p&&!v)||(!p&&v)){appToast?.(`品名${i}と数${i}をそろえてください`);return false}}if(!(q('quick-product-1')?.value.trim())||!(Number(q('quick-qty-1')?.value)>0)){appToast?.('品名1と数1を入力してください');return false}}
+    if(n===1&&!q('quick-operator1')?.value){appToast?.('塗装者①を選択してください');return false}
+    if(n===3&&!(Number(q('quick-paint-weight')?.value)>0)){appToast?.('使用量は0より大きい数値で入力してください');return false}
+    return true;
+  }
+  function next(){if(!valid(step))return;syncAll();setStep(step+1)}
+  function changePaint(delta){const e=q('quick-paint-weight');if(!e)return;const cur=Number(e.value)||0,n=Math.max(0,Math.round((cur+delta)*10)/10);e.value=n>0?String(n):'';e.dispatchEvent(new Event('input',{bubbles:true}));update()}
+  function clearQuick(){
+    const go=()=>{rowCount=1;currentRow=1;productRows();['quick-operator1','quick-operator2','quick-machine2','quick-paint','quick-paint-weight'].forEach(id=>set(id,''));set('quick-machine1','旭サナック');set('operator1','');set('operator2','');set('machine1','旭サナック');set('machine2','');set('bake_paint_select','');set('paint_weight','');set('status','OK');ngToggle();paintPresets();setStep(0);productButtons()};
+    if(typeof uiConfirm==='function')uiConfirm('簡易登録の入力内容をクリアしますか？').then(ok=>{if(ok)go()});else if(confirm('簡易登録の入力内容をクリアしますか？'))go();
+  }
+  function applyTouchNumericMode(){
+    const touch=window.matchMedia?.('(pointer:coarse)').matches;
+    q('quick-entry')?.querySelectorAll('input[type="number"]').forEach(el=>{
+      if(el.id==='quick-paint-weight'||el.id.startsWith('quick-qty-')){
+        el.readOnly=!!touch;
+        el.setAttribute('aria-readonly',String(!!touch));
+      }
+    });
+  }
+  function bind(){
+    const root=q('quick-entry');if(!root||bound)return;bound=true;root.dataset.bound='1';
+    productRows();applyTouchNumericMode();operators();paintPresets();productButtons();loadPaintHistory().then(()=>{productButtons();paintPresets()});set('status','OK');ngToggle();setStep(0);
+    /* PCだけ先頭入力へフォーカス。preventScrollで画面位置は動かさない。 */
+    if(window.matchMedia?.('(pointer:fine)').matches){const first=q('quick-product-1');if(first)try{first.focus({preventScroll:true})}catch(_){first.focus()}}
+    root.addEventListener('input',e=>{const id=e.target?.id||'';if(id.startsWith('quick-product-')||id.startsWith('quick-qty-')){const m=id.match(/quick-(?:product|qty)-(\d+)/);if(m)currentRow=Number(m[1]);syncProducts()}if(id==='quick-paint-weight'){set('paint_weight',e.target.value);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}))}update()});
+    root.addEventListener('change',e=>{const id=e.target?.id||'';if(id==='quick-operator1'||id==='quick-operator2')set(id==='quick-operator1'?'operator1':'operator2',e.target.value);if(id==='quick-machine1'||id==='quick-machine2')set(id==='quick-machine1'?'machine1':'machine2',e.target.value);if(id==='quick-paint'){if(e.target.value&&typeof setBakePaintByName==='function')setBakePaintByName(e.target.value);else set('bake_paint_select','')}update()});
+    root.addEventListener('click',e=>{
+      const b=e.target.closest('button');if(!b||!root.contains(b))return;
+      if(b.dataset.qStep!==undefined){const n=Number(b.dataset.qStep);if(n<=step)setStep(n);return}
+      if(b.dataset.qNext!==undefined){next();return}
+      if(b.dataset.qBack!==undefined){syncAll();setStep(Number(b.dataset.qBack));return}
+      if(b.dataset.qProduct!==undefined){set('quick-product-'+currentRow,b.dataset.qProduct);syncProducts();update();return}
+      if(b.dataset.qDelta){const i=Number(b.dataset.qIndex),el=q('quick-qty-'+i);if(el){const v=Math.max(0,(parseInt(el.value,10)||0)+Number(b.dataset.qDelta));el.value=v>0?String(v):'';el.dispatchEvent(new Event('input',{bubbles:true}))}return}
+      if(b.dataset.qRemove){const i=Number(b.dataset.qRemove);if(i===rowCount&&rowCount>1){rowCount--;productRows();currentRow=Math.min(currentRow,rowCount)}return}
+      if(b.id==='quick-product-add'){if(rowCount<MAX){rowCount++;productRows();currentRow=rowCount}return}
+      if(b.dataset.qPaintDelta){changePaint(Number(b.dataset.qPaintDelta));return}
+      if(b.id==='quick-clear'){clearQuick();return}
+      if(b.id==='quick-back-top'){syncAll();if(step>0)setStep(step-1);else appToast?.('先頭のため戻る先がありません');return}
+      if(b.id==='quick-submit'){if(!valid(0)||!valid(1)||!valid(3))return;syncAll();const form=q('p-form');if(form){if(typeof form.requestSubmit==='function')form.requestSubmit();else form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}))}return}
+    });
+    root.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing)return;const t=e.target;if(!t.matches('input,select,button'))return;e.preventDefault();e.stopPropagation();if(t.id==='quick-submit'){q('quick-submit')?.click();return}if(step<4)next();else q('quick-submit')?.click()});
+    q('quick-manual-open-2')?.addEventListener('click',()=>{const open=toggleManualEntry();if(open)q('manual-entry')?.scrollIntoView({behavior:'smooth',block:'start'});});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(bind,250));else setTimeout(bind,250);
+  let count=0;const timer=setInterval(()=>{if(bound){operators();paintPresets();productButtons()}if(++count>=10)clearInterval(timer)},1000);
 })();
 </script>
 </body>
