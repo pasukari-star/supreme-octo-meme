@@ -1647,10 +1647,6 @@ function rk(id,rows,empty,bg){
 const srt=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
 /* 実質換算（台=1.0基準の重み付け合計）。小物・平板など単位が混在していても、ざっくり実態に近い件数・再塗装率を出すための補助値 */
 const itemsConv=items=>Array.isArray(items)?items.reduce((s,i)=>s+(Number(i.qty)||0)*uf(i.unit||'台'),0):0;
-const ngConv=r=>{
-  if(!Array.isArray(r.ng_products)||!r.ng_products.length)return Number(r.ng_qty)||0;
-  return r.ng_products.reduce((s,x)=>{const it=Array.isArray(r.items)?r.items.find(i=>i.name===x.name):null;return s+(Number(x.qty)||0)*uf((it&&it.unit)||'台')},0)
-};
 function trendBucket(date,span){if(span<=14)return date;const d=pd(date);if(span<=90){d.setDate(d.getDate()-((d.getDay()+6)%7));return ds(d)}return date.slice(0,7)}
 function trendLabel(key,mode){if(mode==='day'){const d=pd(key);return `${d.getMonth()+1}/${d.getDate()}`}if(mode==='week'){const d=pd(key),e=D(d,6);return `${d.getMonth()+1}/${d.getDate()}～${e.getMonth()+1}/${e.getDate()}`}const [y,m]=key.split('-');return `${y}/${Number(m)}`}
 function trendWeekday(key){return '日月火水木金土'[pd(key).getDay()]}
@@ -1789,7 +1785,7 @@ function sum(){
   need('r',['sum','cause','paint'],R);
   if(sumG&&sumG[0]<WIN)loadArch('r');
   lbl('sum',R);lbl('cause',R);lbl('paint',R);
-  const cg=rg('cause',R)||R.week,pg_=rg('paint',R)||R.week,G=[R.lastweek,R.week,R.month,R.year,sumG,cg].filter(Boolean),S=G.map(()=>({w:0,q:0,n:0,qc:0,nc:0,units:{}})),cc={},np={},pp={};
+  const cg=rg('cause',R)||R.week,pg_=rg('paint',R)||R.week,G=[R.lastweek,R.week,R.month,R.year,sumG,cg].filter(Boolean),S=G.map(()=>({w:0,q:0,n:0,qc:0,units:{}})),cc={},np={},npUnit={},pp={};
   for(const r of all('r')){
     const d=r.date;if(!d)continue;
     G.forEach((g,i)=>{
@@ -1802,14 +1798,14 @@ function sum(){
           const u=it.unit||'台',qty=Number(it.qty)||0;
           s.units[u]=(s.units[u]||0)+qty;
         });
-        if(r.status==='NG'){s.n+=Number(r.ng_qty)||1;s.nc+=ngConv(r)}
+        if(r.status==='NG')s.n+=Number(r.ng_qty)||1
       }
     });
     if(r.status==='NG'&&d>=cg[0]&&d<=cg[1]){
       if(Array.isArray(r.ng_details)&&r.ng_details.length)r.ng_details.forEach(x=>{const k=x.cause||'その他';cc[k]=(cc[k]||0)+(Number(x.qty)||1)});
       else{const k=r.ng_cause||(r.ng_causes&&r.ng_causes[0])||'その他';cc[k]=(cc[k]||0)+(Number(r.ng_qty)||1)}
-      if(Array.isArray(r.ng_products)&&r.ng_products.length)r.ng_products.forEach(x=>{const k=x.name||'不明';np[k]=(np[k]||0)+(Number(x.qty)||0)});
-      else{const k=r.ng_product||'不明';np[k]=(np[k]||0)+(Number(r.ng_qty)||1)}
+      if(Array.isArray(r.ng_products)&&r.ng_products.length)r.ng_products.forEach(x=>{const k=x.name||'不明';np[k]=(np[k]||0)+(Number(x.qty)||0);if(!npUnit[k]){const it=Array.isArray(r.items)?r.items.find(i=>i.name===x.name):null;npUnit[k]=(it&&it.unit)||'台'}});
+      else{const k=r.ng_product||'不明';np[k]=(np[k]||0)+(Number(r.ng_qty)||1);if(!npUnit[k]){const it=Array.isArray(r.items)?r.items.find(i=>i.name===r.ng_product):null;npUnit[k]=(it&&it.unit)||'台'}}
     }
     if(d>=pg_[0]&&d<=pg_[1]&&r._w>0&&r._q>0&&Array.isArray(r.items))r.items.forEach(i=>{const k=i.name||'不明';pp[k]=(pp[k]||0)+r._w*(Number(i.qty)||0)/r._q})
   }
@@ -1842,7 +1838,7 @@ function sum(){
   const ngTotal=cgS.n,ngRate=cgS.qc>0?ngTotal/cgS.qc*100:0,topCause=sc.length?sc[0][0]:'—';
   $('ng-analysis-summary').innerHTML=`<div class="analysis-mini-card"><div class="analysis-mini-label">再塗装件数</div><div class="analysis-mini-value">${ngTotal.toLocaleString('ja-JP')}件</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">実質NG率</div><div class="analysis-mini-value">${ngRate.toFixed(1)}%</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">原因種類</div><div class="analysis-mini-value">${sc.length}種</div></div><div class="analysis-mini-card"><div class="analysis-mini-label">最多原因</div><div class="analysis-mini-value" title="${esc(topCause)}">${esc(topCause)}</div></div>`;
   rk('cause-analysis-list',sc.map(([k,v])=>{const p=(v/tc*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}個)`,p+'%',p]}),'該当期間の再塗装データはありません。');
-  rk('product-analysis-list',sn.map(([k,v])=>{const p=(v/tn*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}台)`,p+'%',p]}),'該当期間の再塗装データはありません。');
+  rk('product-analysis-list',sn.map(([k,v])=>{const p=(v/tn*100).toFixed(1);return[`<strong>${esc(k)}</strong> (${v}${npUnit[k]||'台'})`,p+'%',p]}),'該当期間の再塗装データはありません。');
   rk('paint-usage-analysis-list',sp_.map(([k,v])=>[`<strong>${esc(k)}</strong>`,fw(v),(v/mx*100).toFixed(1)]),'該当期間の塗料使用データはありません。','linear-gradient(90deg,#0ea5e9,#38bdf8)');
   const productStats={},paintStats={};
   for(const r of all('r')){if(!r.date||!pg_||r.date<pg_[0]||r.date>pg_[1])continue;const total=Number(r._q)||0,ngMap={};if(Array.isArray(r.ng_products))r.ng_products.forEach(x=>{if(x&&x.name)ngMap[x.name]=(ngMap[x.name]||0)+(Number(x.qty)||0)});else if(r.ng_product)ngMap[r.ng_product]=Number(r.ng_qty)||0;const items=Array.isArray(r.items)?r.items:[];items.forEach(it=>{const k=it.name||'不明',q=Number(it.qty)||0;if(!productStats[k])productStats[k]={q:0,ng:0,w:0,u:it.unit||'台'};productStats[k].q+=q;productStats[k].ng+=r.status==='NG'?(ngMap[k]||0):0;productStats[k].w+=total>0?(Number(r._w)||0)*q/total:0});const pn=r.paint_name||'未選択';if(!paintStats[pn])paintStats[pn]={w:0,r:0,n:0};paintStats[pn].w+=Number(r._w)||0;if(r.status==='NG')paintStats[pn].n+=Object.values(ngMap).reduce((a,v)=>a+(Number(v)||0),0)}
@@ -1885,7 +1881,7 @@ function recHtml(r){
   row('電気条件:',`${esc(r.voltage)}kV / ${esc(r.current)}μA`)+
   row('吐出/エアー:',`${esc(r.discharge||'-')} FlowRate / ${esc(r.air_flow||'-')}L/min${r.preset_no?` <span class="ptag">P${esc(r.preset_no)}${r.preset_name?'：'+esc(r.preset_name):''}</span>`:''}`)+
   row('焼付条件:',`${esc(r.bake_temp||200)}℃ / ${esc(r.bake_time||20)}分`,'full-row')+`</div>`+
-  (ng?`<div class="ng-memo-box">🚨 <strong class="text-danger">再塗装(NG)発生:</strong> 合計 ${esc(np.reduce((s,x)=>s+(Number(x.qty)||0),0))}台<br>📦 <strong>品名別:</strong> ${np.map(x=>`${esc(x.name)}: ${esc(x.qty)}台`).join(' / ')}<br>📌 <strong>不具合原因別:</strong> ${cs}</div>`:'')+
+  (ng?(()=>{const npu=x=>(Array.isArray(r.items)&&r.items.find(i=>i.name===x.name)||{}).unit||'台';return `<div class="ng-memo-box">🚨 <strong class="text-danger">再塗装(NG)発生:</strong> 合計 ${esc(np.reduce((s,x)=>s+(Number(x.qty)||0),0))}${esc(npu(np[0]))}<br>📦 <strong>品名別:</strong> ${np.map(x=>`${esc(x.name)}: ${esc(x.qty)}${esc(npu(x))}`).join(' / ')}<br>📌 <strong>不具合原因別:</strong> ${cs}</div>`})():'')+
   row('メモ:',esc(r.memo),'full-row')+
   `</div>`+footerActions(`editRec('${r.docId}')`,`delRec('${r.docId}')`)+`</div>`
 }
