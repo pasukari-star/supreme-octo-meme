@@ -97,9 +97,6 @@ body{background:radial-gradient(circle at 8% 0%,rgba(14,165,233,.10),transparent
 .prod-usage-row{font-size:11px;color:var(--text-dim);margin-top:4px;font-weight:600;display:flex;justify-content:space-between;align-items:baseline}
 .prod-usage-row strong{font-size:12.5px;font-weight:800;color:var(--text-main)}
 .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:800;color:#fff;margin-right:6px;flex-shrink:0}
-.rank-1{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 2px 4px rgba(245,158,11,.3)}
-.rank-2{background:linear-gradient(135deg,#94a3b8,#64748b);box-shadow:0 2px 4px rgba(100,116,139,.3)}
-.rank-3{background:linear-gradient(135deg,#d97706,#b45309);box-shadow:0 2px 4px rgba(180,83,9,.3)}
 .rank-other{background:#e2e8f0;color:#64748b}
 .form-section{background:var(--bg-card);padding:14px 16px;border-radius:var(--radius);margin-bottom:16px;border:1px solid var(--border-color);box-shadow:var(--shadow-glow)}
 .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;align-items:start}
@@ -1583,9 +1580,9 @@ function listen(c,n){
 function all(c){return cache[c]||(cache[c]=[...new Map([...A[c].m,...M[c]]).values()])}
 function fnd(c,i){return M[c].get(i)||A[c].m.get(i)}
 function loadArch(c){
-  const a=A[c];if(a.s===1||a.s===2||!db)return;
+  const a=A[c];if(a.s===1||a.s===2||!db)return Promise.resolve();
   a.s=1;sched(7);
-  db.collection(COL[c]).where('date','<',WIN).get().then(s=>{s.forEach(d=>a.m.set(d.id,prep(c,{docId:d.id,...d.data()})));a.s=2;cache[c]=0;sched(7)}).catch(e=>{a.s=3;sched(7);uiAlert('過去データの読込に失敗しました: '+e.message)})
+  return db.collection(COL[c]).where('date','<',WIN).get().then(s=>{s.forEach(d=>a.m.set(d.id,prep(c,{docId:d.id,...d.data()})));a.s=2;cache[c]=0;sched(7)}).catch(e=>{a.s=3;sched(7);uiAlert('過去データの読込に失敗しました: '+e.message)})
 }
 function need(c,ts,R){if(A[c].s)return;for(const t of ts){const g=rg(t,R);if(g&&g[0]<WIN){loadArch(c);return}}}
 function save(c,id,rec){
@@ -1765,7 +1762,7 @@ function renderTrendPanel(kind,data,meta){
 function renderSummaryTrends(g){
   const box=$('summary-trends-card');if(!box)return;if(!g){box.innerHTML='';return}
   const span=Math.max(1,Math.round((pd(g[1])-pd(g[0]))/86400000)+1),mode=span<=14?'day':span<=90?'week':'month',buckets={};
-  for(const r of all('r')){if(!r.date||r.date<g[0]||r.date>g[1])continue;const key=trendBucket(r.date,span);if(!buckets[key])buckets[key]={q:0,n:0,raw:0};buckets[key].q+=itemsConv(r.items);buckets[key].raw+=Number(r._q)||0;buckets[key].n+=r.status==='NG'?ngConv(r):0}
+  for(const r of all('r')){if(!r.date||r.date<g[0]||r.date>g[1])continue;const key=trendBucket(r.date,span);if(!buckets[key])buckets[key]={q:0,n:0,raw:0};buckets[key].q+=itemsConv(r.items);buckets[key].raw+=Number(r._q)||0;buckets[key].n+=r.status==='NG'?(Number(r.ng_qty)||1):0}
   let keys=[];
   if(mode==='day'){for(let d=pd(g[0]);d<=pd(g[1]);d=D(d,1))keys.push(ds(d))}
   else if(mode==='week'){for(let d=pd(g[0]);d<=pd(g[1]);d=D(d,7)){d.setDate(d.getDate()-((d.getDay()+6)%7));const k=ds(d);if(!keys.includes(k))keys.push(k)}}
@@ -2097,7 +2094,7 @@ function resetP(){
   for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value='';$('unit'+i)&&($('unit'+i).value='台')}sr('p',2);
   $('operator2').value='';$('machine1').value='旭サナック';$('machine2').value='';
   $('paint_weight').value='';$('bake_paint_select').value='';bakeStatus('',false);$('thickness').value='50';$('memo').value='';$('status').value='OK';
-  ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1;leaveRecordEditMode()
+  ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1;leaveRecordEditMode();window.__resetQuickEntry&&window.__resetQuickEntry()
 }
 function resetT(d){tf.reset();sr('t',2);$('t_calc_mode').value='auto';$('t_date').value=d;$('t_qty1').value=1;isAtt=0;tEdit=null;sbtn('t',0);tPrev();pg.t=1}
 function cxEdit(k){if(k==='p'){resetP();setToday();$('bake_temp').value=200;$('bake_time').value=20;onDate()}else resetT(today())}
@@ -2598,9 +2595,20 @@ const toggleCursor=()=>cur.toggle();
     appToast?.('管理者認証済み。編集できます。');
     return true
   }
-  function wrSetCurrentBase(){const w=wrWeekFromStart(wrSelectedStart||wrCurrentWeek().start);wrSelectedStart=w.start;q('weekly-report-week').textContent=`${wrWeekLabel(w.start,w.end)} のレポート`;wrStats();wrFillOperators()}
+  function wrSetCurrentBase(){
+    const w=wrWeekFromStart(wrSelectedStart||wrCurrentWeek().start);wrSelectedStart=w.start;
+    q('weekly-report-week').textContent=`${wrWeekLabel(w.start,w.end)} のレポート`;
+    wrStats();wrFillOperators();
+    if(w.start<WIN){const p=loadArch('r');p&&p.then&&p.then(wrStats)}
+  }
   function wrLoadSelected(){wrSetCurrentBase();const hit=wrHit(),draft=wrLoadDraft();if(hit){wrSet('weekly-report-author',hit.author||'');wrSet('weekly-report-date',hit.report_date||today());wrSet('weekly-report-done',hit.done||'');wrSet('weekly-report-issue',hit.issue||'');wrSet('weekly-report-next',hit.next||'');wrSet('weekly-report-share',hit.share||'');wrClearDraft()}else if(draft){FIELD_IDS.forEach(id=>wrSet(id,draft[id]||''))}else{wrSet('weekly-report-author','');wrSet('weekly-report-date',today());['weekly-report-done','weekly-report-issue','weekly-report-next','weekly-report-share'].forEach(id=>wrSet(id,''))}wrSetEditable(false);wrStatus(hit)}
   function wrStatus(hit){const st=q('weekly-report-status'),hs=q('weekly-report-head-status');if(!st)return;const cur=wrCurrentWeek().start,prevStart=wrShift(cur,-1),prev=wrDocs.find(x=>x.week_start===prevStart);st.classList.toggle('has-prev',!!prev);if(prev){st.textContent='先週のレポートがあります。';if(hs)hs.textContent='先週レポートあり'}else{st.textContent='先週のレポートはまだありません。';if(hs)hs.textContent='先週レポート未作成'}}
+  function wrUnsaved(){if(!wrEditing)return false;const hit=wrHit();return['done','issue','next','share'].some(k=>wrVal('weekly-report-'+k).trim()!==(hit?String(hit[k]||''):''))}
+  function wrConfirmClose(){
+    const c=q('weekly-report-card'),go=()=>{c.classList.remove('open');wrSetEditable(false)};
+    if(wrUnsaved()){if(typeof uiConfirm==='function')uiConfirm('入力中の内容を破棄して閉じますか？').then(ok=>{if(ok)go()});else if(confirm('入力中の内容を破棄して閉じますか？'))go();return}
+    go();
+  }
   function wrOpen(){const c=q('weekly-report-card');if(!c)return;c.classList.add('open');if(!wrSelectedStart)wrSelectedStart=wrCurrentWeek().start;wrLoadSelected()}
   function wrRenderList(){const box=q('weekly-report-list');if(!box)return;const term=(wrVal('weekly-report-search')||'').trim().toLowerCase();const list=wrDocs.filter(x=>!term||[x.week_start,x.week_end,x.author,x.done,x.issue,x.next,x.share].join(' ').toLowerCase().includes(term)).sort((a,b)=>String(b.week_start).localeCompare(String(a.week_start)));if(!list.length){box.innerHTML='<div class="weekly-report-empty">登録済みのウィークリーレポートはありません。</div>';return}box.innerHTML=list.slice(0,52).map(x=>`<div class="weekly-report-item" data-wr-open="${wrEsc(x.week_start)}"><div class="weekly-report-item-top"><span class="weekly-report-item-week">${wrEsc(wrWeekLabel(x.week_start||'',x.week_end||''))}</span><span class="weekly-report-item-author">${wrEsc(x.author||'記入者未設定')}</span></div><div class="weekly-report-item-preview">${wrEsc(x.done||x.issue||x.next||x.share||'内容なし')}</div></div>`).join('')}
   async function wrCopyPrevious(){const prevStart=wrShift(wrSelectedStart,-1),prev=wrDocs.find(x=>x.week_start===prevStart);if(!prev)return appToast?.('前週のウィークリーレポートがありません。');if(wrHit()&&!wrEditing){if(!(await wrEdit()))return;}['author','done','issue','next','share'].forEach(k=>wrSet(`weekly-report-${k}`,prev[k]||''));wrSet('weekly-report-date',today());wrSaveDraft();appToast?.('前週の内容を下書きにしました。編集して保存する場合は「編集」を押してください。')}
@@ -2622,7 +2630,7 @@ const toggleCursor=()=>cur.toggle();
       });
     });
     q('weekly-report-open')?.addEventListener('click',wrOpen);
-    q('weekly-report-close')?.addEventListener('click',()=>{c.classList.remove('open');wrSetEditable(false)});
+    q('weekly-report-close')?.addEventListener('click',wrConfirmClose);
     q('weekly-report-head')?.addEventListener('click',e=>{if(e.target.closest('button'))return;c.classList.toggle('open');if(c.classList.contains('open'))wrLoadSelected()});
     q('weekly-report-prev')?.addEventListener('click',()=>wrSelectWeek(wrShift(wrSelectedStart||wrCurrentWeek().start,-1)));
     q('weekly-report-current')?.addEventListener('click',()=>wrSelectWeek(wrCurrentWeek().start));
@@ -2635,7 +2643,7 @@ const toggleCursor=()=>cur.toggle();
     q('weekly-report-delete')?.addEventListener('click',wrDelete);
     q('weekly-report-clear')?.addEventListener('click',wrClear);
     q('weekly-report-list')?.addEventListener('click',e=>{const item=e.target.closest('[data-wr-open]');if(!item)return;wrSelectWeek(item.dataset.wrOpen);q('weekly-report-history')?.classList.remove('open')});
-    c.addEventListener('click',e=>{if(e.target===c){c.classList.remove('open');wrSetEditable(false)}});
+    c.addEventListener('click',e=>{if(e.target===c)wrConfirmClose()});
     try{wrLoadSelected()}catch(e){console.warn('ウィークリーレポート初期表示に失敗',e)}
   }
   window.initWeeklyReport=function(){if(wrReady)return;wrReady=true;try{wrBind()}catch(e){console.error('ウィークリーレポートUI初期化失敗:',e);return}if(!db){wrStatus(null);return}try{wrUnsub=db.collection(WR_COL).orderBy('week_start','desc').limit(52).onSnapshot(s=>{try{wrDocs=[];s.forEach(d=>wrDocs.push({docId:d.id,...d.data()}));if(!wrEditing)wrLoadSelected();wrRenderList()}catch(e){console.warn('ウィークリーレポート表示更新失敗',e)}},e=>{console.warn('ウィークリーレポート読込失敗',e);try{wrStatus(wrHit())}catch(_){}})}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}};
@@ -2702,7 +2710,13 @@ const toggleCursor=()=>cur.toggle();
     const pn=q('quick-paint')?.value||'';if(pn&&typeof setBakePaintByName==='function')setBakePaintByName(pn);else set('bake_paint_select','');
     const w=q('quick-paint-weight')?.value||'';set('paint_weight',w);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}));set('status','OK');ngToggle();
   }
+  function markSelectedPreset(){
+    const box=q('quick-product-presets');if(!box)return;
+    const cur=(q('quick-product-'+currentRow)?.value||'').trim();
+    box.querySelectorAll('.quick-option-btn').forEach(b=>b.classList.toggle('selected',!!cur&&b.dataset.qProduct===cur));
+  }
   function update(){
+    markSelectedPreset();
     const ps=[];for(let i=1;i<=rowCount;i++){const n=q('quick-product-'+i)?.value?.trim(),v=q('quick-qty-'+i)?.value;if(n)ps.push(v?`${n} × ${v}`:n)}
     const op=[q('quick-operator1')?.value,q('quick-operator2')?.value].filter(Boolean).join('・'),ma=[q('quick-machine1')?.value,q('quick-machine2')?.value].filter(Boolean).join('・'),pa=[q('quick-paint')?.value,q('quick-paint-weight')?.value?`${q('quick-paint-weight').value}kg`:'' ].filter(Boolean).join(' / ');
     const put=(id,v)=>{const e=q(id);if(!e)return;e.textContent=v||'未入力';e.classList.toggle('empty',!v)};put('quick-summary-product',ps.join(' / '));put('quick-summary-operator',op);put('quick-summary-machine',ma);put('quick-summary-paint',pa);const c=q('quick-confirm-text');if(c)c.textContent=`品名・数：${ps.join(' / ')||'未入力'} ｜ 塗装者：${op||'未入力'} ｜ 塗装機：${ma||'未入力'} ｜ 塗料・使用量：${pa||'未入力'} ｜ 判定：OK`;
@@ -2723,10 +2737,12 @@ const toggleCursor=()=>cur.toggle();
   }
   function next(){if(!valid(step))return;syncAll();setStep(step+1)}
   function changePaint(delta){const e=q('quick-paint-weight');if(!e)return;const cur=Number(e.value)||0,n=Math.max(0,Math.round((cur+delta)*10)/10);e.value=n>0?String(n):'';e.dispatchEvent(new Event('input',{bubbles:true}));update()}
+  function doClearQuick(){rowCount=1;currentRow=1;productRows();['quick-operator1','quick-operator2','quick-machine2','quick-paint','quick-paint-weight'].forEach(id=>set(id,''));set('quick-machine1','旭サナック');set('operator1','');set('operator2','');set('machine1','旭サナック');set('machine2','');set('bake_paint_select','');set('paint_weight','');set('status','OK');ngToggle();paintPresets();setStep(0);productButtons()}
   function clearQuick(){
-    const go=()=>{rowCount=1;currentRow=1;productRows();['quick-operator1','quick-operator2','quick-machine2','quick-paint','quick-paint-weight'].forEach(id=>set(id,''));set('quick-machine1','旭サナック');set('operator1','');set('operator2','');set('machine1','旭サナック');set('machine2','');set('bake_paint_select','');set('paint_weight','');set('status','OK');ngToggle();paintPresets();setStep(0);productButtons()};
-    if(typeof uiConfirm==='function')uiConfirm('簡易登録の入力内容をクリアしますか？').then(ok=>{if(ok)go()});else if(confirm('簡易登録の入力内容をクリアしますか？'))go();
+    if(typeof uiConfirm==='function')uiConfirm('簡易登録の入力内容をクリアしますか？').then(ok=>{if(ok)doClearQuick()});else if(confirm('簡易登録の入力内容をクリアしますか？'))doClearQuick();
   }
+  /* 登録・更新の保存成功後、通常フォームのresetPからも呼べるよう公開（確認ダイアログなしで自動的に空にする） */
+  window.__resetQuickEntry=()=>{doClearQuick()};
   function applyTouchNumericMode(){
     const touch=window.matchMedia?.('(pointer:coarse)').matches;
     q('quick-entry')?.querySelectorAll('input[type="number"]').forEach(el=>{
