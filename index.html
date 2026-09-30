@@ -220,7 +220,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
   .qty-control .qty-step:nth-of-type(4){grid-column:1;grid-row:3}.qty-control .qty-step:nth-of-type(5){grid-column:2;grid-row:3}.qty-control .qty-step:nth-of-type(6){grid-column:3;grid-row:3}}
 .ng-input-container .form-grid{gap:8px}
 @media(max-width:600px){.form-grid.fg4{grid-template-columns:repeat(2,minmax(0,1fr))}.fg4>.s2{grid-column:1/-1}.fg4>.weather-field{grid-column:1/-1}.fg4 .multi-select-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.form-section{padding:12px}.weather-field .weather-fetch-status{min-width:0;overflow-wrap:anywhere}.weather-field .weather-refresh-btn{flex:0 0 auto;white-space:nowrap;width:auto}}
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.6);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.6);z-index:2100;align-items:center;justify-content:center;padding:16px}
 #app-dialog-overlay{display:none;position:fixed;inset:0;z-index:900000;background:rgba(15,23,42,.38);align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(1.5px)}
 #app-dialog-overlay.show{display:flex}
 #app-dialog{width:min(460px,calc(100vw - 32px));background:#fff;border:1px solid var(--border-color);border-radius:16px;padding:22px;box-shadow:0 25px 60px rgba(15,23,42,.24);animation:appDialogPop .16s cubic-bezier(.2,.9,.3,1.12)}
@@ -616,6 +616,58 @@ body.editing-record #manual-entry-wrap{display:block}
 @media(max-width:767px){.quick-manual-label{margin-top:2px;padding:6px 8px;min-height:42px}.quick-manual-label .quick-action-btn{min-height:36px;padding:4px 9px}#quick-entry{margin-left:-2px;margin-right:-2px;padding:8px}.quick-entry-title span{display:none}.quick-progress{grid-template-columns:repeat(5,minmax(0,1fr))}.quick-progress button{min-height:34px;font-size:9px}.quick-summary{grid-template-columns:1.35fr .65fr}.quick-summary-box:nth-child(3),.quick-summary-box:nth-child(4){grid-column:span 1}.quick-select-grid{grid-template-columns:1fr}.quick-product-row{grid-template-columns:minmax(0,1fr);gap:4px}.quick-qty{grid-template-columns:48px minmax(60px,1fr) 48px}.quick-product-row input,.quick-field select,.quick-field input{min-height:42px}.quick-number-control{grid-template-columns:56px minmax(70px,1fr) 56px}.quick-number-control button{min-height:44px}.quick-register-row{flex-direction:row}.quick-back-step{min-width:72px;min-height:44px}.quick-next,.quick-submit{min-height:44px}.quick-product-presets{max-height:96px;overflow:auto}}
 @media(min-width:992px){#quick-entry{max-width:980px;margin:0 auto 12px}}
 
+/* ---------- 戻り品再塗装 ---------- */
+.lr-count-pill{display:inline-flex;align-items:baseline;gap:3px;background:rgba(225,29,72,.09);color:var(--accent-danger,#e11d48);font-weight:800;padding:2px 9px;border-radius:999px;font-size:10.5px;white-space:nowrap}
+.lr-count-pill b{font-size:13px}
+.lr-row{border:1px solid var(--border-color);border-radius:10px;padding:10px;margin-bottom:10px;background:var(--bg-input)}
+.lr-row-grid{display:grid;grid-template-columns:1.6fr 1.3fr .7fr .6fr 1fr;gap:8px}
+.lr-field label{display:block;font-size:10px;font-weight:700;color:var(--text-dim);margin-bottom:3px}
+.lr-calc-note{font-size:10.5px;color:var(--accent-cyan);margin-top:6px;line-height:1.4}
+.lr-calc-note.warn{color:var(--accent-warn,#d97706)}
+.lr-row-remove{margin-top:8px;background:none;border:none;color:var(--accent-danger,#e11d48);font-size:11px;font-weight:700;padding:0;height:auto;width:auto}
+.lr-card-note{padding:0 11px 10px;margin-top:-4px;font-size:10px;color:var(--text-dim);line-height:1.5}
+.range-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}
+.range-row input[type=date]{width:auto}
+.lr-entry{border:1px solid var(--border-color);border-radius:12px;padding:11px;margin-bottom:10px;background:var(--bg-card)}
+.lr-entry-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.lr-entry-actions{display:flex;gap:12px}.lr-entry-actions .lr-row-remove{margin-top:0}.lr-entry-actions .lr-edit{color:var(--accent-indigo)}
+.lr-entry-date{font-size:12.5px;font-weight:800;color:var(--accent-indigo)}
+.lr-entry-memo{font-size:11px;color:var(--text-dim);margin:-2px 0 8px;white-space:pre-wrap}
+.lr-entry-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.lr-auto-badge{display:inline-block;margin-left:4px;padding:2px 5px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:11px;font-weight:700;white-space:nowrap}.lr-entry-table th,.lr-entry-table td{padding:5px 4px;text-align:left;border-bottom:1px solid var(--border-color)}
+.lr-entry-table th{color:var(--text-dim);font-weight:700;font-size:10px}
+@media(max-width:640px){.lr-row-grid{grid-template-columns:1fr 1fr}.lr-field-name{grid-column:1/-1}}
+.lr-main-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 12px 11px}
+.lr-main-stat{min-width:0;border:1px solid rgba(225,29,72,.18);border-radius:12px;background:linear-gradient(135deg,rgba(225,29,72,.07),rgba(99,102,241,.07));padding:10px 8px;text-align:center;box-shadow:0 4px 14px rgba(15,23,42,.08)}
+.lr-main-stat b{display:block;font-size:21px;line-height:1.05;color:var(--accent-danger,#e11d48);font-weight:900;letter-spacing:.01em}
+.lr-main-stat span{display:block;margin-top:4px;font-size:10px;color:var(--text-dim);font-weight:800;white-space:nowrap}
+#late-repaint-card{margin-top:12px;border:2px solid rgba(225,29,72,.34);background:linear-gradient(135deg,rgba(225,29,72,.045),rgba(99,102,241,.055));box-shadow:0 8px 24px rgba(225,29,72,.12),0 2px 8px rgba(15,23,42,.07);overflow:hidden}
+#late-repaint-card .weekly-report-head{padding:13px 14px}
+#late-repaint-card .weekly-report-title strong{font-size:15px}
+#late-repaint-card .lr-card-note{margin:0 14px 10px}
+#late-repaint-card .lr-detail-body{display:none}
+#late-repaint-card.open{overflow-anchor:none;position:fixed;inset:12px;z-index:1100;margin:0;max-width:none;border-radius:18px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.28),0 0 0 100vmax rgba(15,23,42,.48);overflow:hidden;display:flex;flex-direction:column}
+#late-repaint-card.open .weekly-report-head{padding:14px 16px;background:#fff;border-bottom:1px solid rgba(225,29,72,.16)}
+#late-repaint-card.open #lr-detail-open,#late-repaint-card.open #lr-open-add{display:none}
+#late-repaint-card.open .lr-card-note,#late-repaint-card.open .lr-main-summary{display:none}
+#late-repaint-card.open .lr-detail-body{display:block;overflow:auto;flex:1;padding:14px 16px 22px;background:linear-gradient(180deg,#fff7f8,#fff)}
+.lr-period-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:0 0 10px}
+.lr-period-tab{min-height:34px;border:1px solid var(--border-color);border-radius:8px;background:#fff;color:var(--text-dim);font-size:10.5px;font-weight:800;cursor:pointer}
+.lr-period-tab.active{border-color:rgba(225,29,72,.45);background:rgba(225,29,72,.09);color:var(--accent-danger,#e11d48);box-shadow:0 2px 7px rgba(225,29,72,.1)}
+.lr-custom-range{display:none;gap:6px;align-items:center;margin:-2px 0 10px}
+.lr-custom-range.show{display:flex}
+.lr-custom-range input{min-width:0;flex:1;min-height:34px;padding:5px 7px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11px}
+.lr-detail-toolbar{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.lr-detail-toolbar-top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:34px}
+.lr-detail-back{display:flex;width:max-content;min-width:0;height:34px;margin:0 0 0 auto;padding:0 12px;border:1px solid var(--border-color);border-radius:8px;background:#fff;color:var(--text-main);font-size:11px;font-weight:800;line-height:1;cursor:pointer;white-space:nowrap;box-sizing:border-box;text-align:left;align-items:center;justify-content:flex-start;vertical-align:middle;appearance:none;-webkit-appearance:none;flex:0 0 auto}
+.lr-detail-back:active{transform:translateY(1px)}
+.lr-auto-legend{margin:-3px 0 10px;padding:6px 9px;border:1px solid rgba(99,102,241,.16);border-radius:8px;background:rgba(99,102,241,.05);font-size:10px;color:var(--text-dim)}
+.lr-detail-toolbar strong{font-size:13px}.lr-detail-count{font-size:10px;color:var(--text-dim);margin-left:6px}
+#lr-detail-search{width:min(280px,48%);min-height:34px;padding:6px 9px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11px}
+#lr-detail-list .empty-sm{padding:16px;text-align:center}
+@media(max-width:640px){.lr-main-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 9px 10px}.lr-main-stat{padding:8px 6px}.lr-main-stat b{font-size:18px}.lr-main-stat span{font-size:8.5px}#late-repaint-card{margin-top:10px}#late-repaint-card.open{inset:8px;border-radius:14px}#late-repaint-card.open .weekly-report-head{padding:11px 12px}#late-repaint-card.open .weekly-report-title strong{font-size:15px}#late-repaint-card.open .lr-detail-body{padding:10px 10px 18px}.lr-detail-toolbar-top{width:100%}.lr-detail-toolbar input{width:100%;max-width:none}.lr-period-tabs{gap:4px}.lr-period-tab{min-height:36px;font-size:10px}.lr-custom-range{flex-wrap:wrap}.lr-custom-range input{flex-basis:45%}}
+
+
 /* ---------- 週次振り返りレポート ---------- */
 /* ウィークリーレポート：閲覧はモーダル、編集・削除のみ管理者認証 */
 .weekly-report-card.open{position:fixed;inset:12px;z-index:1200;margin:0;max-width:none;border-radius:18px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.28),0 0 0 100vmax rgba(15,23,42,.48);overflow:hidden;display:flex;flex-direction:column}
@@ -732,6 +784,34 @@ body.editing-record #manual-entry-wrap{display:block}
       <div class="plbl" id="l-sum" style="margin-bottom:10px"></div>
       <div id="sum-cards"></div>
 
+      <section class="weekly-report-card" id="late-repaint-card" aria-label="戻り品再塗装">
+        <div class="weekly-report-head" id="lr-main-head">
+          <div class="weekly-report-title"><strong>🔁 戻り品再塗装</strong></div>
+          <div class="weekly-report-actions">
+            <button type="button" class="weekly-report-btn" id="lr-detail-open">📖 詳細を見る</button>
+            <button type="button" class="weekly-report-btn primary" id="lr-open-add">＋ 登録</button>
+          </div>
+        </div>
+        <div class="lr-card-note">※後日の検品や客先でのNG品など、先週以前に塗装した物を今週再塗装した分の記録です。上の集計カード・グラフ（実質再塗装率など）には含まれません。</div>
+        <div class="lr-main-summary" id="lr-main-summary" aria-label="戻り品再塗装の数量と使用量"></div>
+        <div class="lr-detail-body">
+          <div class="lr-period-tabs" id="lr-period-tabs" aria-label="戻り品再塗装の期間"></div>
+          <div class="lr-custom-range" id="lr-custom-range">
+            <button type="button" class="weekly-report-btn" id="lr-custom-week-open">📅 任意の1週間を指定</button>
+            <span id="lr-custom-week-label" class="lr-custom-week-label"></span>
+            <input type="hidden" id="lr-range-from"><input type="hidden" id="lr-range-to">
+          </div>
+          <div class="lr-detail-toolbar">
+            <div class="lr-detail-toolbar-top">
+              <div><strong>戻り品再塗装 詳細</strong><span id="lr-detail-count" class="lr-detail-count"></span></div>
+              <button type="button" class="lr-detail-back" id="lr-detail-back-head" aria-label="戻り品再塗装の詳細を閉じる">← 戻る</button>
+            </div>
+            <input type="search" id="lr-detail-search" placeholder="品名・原因・メモで検索" aria-label="戻り品再塗装を検索">
+          </div>
+          <div class="lr-auto-legend">🧮 <strong>自動計算</strong>＝過去の塗装実績から算出した使用量です。過去ログも対象です。</div>
+          <div id="lr-detail-list"></div>
+        </div>
+      </section>
 
       <section class="weekly-report-card" id="weekly-report-card" aria-label="ウィークリーレポート">
         <div class="weekly-report-head" id="weekly-report-head">
@@ -1200,6 +1280,19 @@ body.editing-record #manual-entry-wrap{display:block}
   </div>
 </div></div>
 
+<div id="late-repaint-modal" class="modal-overlay" data-confirm-escape="true"><div class="modal-content" style="max-width:620px">
+  <div class="modal-header"><div class="modal-title" id="lr-modal-title">🔁 戻り品再塗装の登録</div><button type="button" class="btn-close" id="lr-modal-close">×</button></div>
+  <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.5">先週以前に塗装した品を、後日の検品で不具合が見つかった場合や、客先でのNG品として戻ってきた場合に記録します。<strong style="color:var(--text-main)">ここで登録した内容は、上部の集計カードやグラフ（実質総件数・実質再塗装率など）には含まれません。</strong>塗料使用量は、その品名の過去実績を数量・単位換算して自動計算します。表記ゆれも照合し、十分な実績がない品名だけ手動入力になります。</div>
+  <div class="ph" style="margin-bottom:10px"><label for="lr-date" style="font-size:11px;font-weight:700;color:var(--text-dim)">発生日</label><input type="date" id="lr-date" style="width:auto"></div>
+  <div id="lr-rows"></div>
+  <button type="button" class="btn-settings" id="lr-add-row" style="width:100%;margin:2px 0 12px">＋ 品目を追加</button>
+  <div style="margin-bottom:12px"><label for="lr-memo" style="font-size:11px;font-weight:700;color:var(--text-dim);display:block;margin-bottom:4px">メモ（任意）</label><textarea id="lr-memo" rows="2" style="width:100%"></textarea></div>
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <button type="button" class="btn-settings btn-add" id="lr-save" style="flex:1;font-weight:700">この内容で登録する</button>
+    <button type="button" class="btn-settings" id="lr-modal-cancel" style="flex:1;height:42px">キャンセル</button>
+  </div>
+</div></div>
+
 <div id="causefix-modal" class="modal-overlay" data-confirm-escape="true"><div class="modal-content" style="max-width:440px">
   <div class="modal-header"><div class="modal-title">🛠 過去ログの原因名を一括修正</div><button class="btn-close" onclick="hide('causefix-modal')">×</button></div>
   <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.5">過去ログに実際に登録されている原因名を一覧から選び、正しい表記へ一括修正します。</div>
@@ -1310,7 +1403,7 @@ function showApp(){
   $('login-screen').style.display='none';$('app-screen').style.display='block';
   setToday();if(!V('t_date'))$('t_date').value=today();
   if(started)return;started=1;
-  if(db){listen('r','records');listen('t','tochaku_records')}setTimeout(()=>{try{initWeeklyReport()}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}},0)
+  if(db){listen('r','records');listen('t','tochaku_records')}setTimeout(()=>{try{initWeeklyReport()}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}try{initLateRepaints()}catch(e){console.warn('戻り品再塗装初期化失敗',e)}},0)
   applyPreset(1);badge();tPrev();
   wx(today(),w=>{$('weather').value=w.weather;if(!V('temp'))$('temp').value=w.temp;if(!V('humidity'))$('humidity').value=w.humidity});
   sched(7)
@@ -1561,6 +1654,7 @@ function prep(c,o){
   return o
 }
 const COL={r:'records',t:'tochaku_records'};
+const LR_COL='late_repaints';
 function setSyncState(type,msg){
   const b=$('sync-status-badge');if(!b)return;
   b.className='sync-status '+(type==='ok'?'':type==='check'?'sync-check':type==='wait'?'sync-wait':'sync-err');
@@ -1637,12 +1731,12 @@ function renderCal(){
   $('selected-week-range-label').textContent=`${cal.s} (月) ～ ${cal.e} (日)`
 }
 function calMove(n){cal.d=new Date(cal.d.getFullYear(),cal.d.getMonth()+n,1);renderCal()}
-function calApply(){if(!cal.s)return uiAlert('カレンダーで1週間を指定してください。');setR(cal.t,'custom',cal.s,cal.e);hide('custom-period-modal')}
+function calApply(){if(!cal.s)return uiAlert('カレンダーで1週間を指定してください。');if(cal.t==='lr'){if(typeof window.__lrApplyCustomWeek==='function')window.__lrApplyCustomWeek(cal.s,cal.e);hide('custom-period-modal');return}setR(cal.t,'custom',cal.s,cal.e);hide('custom-period-modal')}
 $('calendar-days-grid').onclick=e=>{const r=e.target.closest('.calendar-row');if(r){cal.s=r.dataset.s;cal.e=r.dataset.e;renderCal()}};
 
 /* ---------- 集計サマリー・ランキング ---------- */
 function rk(id,rows,empty,bg){
-  $(id).innerHTML=rows.length?rows.map((r,i)=>`<div class="cause-item"><div class="cause-header"><span style="display:flex;align-items:center;word-break:break-all"><span class="rank-badge ${i<3?'rank-'+(i+1):'rank-other'}">${i+1}</span>${r[0]}</span><span><strong>${r[1]}</strong></span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${r[2]}%${bg?';background:'+bg:''}"></div></div></div>`).join(''):`<div class="empty-sm">${empty}</div>`
+  $(id).innerHTML=rows.length?rows.map((r,i)=>`<div class="cause-item"><div class="cause-header"><span style="display:flex;align-items:center;word-break:break-all"><span class="rank-badge ${i<3?'rank-'+(i+1):'rank-other'}">${i+1}</span>${r[0]}</span><span><strong>${esc(r[1])}</strong></span></div><div class="cause-bar-bg"><div class="cause-bar-fill" style="width:${r[2]}%${bg?';background:'+bg:''}"></div></div></div>`).join(''):`<div class="empty-sm">${empty}</div>`
 }
 const srt=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
 /* 実質換算（台=1.0基準の重み付け合計）。小物・平板など単位が混在していても、ざっくり実態に近い件数・再塗装率を出すための補助値 */
@@ -2313,7 +2407,7 @@ $('sum-cards').innerHTML=`<div class="summary-grid-ng summary-dashboard-cards">
     <div class="card-subcount summary-avg-sub" id="s-a-count"></div>
   </div>
 </div>
-<div class="summary-note">実質換算について：台・枚・個などの数量を、登録済みの換算係数に基づいて「台=1.0」として換算した集計値です。実質再塗装率も、この実質総件数を母数に算出しています。換算値は統計比較用で、実際の台数・枚数・個数そのものではありません。</div>
+<div class="summary-note">実質換算について：台・枚・個などの数量を、登録済みの換算係数に基づいて「台=1.0」として換算した集計値です。実質再塗装率も、この実質総件数を母数に算出しています。換算値は統計比較用で、実際の台数・枚数・個数そのものではありません。なお、戻り品再塗装（後日の検品や客先でのNG品）はこの集計には含まれません。</div>
 <div id="summary-trends-card" class="summary-trends-card"></div>`;
 document.querySelectorAll('.cause-tabs[data-t]').forEach(e=>{
   const t=e.dataset.t;
@@ -2483,6 +2577,7 @@ const toggleCursor=()=>cur.toggle();
     if(!ov)return false;
     if(ov.id==='causefix-modal')return!!($('causefix-new')&&$('causefix-old')&&$('causefix-new').value.trim()!==$('causefix-old').value);
     if(ov.id==='bulk-bake-modal')return!!(bulkBakeSelected().length||V('bulk-bake-temp')||V('bulk-bake-time')||V('bulk-bake-paint'));
+    if(ov.id==='late-repaint-modal')return typeof window.__lrHasUnsaved==='function'&&window.__lrHasUnsaved();
     return false;
   }
   function closeModalWithConfirm(ov){
@@ -2644,6 +2739,257 @@ const toggleCursor=()=>cur.toggle();
   }
   window.initWeeklyReport=function(){if(wrReady)return;wrReady=true;try{wrBind()}catch(e){console.error('ウィークリーレポートUI初期化失敗:',e);return}if(!db){wrStatus(null);return}try{wrUnsub=db.collection(WR_COL).orderBy('week_start','desc').limit(52).onSnapshot(s=>{try{wrDocs=[];s.forEach(d=>wrDocs.push({docId:d.id,...d.data()}));if(!wrEditing)wrLoadSelected();wrRenderList()}catch(e){console.warn('ウィークリーレポート表示更新失敗',e)}},e=>{console.warn('ウィークリーレポート読込失敗',e);try{wrStatus(wrHit())}catch(_){}})}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}};
 })();
+
+/* ---------- 戻り品再塗装ログ ---------- */
+(function(){
+  let lrDocs=[],lrBound=false,lrRows=1,lrEditId=null,lrEditSnapshot=null,lrPeriodTab='week';
+  function lrNormName(name){
+    return String(name||'').normalize('NFKC').toLowerCase().replace(/[\s\u3000_\-‐‑–—\/／・.．,，:：;；'"`´~〜()（）\[\]［］【】{}｛｝]/g,'').trim();
+  }
+  function lrNameSimilarity(a,b){
+    const x=lrNormName(a),y=lrNormName(b);if(!x||!y)return 0;if(x===y)return 1;
+    if(x.includes(y)||y.includes(x))return Math.min(x.length,y.length)/Math.max(x.length,y.length);
+    const m=x.length,n=y.length;if(!m||!n)return 0;
+    const dp=Array.from({length:m+1},(_,i)=>{const r=new Array(n+1);r[0]=i;return r});
+    for(let j=1;j<=n;j++)dp[0][j]=j;
+    for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(x[i-1]===y[j-1]?0:1));
+    return 1-dp[m][n]/Math.max(m,n);
+  }
+  function lrRatio(name,unit){
+    const key=lrNormName(name);if(!key)return null;
+    const exact=[],candidates=[];
+    for(const r of all('r')){
+      if(!(Number(r._w)>0)&&!(Number(r.paint_weight)>0))continue;
+      if(!Array.isArray(r.items))continue;
+      const items=r.items.filter(i=>i&&Number(i.qty)>0);
+      const totalEq=items.reduce((s,i)=>s+(Number(i.qty)||0)*uf(i.unit||'台'),0);
+      if(totalEq<=0)continue;
+      items.forEach(it=>{
+        const nm=lrNormName(it.name);if(!nm)return;
+        const sim=lrNameSimilarity(name,it.name);if(sim<0.88)return;
+        const q=Number(it.qty)||0, u=it.unit||'台',eq=q*uf(u);
+        if(eq<=0)return;
+        const w=Number(r._w)||Number(r.paint_weight)||0;
+        const share=w*eq/totalEq;
+        const perEq=share/eq;
+        const rec={perEq,eq,q,unit:u,sim,name:it.name};
+        if(nm===key)exact.push(rec);else candidates.push(rec);
+      });
+    }
+    const use=exact.length?exact:candidates;
+    if(!use.length)return null;
+    if(!exact.length){
+      const names=[...new Set(use.map(x=>lrNormName(x.name)))];
+      const best=Math.max(...use.map(x=>x.sim));
+      if(names.length!==1||best<0.92)return null;
+    }
+    let eq=0,weighted=0,n=0;use.forEach(x=>{eq+=x.eq;weighted+=x.perEq*x.eq;n+=x.q});
+    if(eq<=0)return null;
+    return{ratio:weighted/eq,n,matched:use[0].name,approx:!exact.length};
+  }
+  function lrRow(i){
+    return `<div class="lr-row" data-i="${i}">
+      <div class="lr-row-grid">
+        <div class="lr-field lr-field-name"><label>品名${i}${i===1?'（必須）':'（任意）'}</label><input type="text" class="lr-name" list="registered-products" placeholder="品名" oninput="window.__lrRecalc(${i})"></div>
+        <div class="lr-field"><label>原因</label><select class="lr-cause"><option value="">選択してください</option>${causes.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select></div>
+        <div class="lr-field lr-field-sm"><label>数量</label><input type="number" class="lr-qty" min="0" step="1" inputmode="numeric" oninput="window.__lrRecalc(${i})"></div>
+        <div class="lr-field lr-field-sm"><label>単位</label><select class="lr-unit" onchange="window.__lrRecalc(${i})">${UNITS.map(u=>`<option value="${u}">${u}</option>`).join('')}</select></div>
+        <div class="lr-field"><label>使用塗料量(kg)</label><input type="number" class="lr-paint" min="0" step="0.01" inputmode="decimal" oninput="window.__lrManualPaint(${i})"></div>
+      </div>
+      <div class="lr-calc-note" data-note></div>
+      ${i>1?'<button type="button" class="lr-row-remove" onclick="this.closest(\'.lr-row\').remove()">✕ この行を削除</button>':''}
+    </div>`;
+  }
+  function lrRenderRows(){$('lr-rows').innerHTML=Array.from({length:lrRows},(_,k)=>lrRow(k+1)).join('')}
+  window.__lrRecalc=function(i){
+    const row=document.querySelector(`.lr-row[data-i="${i}"]`);if(!row)return;
+    const name=row.querySelector('.lr-name').value.trim(),qty=Number(row.querySelector('.lr-qty').value)||0,unit=row.querySelector('.lr-unit').value,paint=row.querySelector('.lr-paint'),note=row.querySelector('[data-note]');
+    if(!name||!qty){note.textContent='';note.classList.remove('warn');row.dataset.paintAuto='0';row.dataset.paintSource='';return}
+    if(typeof A!=='undefined'&&A.r&&A.r.s!==2){
+      row.dataset.paintAuto='0';row.dataset.paintSource='';
+      note.textContent='⏳ 過去実績を読み込み中のため、自動計算はまだ確定していません。読み込み後に再計算されます。';
+      note.classList.remove('warn');
+      return;
+    }
+    const info=lrRatio(name,unit);
+    if(info){
+      paint.value=(info.ratio*qty*uf(unit)).toFixed(3);
+      row.dataset.paintAuto='1';
+      row.dataset.paintSource=info.approx?'historical-approx':'historical';
+      note.textContent=info.approx?`🧮 自動計算（過去実績の近似品「${info.matched}」から算出。表記ゆれ・単位換算に対応）`:`🧮 自動計算（過去実績 ${info.n.toLocaleString('ja-JP')}件分の平均。単位換算に対応）`;
+      note.classList.remove('warn');
+    }else{
+      row.dataset.paintAuto='0';
+      row.dataset.paintSource='';
+      note.textContent='⚠️ この品名の十分な過去実績が見つからないため、使用塗料量を手動で入力してください。品名の表記を登録済みの名称に合わせると自動計算できる場合があります。';
+      note.classList.add('warn');
+    }
+  };
+  window.__lrManualPaint=function(i){
+    const row=document.querySelector(`.lr-row[data-i="${i}"]`);if(!row)return;
+    row.dataset.paintAuto='0';row.dataset.paintSource='manual';
+    const note=row.querySelector('[data-note]');
+    if(note){note.textContent='✏️ 手動入力した使用塗料量です。';note.classList.remove('warn')}
+  };
+  function lrFillRow(i,x){
+    const row=document.querySelector(`.lr-row[data-i="${i}"]`);if(!row||!x)return;
+    row.querySelector('.lr-name').value=x.name||'';row.querySelector('.lr-cause').value=x.cause||'';row.querySelector('.lr-qty').value=x.qty||'';row.querySelector('.lr-unit').value=x.unit||'台';row.querySelector('.lr-paint').value=x.paint_weight||'';row.dataset.paintAuto=x.paint_weight_auto?'1':'0';row.dataset.paintSource=x.paint_weight_source||'';if(x.paint_weight_auto){const note=row.querySelector('[data-note]');note.textContent=x.paint_weight_source==='historical-approx'?'🧮 自動計算済み（過去実績の近似品から算出）':'🧮 自動計算済み（過去実績から算出）';note.classList.remove('warn')}
+  }
+  function lrCloseModal(){
+    const close=()=>{hide('late-repaint-modal');lrEditId=null;lrEditSnapshot=null};
+    if(typeof window.__lrHasUnsaved==='function'&&window.__lrHasUnsaved()){
+      uiConfirm('入力中の内容を破棄して閉じますか？').then(ok=>{if(ok)close()});
+      return;
+    }
+    close();
+  }
+  window.__lrCloseModal=lrCloseModal;
+  async function lrOpen(editDoc){
+    const isEdit=!!(editDoc&&editDoc.docId&&Array.isArray(editDoc.items));
+    // 詳細カードは開いたまま、編集モーダルをその上に重ねる。
+    lrEditId=isEdit?editDoc.docId:null;$('lr-modal-title').textContent=isEdit?'🔁 戻り品再塗装の編集':'🔁 戻り品再塗装の登録';$('lr-save').textContent=isEdit?'この内容で更新する':'この内容で登録する';
+    lrRows=isEdit?Math.max(1,editDoc.items.length):1;lrRenderRows();$('lr-date').value=isEdit?(editDoc.date||ds(new Date())):ds(new Date());$('lr-memo').value=isEdit?(editDoc.memo||''):'';
+    if(isEdit)editDoc.items.forEach((x,k)=>lrFillRow(k+1,x));
+    lrEditSnapshot=isEdit?JSON.stringify({date:editDoc.date||'',memo:editDoc.memo||'',items:editDoc.items}):null;
+    show('late-repaint-modal');
+    const p=typeof loadArch==='function'?loadArch('r'):null;
+    if(!isEdit&&p&&p.then){
+      await p;
+      if(typeof A!=='undefined'&&A.r&&A.r.s===2){
+        for(let k=1;k<=lrRows;k++)window.__lrRecalc(k);
+      }else if(typeof A!=='undefined'&&A.r&&A.r.s===1){
+        const t=setInterval(()=>{if(A.r.s!==1){clearInterval(t);for(let k=1;k<=lrRows;k++)window.__lrRecalc(k)}},50);
+        setTimeout(()=>clearInterval(t),15000);
+      }
+    }
+  }
+  function lrAddRow(){if(lrRows>=5)return;lrRows++;$('lr-rows').insertAdjacentHTML('beforeend',lrRow(lrRows))}
+  function lrCollectItems(){return[...document.querySelectorAll('#lr-rows .lr-row')].map(row=>({name:row.querySelector('.lr-name').value.trim(),cause:row.querySelector('.lr-cause').value,qty:Number(row.querySelector('.lr-qty').value)||0,unit:row.querySelector('.lr-unit').value||'台',paint_weight:Number(row.querySelector('.lr-paint').value)||0,paint_weight_auto:row.dataset.paintAuto==='1',paint_weight_source:row.dataset.paintSource||''})).filter(x=>x.name&&x.qty>0)}
+  function lrSnapshot(){return JSON.stringify({date:V('lr-date'),memo:V('lr-memo')||'',items:lrCollectItems()})}
+  function lrSave(){
+    const items=lrCollectItems();if(!items.length){uiAlert('品名と数量を入力してください。');return}if(items.some(x=>!x.cause)){uiAlert('原因を選択してください。');return}if(!db){uiAlert('オフラインのため登録できません。');return}
+    const date=V('lr-date')||ds(new Date()),memo=V('lr-memo')||'';
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){uiAlert('発生日を正しく指定してください。');return}
+    if(items.some(x=>!Number.isInteger(x.qty)||x.qty<1)){uiAlert('数量は1以上の整数で入力してください。');return}
+    const doc={date,items,memo};doc._h=[items.map(x=>x.name).join(' '),items.map(x=>x.cause).join(' '),memo].join('\n').toLowerCase();const btn=$('lr-save');btn.disabled=true;const isEdit=!!lrEditId;
+    const task=isEdit?db.collection(LR_COL).doc(lrEditId).update(doc):db.collection(LR_COL).add({...doc,timestamp:Date.now()});
+    task.then(()=>{hide('late-repaint-modal');lrEditId=null;lrEditSnapshot=null;uiAlert(isEdit?'更新しました。':'登録しました。')}).catch(e=>uiAlert('保存に失敗しました: '+e.message)).finally(()=>{btn.disabled=false});
+  }
+  const LR_PERIODS=[['week','今週'],['lastweek','先週'],['month','月間'],['year','年間'],['custom','任意']];
+  function lrPeriodRange(){
+    if(lrPeriodTab==='custom'){const f=V('lr-range-from'),t=V('lr-range-to');return f&&t&&f<=t?[f,t]:null}
+    const R=ranges();return R[lrPeriodTab]||R.week;
+  }
+  function lrOpenCustomWeek(){
+    const w=lrPeriodRange()||ranges().week,m=new Date(new Date(w[0]).getFullYear(),new Date(w[0]).getMonth(),1);
+    cal.t='lr';cal.s=w[0];cal.e=w[1];cal.d=m;renderCal();show('custom-period-modal');
+  }
+  function lrCustomWeekLabel(){const r=lrPeriodRange(),el=$('lr-custom-week-label');if(el)el.textContent=r?`${r[0]} ～ ${r[1]}`:'1週間を選択してください';}
+  window.__lrApplyCustomWeek=function(from,to){$('lr-range-from').value=from;$('lr-range-to').value=to;lrPeriodTab='custom';lrRenderPeriodTabs();lrRenderDetail()};
+
+  function lrRenderPeriodTabs(){
+    const el=$('lr-period-tabs');if(!el)return;
+    el.innerHTML=LR_PERIODS.map(([k,label])=>`<button type="button" class="lr-period-tab${lrPeriodTab===k?' active':''}" data-lr-period="${k}">${label}</button>`).join('');
+    const cr=$('lr-custom-range');if(cr)cr.classList.toggle('show',lrPeriodTab==='custom');
+    lrCustomWeekLabel();
+  }
+  function lrPeriodStats(range){if(!range)return{count:0,qty:0,paint:0};let count=0,qty=0,paint=0;lrDocs.forEach(d=>{if(!d.date||d.date<range[0]||d.date>range[1])return;count++;(d.items||[]).forEach(x=>{qty+=Number(x.qty)||0;paint+=Number(x.paint_weight)||0})});return{count,qty,paint}}
+  function lrRenderMainSummary(){
+    const R=ranges(),w=lrPeriodStats(R.week),lw=lrPeriodStats(R.lastweek);
+    const el=$('lr-main-summary');if(!el)return;
+    // メイン表示は数量・使用量のみ。補助集計は表示しない。
+    el.innerHTML=`<div class="lr-main-stat"><b>${w.qty}件</b><span>今週の数量</span></div><div class="lr-main-stat"><b>${w.paint.toFixed(2)}kg</b><span>今週の使用量</span></div><div class="lr-main-stat lr-main-stat-prev"><b>${lw.qty}件</b><span>先週の数量</span></div><div class="lr-main-stat lr-main-stat-prev"><b>${lw.paint.toFixed(2)}kg</b><span>先週の使用量</span></div>`;
+  }
+  function lrRenderDetail(){
+    const box=$('lr-detail-list'),count=$('lr-detail-count');if(!box)return;
+    const range=lrPeriodRange(),kw=(V('lr-detail-search')||'').trim().toLowerCase();let rows=lrDocs.slice();
+    if(range)rows=rows.filter(d=>d.date&&d.date>=range[0]&&d.date<=range[1]);
+    if(kw)rows=rows.filter(d=>(d.memo||'').toLowerCase().includes(kw)||(d.items||[]).some(x=>(x.name||'').toLowerCase().includes(kw)||(x.cause||'').toLowerCase().includes(kw)));
+    rows.sort((a,b)=>{const an=(a.items||[]).map(x=>String(x.name||'')).sort((x,y)=>x.localeCompare(y,'ja',{numeric:true,sensitivity:'base'}))[0]||'';const bn=(b.items||[]).map(x=>String(x.name||'')).sort((x,y)=>x.localeCompare(y,'ja',{numeric:true,sensitivity:'base'}))[0]||'';return an.localeCompare(bn,'ja',{numeric:true,sensitivity:'base'})||String(a.docId||'').localeCompare(String(b.docId||''));});
+    if(count){const st=lrPeriodStats(range);count.textContent=`${st.qty}件・${st.paint.toFixed(2)}kg`;}
+    box.innerHTML=rows.length?rows.map(d=>`<div class="lr-entry"><div class="lr-entry-head"><span class="lr-entry-date">${esc(d.date)}</span><span class="lr-entry-actions"><button type="button" class="lr-row-remove lr-edit" data-id="${d.docId}">✏️ 編集</button><button type="button" class="lr-row-remove lr-del" data-id="${d.docId}">🗑 削除</button></span></div>${d.memo?`<div class="lr-entry-memo">📝 ${esc(d.memo)}</div>`:''}<table class="lr-entry-table"><thead><tr><th>品名</th><th>原因</th><th>数量</th><th>使用量(kg)</th></tr></thead><tbody>${(d.items||[]).slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ja',{numeric:true,sensitivity:'base'})).map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.cause)}</td><td>${esc(x.qty)}件</td><td><span>${Number(x.paint_weight||0).toFixed(2)}</span>${x.paint_weight_auto?` <span class="lr-auto-badge">🧮 自動計算</span>`:''}</td></tr>`).join('')}</tbody></table></div>`).join(''):'<div class="empty-sm">対象の戻り品再塗装ログはありません。</div>';
+    box.querySelectorAll('.lr-del').forEach(b=>b.addEventListener('click',()=>lrDelete(b.dataset.id)));box.querySelectorAll('.lr-edit').forEach(b=>b.addEventListener('click',()=>{const d=lrDocs.find(x=>x.docId===b.dataset.id);if(d)lrOpen(d)}));
+  }
+  let lrRecalcRunning=false,lrRecalcDone=false;
+  async function lrRecalcHistorical(){
+    if(lrRecalcRunning||lrRecalcDone||!db||!lrDocs.length)return;
+    lrRecalcRunning=true;
+    try{
+      await loadArch('r');
+      if(typeof A!=='undefined'&&A.r&&A.r.s===1){
+        await new Promise(resolve=>{const t=setInterval(()=>{if(A.r.s!==1){clearInterval(t);resolve()}},50);setTimeout(()=>{clearInterval(t);resolve()},15000)});
+      }
+      const updates=[];
+      if(typeof A==='undefined'||!A.r||A.r.s!==2){
+        console.warn('戻り品再塗装の過去ログ自動再計算を中止: 過去の実績を完全に読み込めていません。');
+        return;
+      }
+      for(const d of lrDocs){
+        if(!Array.isArray(d.items)||!d.items.length)continue;
+        let changed=false;
+        const items=d.items.map(x=>{
+          const qty=Number(x.qty)||0,unit=x.unit||'台';
+          if(!x.name||qty<=0)return x;
+          const old=Number(x.paint_weight)||0;
+          // 既存の実測・手動入力値は上書きしない。未入力、または過去に自動計算した値だけ更新する。
+          if(old>0&&x.paint_weight_auto!==true)return x;
+          const info=lrRatio(x.name,unit);
+          if(!info)return x;
+          const calc=Number((info.ratio*qty*uf(unit)).toFixed(3));
+          const source=info.approx?'historical-approx':'historical';
+          if(Math.abs(old-calc)>0.0005||x.paint_weight_auto!==true||x.paint_weight_source!==source){changed=true;return {...x,paint_weight:calc,paint_weight_auto:true,paint_weight_source:source};}
+          return x;
+        });
+        if(changed)updates.push({id:d.docId,items});
+      }
+      for(let i=0;i<updates.length;i+=400){
+        const batch=db.batch();updates.slice(i,i+400).forEach(x=>batch.update(db.collection(LR_COL).doc(x.id),{items:x.items,updated_at:Date.now()}));
+        await batch.commit();
+      }
+      if(updates.length)updates.forEach(u=>{const d=lrDocs.find(x=>x.docId===u.id);if(d)d.items=u.items});
+      lrRecalcDone=true;
+      lrDocs=lrDocs.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+      lrWeekCount();
+      if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail();
+    }catch(e){console.warn('戻り品再塗装の過去ログ自動再計算に失敗:',e)}
+    finally{lrRecalcRunning=false}
+  }
+  let lrDetailScrollY=0;
+  function lrDetailClearInputFocus(){
+    const q=$('lr-detail-search');
+    if(q)q.blur();
+    if(document.activeElement&&document.activeElement!==document.body&&typeof document.activeElement.blur==='function')document.activeElement.blur();
+  }
+  function lrDetailToggle(open){
+    const c=$('late-repaint-card');if(!c)return;
+    if(open){
+      lrDetailScrollY=window.pageYOffset||document.documentElement.scrollTop||document.body.scrollTop||0;
+      c.classList.add('open');
+      lrRenderDetail();
+      lrDetailClearInputFocus();
+      requestAnimationFrame(()=>{lrDetailClearInputFocus();requestAnimationFrame(lrDetailClearInputFocus)});
+      return;
+    }
+    const q=$('lr-detail-search');if(q)q.blur();
+    c.classList.remove('open');
+    const y=lrDetailScrollY||0;
+    requestAnimationFrame(()=>{
+      window.scrollTo({top:y,left:0,behavior:'auto'});
+      document.documentElement.scrollTop=y;
+      document.body.scrollTop=y;
+      requestAnimationFrame(()=>{
+        window.scrollTo({top:y,left:0,behavior:'auto'});
+        document.documentElement.scrollTop=y;
+        document.body.scrollTop=y;
+      });
+    });
+  }
+  function lrWeekCount(){lrRenderMainSummary()}
+  window.__lrHasUnsaved=function(){if(lrEditId&&lrEditSnapshot)return lrSnapshot()!==lrEditSnapshot;return[...document.querySelectorAll('#lr-rows .lr-row')].some(row=>row.querySelector('.lr-name').value.trim()||Number(row.querySelector('.lr-qty').value)>0)||!!V('lr-memo')}
+  async function lrDelete(id){if(!(await adm()))return;if(!(await uiConfirm('この記録を削除しますか？元に戻せません。')))return;try{await db.collection(LR_COL).doc(id).delete();lrDocs=lrDocs.filter(d=>d.docId!==id);lrWeekCount();lrRenderDetail()}catch(e){uiAlert('削除に失敗しました: '+e.message)}}
+  function lrBind(){if(lrBound)return;lrBound=true;$('lr-open-add')&&$('lr-open-add').addEventListener('click',e=>{e.stopPropagation();lrOpen()});$('lr-add-row')&&$('lr-add-row').addEventListener('click',lrAddRow);$('lr-save')&&$('lr-save').addEventListener('click',lrSave);$('lr-modal-close')&&$('lr-modal-close').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();lrCloseModal()});$('lr-modal-cancel')&&$('lr-modal-cancel').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();lrCloseModal()});$('lr-detail-open')&&$('lr-detail-open').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();lrDetailToggle(true)});$('lr-detail-back-head')&&$('lr-detail-back-head').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();lrDetailToggle(false)});$('lr-main-head')&&$('lr-main-head').addEventListener('click',e=>{if(e.target.closest('button'))return;lrDetailToggle(true)});$('lr-detail-search')&&$('lr-detail-search').addEventListener('input',lrRenderDetail);$('lr-period-tabs')&&$('lr-period-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-lr-period]');if(!b)return;lrPeriodTab=b.dataset.lrPeriod;if(lrPeriodTab==='custom')lrOpenCustomWeek();lrRenderPeriodTabs();lrRenderDetail()});$('lr-custom-week-open')&&$('lr-custom-week-open').addEventListener('click',e=>{e.stopPropagation();lrOpenCustomWeek()});lrRenderPeriodTabs();document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('late-repaint-card')?.classList.contains('open')&&!document.querySelector('.modal-overlay[style*="flex"]'))lrDetailToggle(false)})}
+  window.initLateRepaints=function(){try{lrBind()}catch(e){console.error('戻り品再塗装UI初期化失敗:',e)}if(!db)return;try{db.collection(LR_COL).orderBy('date','desc').onSnapshot(s=>{lrDocs=[];s.forEach(d=>lrDocs.push({docId:d.id,...d.data()}));lrRecalcDone=false;lrWeekCount();if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail();lrRecalcHistorical()},e=>console.warn('戻り品再塗装読込失敗:',e))}catch(e){console.warn('戻り品再塗装初期化失敗:',e)}};
+})()
 
 /* ---------- 簡易実績登録：5段階ステップ（既存保存処理を使用） ---------- */
 (function(){
