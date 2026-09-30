@@ -255,6 +255,8 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .calendar-cell{padding:10px 0;border-radius:4px;font-weight:500;color:var(--text-main)}
 .calendar-cell.other-month{color:#cbd5e1}
 .calendar-row:hover .calendar-cell:not(.other-month){background:rgba(2,132,199,.1)}
+.calendar-mode{display:flex;gap:6px;margin-bottom:10px}.calendar-mode .btn-tab{flex:1;justify-content:center;padding:8px 10px;font-size:12px}
+#calendar-days-grid.month-mode .calendar-cell{cursor:pointer}#calendar-days-grid.month-mode .calendar-cell:not(.other-month){background:var(--accent-cyan);color:#fff;font-weight:700;border-radius:0}
 .calendar-row.selected .calendar-cell{background:var(--accent-cyan)!important;color:#fff!important;font-weight:700}
 .calendar-row.selected .calendar-cell:first-child{border-top-left-radius:8px;border-bottom-left-radius:8px}
 .calendar-row.selected .calendar-cell:last-child{border-top-right-radius:8px;border-bottom-right-radius:8px}
@@ -805,7 +807,7 @@ body.editing-record #manual-entry-wrap{display:block}
         <div class="lr-detail-body">
           <div class="lr-period-tabs" id="lr-period-tabs" aria-label="戻り品再塗装の期間"></div>
           <div class="lr-custom-range" id="lr-custom-range">
-            <button type="button" class="weekly-report-btn" id="lr-custom-week-open">📅 任意の1週間を指定</button>
+            <button type="button" class="weekly-report-btn" id="lr-custom-week-open">📅 任意の期間（週・月）を指定</button>
             <span id="lr-custom-week-label"></span>
             <input type="hidden" id="lr-range-from"><input type="hidden" id="lr-range-to">
           </div>
@@ -1274,8 +1276,9 @@ body.editing-record #manual-entry-wrap{display:block}
 </div></div>
 
 <div id="custom-period-modal" class="modal-overlay"><div class="modal-content" style="max-width:440px">
-  <div class="modal-header"><div class="modal-title">📅 任意1週間（月～日）の指定</div><button class="btn-close" onclick="hide('custom-period-modal')">×</button></div>
-  <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px">カレンダー上のいずれかの日付を選択してください。該当する1週間（月曜日～日曜日）がまとめて指定されます。</div>
+  <div class="modal-header"><div class="modal-title">📅 任意期間の指定（1週間／1か月）</div><button class="btn-close" onclick="hide('custom-period-modal')">×</button></div>
+  <div class="calendar-mode"><button type="button" class="btn-tab" id="cal-mode-week" onclick="calMode('week')">📆 1週間</button><button type="button" class="btn-tab" id="cal-mode-month" onclick="calMode('month')">🗓 1か月</button></div>
+  <div id="cal-desc" style="font-size:12px;color:var(--text-dim);margin-bottom:8px"></div>
   <div class="calendar-container">
     <div class="calendar-header"><button type="button" onclick="calMove(-1)">◀ 前月</button><span id="calendar-month-label" style="font-weight:700;font-size:14px"></span><button type="button" onclick="calMove(1)">翌月 ▶</button></div>
     <div class="calendar-grid"><div class="calendar-day-head">月</div><div class="calendar-day-head">火</div><div class="calendar-day-head">水</div><div class="calendar-day-head">木</div><div class="calendar-day-head">金</div><div class="calendar-day-head sat">土</div><div class="calendar-day-head sun">日</div></div>
@@ -1283,7 +1286,7 @@ body.editing-record #manual-entry-wrap{display:block}
   </div>
   <div style="margin-top:14px;padding:10px;background:rgba(2,132,199,.08);border-radius:var(--radius-sm);border:1px solid rgba(2,132,199,.2);font-size:11.5px;text-align:center;color:var(--accent-cyan);font-weight:700">選択範囲: <span id="selected-week-range-label"></span></div>
   <div style="display:flex;gap:8px;margin-top:16px">
-    <button type="button" class="btn-settings btn-add" onclick="calApply()" style="flex:1;font-weight:700">この1週間を集計</button>
+    <button type="button" class="btn-settings btn-add" onclick="calApply()" id="cal-apply-btn" style="flex:1;font-weight:700">この1週間を集計</button>
     <button type="button" class="btn-settings" onclick="hide('custom-period-modal')" style="flex:1;height:42px">キャンセル</button>
   </div>
 </div></div>
@@ -1340,7 +1343,7 @@ nn=id=>parseFloat(V(id))||0,pf=(id,d)=>{const v=parseFloat(V(id));return isNaN(v
 show=id=>$(id).style.display='flex',hide=id=>$(id).style.display='none',mn=()=>$('menu').classList.remove('open');
 
 const LOC={fukuyama:{lat:34.4858,lon:133.3642,label:'福山市'},hiroshima:{lat:34.3853,lon:132.4553,label:'広島市'},okayama:{lat:34.6617,lon:133.935,label:'岡山市'},tokyo:{lat:35.6895,lon:139.6917,label:'東京都'},osaka:{lat:34.6937,lon:135.5023,label:'大阪市'},nagoya:{lat:35.1815,lon:136.9066,label:'名古屋市'},fukuoka:{lat:33.5904,lon:130.4017,label:'福岡市'},sendai:{lat:38.2682,lon:140.8694,label:'仙台市'},sapporo:{lat:43.0642,lon:141.3469,label:'札幌市'}};
-const NM={all:'すべて',week:'今週',lastweek:'先週',month:'今月',year:'今年',custom:'指定週'},F={sum:1,cause:1,paint:1,list:2,tk:4};
+const NM={all:'すべて',week:'今週',lastweek:'先週',month:'今月',year:'今年',custom:'指定期間'},F={sum:1,cause:1,paint:1,list:2,tk:4};
 const P={sum:{k:'week'},cause:{k:'week'},paint:{k:'week'},list:{k:'all'},tk:{k:'all'}};
 const WIN=(new Date().getFullYear()-1)+'-12-01',M={r:new Map(),t:new Map()},A={r:{m:new Map(),s:0},t:{m:new Map(),s:0}},cache={},pg={l:1,t:1},pageSize={l:10,t:10},cal={t:'',s:'',e:'',d:new Date()};
 
@@ -1721,26 +1724,39 @@ function clearF(){ngF=0;$('search-input').value='';setR('list','all')}
 function ngOnly(){ngF=ngF?0:1;$('search-input').value='';pg.l=1;sched(2)}
 function clearT(){$('tochaku-search-input').value='';$('tochaku-filter-date').value='';setR('tk','all')}
 
-/* ---------- カレンダー（任意の1週間） ---------- */
-function openCal(t){
-  cal.t=t;const p=P[t],w=p.k==='custom'?[p.s,p.e]:wk(new Date()),m=D(pd(w[0]),3);
-  cal.s=w[0];cal.e=w[1];cal.d=new Date(m.getFullYear(),m.getMonth(),1);renderCal();show('custom-period-modal')
+/* ---------- カレンダー（任意の1週間／1か月） ---------- */
+const monthR=d=>[ds(new Date(d.getFullYear(),d.getMonth(),1)),ds(new Date(d.getFullYear(),d.getMonth()+1,0))],isMonthR=(s,e)=>!!(s&&e&&pd(s).getDate()===1&&monthR(pd(s))[1]===e);
+function openCal(t,init){
+  const p=P[t],w=init||(p&&p.k==='custom'?[p.s,p.e]:wk(new Date()));
+  cal.t=t;cal.m=isMonthR(w[0],w[1])?'month':'week';cal.s=w[0];cal.e=w[1];cal.d=cal.m==='month'?pd(w[0]):new Date(D(pd(w[0]),3).getFullYear(),D(pd(w[0]),3).getMonth(),1);renderCal();show('custom-period-modal')
+}
+function calMode(m){
+  if(cal.m===m)return;cal.m=m;
+  if(m==='month'){const r=monthR(pd(cal.s));cal.s=r[0];cal.e=r[1];cal.d=pd(r[0])}
+  else{const w=wk(pd(cal.s));cal.s=w[0];cal.e=w[1];cal.d=new Date(pd(cal.s).getFullYear(),pd(cal.s).getMonth(),1)}
+  renderCal()
 }
 function renderCal(){
-  const y=cal.d.getFullYear(),m=cal.d.getMonth();
+  const y=cal.d.getFullYear(),m=cal.d.getMonth(),mo=cal.m==='month';
   $('calendar-month-label').textContent=`${y}年 ${m+1}月`;
   let c=new Date(y,m,1-((new Date(y,m,1).getDay()+6)%7)),h='';
   for(let w=0;w<6;w++){
-    h+=`<div class="calendar-row${cal.s===ds(c)?' selected':''}" data-s="${ds(c)}" data-e="${ds(D(c,6))}">`;
-    for(let d=0;d<7;d++){h+=`<div class="calendar-cell${c.getMonth()!==m?' other-month':''}${d===5?' sat':d===6?' sun':''}">${c.getDate()}</div>`;c=D(c,1)}
+    h+=`<div class="calendar-row${!mo&&cal.s===ds(c)?' selected':''}" data-s="${ds(c)}" data-e="${ds(D(c,6))}">`;
+    for(let d=0;d<7;d++){h+=`<div class="calendar-cell${c.getMonth()!==m?' other-month':''}${d===5?' sat':d===6?' sun':''}" data-d="${ds(c)}">${c.getDate()}</div>`;c=D(c,1)}
     h+='</div>'
   }
-  $('calendar-days-grid').innerHTML=h;
-  $('selected-week-range-label').textContent=`${cal.s} (月) ～ ${cal.e} (日)`
+  const g=$('calendar-days-grid');g.innerHTML=h;g.classList.toggle('month-mode',mo);
+  $('cal-mode-week').classList.toggle('active',!mo);$('cal-mode-month').classList.toggle('active',mo);
+  $('cal-desc').textContent=mo?'◀ 前月／翌月 ▶ で月を切り替え、日付をタップするとその月の1日～末日がまとめて指定されます。':'カレンダー上のいずれかの日付を選択してください。該当する1週間（月曜日～日曜日）がまとめて指定されます。';
+  $('cal-apply-btn').textContent=mo?'この1か月を集計':'この1週間を集計';
+  $('selected-week-range-label').textContent=mo?`${cal.s} ～ ${cal.e}（${cal.s.slice(0,4)}年${+cal.s.slice(5,7)}月）`:`${cal.s} (月) ～ ${cal.e} (日)`
 }
-function calMove(n){cal.d=new Date(cal.d.getFullYear(),cal.d.getMonth()+n,1);renderCal()}
-function calApply(){if(!cal.s)return uiAlert('カレンダーで1週間を指定してください。');if(cal.t==='lr'){if(typeof window.__lrApplyCustomWeek==='function')window.__lrApplyCustomWeek(cal.s,cal.e);hide('custom-period-modal');return}setR(cal.t,'custom',cal.s,cal.e);hide('custom-period-modal')}
-$('calendar-days-grid').onclick=e=>{const r=e.target.closest('.calendar-row');if(r){cal.s=r.dataset.s;cal.e=r.dataset.e;renderCal()}};
+function calMove(n){cal.d=new Date(cal.d.getFullYear(),cal.d.getMonth()+n,1);if(cal.m==='month'){const r=monthR(cal.d);cal.s=r[0];cal.e=r[1]}renderCal()}
+function calApply(){if(!cal.s)return uiAlert('カレンダーで期間を指定してください。');if(cal.t==='lr'){if(typeof window.__lrApplyCustomRange==='function')window.__lrApplyCustomRange(cal.s,cal.e);hide('custom-period-modal');return}setR(cal.t,'custom',cal.s,cal.e);hide('custom-period-modal')}
+$('calendar-days-grid').onclick=e=>{
+  if(cal.m==='month'){const c=e.target.closest('.calendar-cell');if(c){const d=pd(c.dataset.d),r=monthR(d);cal.s=r[0];cal.e=r[1];cal.d=new Date(d.getFullYear(),d.getMonth(),1);renderCal()}return}
+  const r=e.target.closest('.calendar-row');if(r){cal.s=r.dataset.s;cal.e=r.dataset.e;renderCal()}
+};
 
 /* ---------- 集計サマリー・ランキング ---------- */
 function rk(id,rows,empty,bg){
@@ -2878,12 +2894,9 @@ const toggleCursor=()=>cur.toggle();
     if(lrPeriodTab==='custom'){const f=V('lr-range-from'),t=V('lr-range-to');return f&&t&&f<=t?[f,t]:null}
     const R=ranges();return R[lrPeriodTab]||R.week;
   }
-  function lrOpenCustomWeek(){
-    const w=lrPeriodRange()||ranges().week,m=new Date(new Date(w[0]).getFullYear(),new Date(w[0]).getMonth(),1);
-    cal.t='lr';cal.s=w[0];cal.e=w[1];cal.d=m;renderCal();show('custom-period-modal');
-  }
-  function lrCustomWeekLabel(){const r=lrPeriodRange(),el=$('lr-custom-week-label');if(el)el.textContent=r?`${r[0]} ～ ${r[1]}`:'1週間を選択してください';}
-  window.__lrApplyCustomWeek=function(from,to){$('lr-range-from').value=from;$('lr-range-to').value=to;lrPeriodTab='custom';lrRenderPeriodTabs();lrRenderDetail()};
+  function lrOpenCustomWeek(){openCal('lr',lrPeriodRange()||ranges().week)}
+  function lrCustomWeekLabel(){const r=lrPeriodRange(),el=$('lr-custom-week-label');if(el)el.textContent=r?`${r[0]} ～ ${r[1]}`:'期間を選択してください';}
+  window.__lrApplyCustomRange=function(from,to){$('lr-range-from').value=from;$('lr-range-to').value=to;lrPeriodTab='custom';lrRenderPeriodTabs();lrRenderDetail()};
 
   function lrRenderPeriodTabs(){
     const el=$('lr-period-tabs');if(!el)return;
@@ -2901,7 +2914,7 @@ const toggleCursor=()=>cur.toggle();
   function lrRenderDetail(){
     const box=$('lr-detail-list'),count=$('lr-detail-count');if(!box)return;
     const range=lrPeriodRange(),kw=(V('lr-detail-search')||'').trim().toLowerCase();
-    if(!range){if(count)count.textContent='';box.innerHTML='<div class="empty-sm">「📅 任意の1週間を指定」から期間を選んでください。</div>';return}
+    if(!range){if(count)count.textContent='';box.innerHTML='<div class="empty-sm">「📅 任意の期間（週・月）を指定」から期間を選んでください。</div>';return}
     const cmp=(a,b)=>String(a||'').localeCompare(String(b||''),'ja',{numeric:true,sensitivity:'base'}),first=d=>(d.items||[]).map(x=>x.name).sort(cmp)[0]||'';
     const rows=lrDocs.filter(d=>d.date&&d.date>=range[0]&&d.date<=range[1]&&(!kw||(d.memo||'').toLowerCase().includes(kw)||(d.items||[]).some(x=>(x.name||'').toLowerCase().includes(kw)||(x.cause||'').toLowerCase().includes(kw)))).sort((a,b)=>cmp(first(a),first(b))||String(b.date).localeCompare(String(a.date))||cmp(a.docId,b.docId));
     if(count){const st=lrPeriodStats(range);count.textContent=`${st.qty}件・${st.paint.toFixed(2)}kg`}
