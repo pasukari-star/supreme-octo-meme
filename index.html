@@ -254,6 +254,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .calendar-cell{padding:10px 0;border-radius:4px;font-weight:500;color:var(--text-main)}
 .calendar-cell.other-month{color:#cbd5e1}
 .calendar-row:hover .calendar-cell:not(.other-month){background:rgba(2,132,199,.1)}
+#custom-period-modal.year-mode .calendar-grid{display:none}#custom-period-modal.year-mode #calendar-month-label{font-size:18px!important}
 .calendar-mode{display:flex;gap:6px;margin-bottom:10px}.calendar-mode .btn-tab{flex:1;justify-content:center;padding:8px 10px;font-size:12px}
 #calendar-days-grid.month-mode .calendar-cell{cursor:pointer}#calendar-days-grid.month-mode .calendar-cell:not(.other-month){background:var(--accent-cyan);color:#fff;font-weight:700;border-radius:0}
 .calendar-row.selected .calendar-cell{background:var(--accent-cyan)!important;color:#fff!important;font-weight:700}
@@ -649,12 +650,6 @@ body.editing-record #manual-entry-wrap{display:block}
 .lr-entry-table th{color:var(--text-dim);font-weight:700;font-size:10px}
 .lr-entry-table tr:last-child td{border-bottom:0}
 .lr-auto-badge{display:inline-block;margin:2px 0 0 4px;padding:2px 5px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:10px;font-weight:700;white-space:nowrap;vertical-align:middle}
-.lr-main-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 12px 11px}
-.lr-main-stat{min-width:0;border:1px solid rgba(225,29,72,.18);border-radius:12px;background:linear-gradient(135deg,rgba(225,29,72,.07),rgba(99,102,241,.07));padding:10px 8px;text-align:center;box-shadow:0 4px 14px rgba(15,23,42,.08)}
-.lr-main-stat-prev{background:rgba(248,250,252,.9);border-color:var(--border-color);box-shadow:none}.lr-main-stat-prev b{font-size:16px;color:var(--text-main)}
-@media(min-width:641px){.lr-main-summary{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.lr-main-stat b{display:block;font-size:21px;line-height:1.05;color:var(--accent-danger,#e11d48);font-weight:900;letter-spacing:.01em}
-.lr-main-stat span{display:block;margin-top:4px;font-size:10px;color:var(--text-dim);font-weight:800;white-space:nowrap}
 #late-repaint-card{margin-top:12px;border:2px solid rgba(225,29,72,.34);background:linear-gradient(135deg,rgba(225,29,72,.045),rgba(99,102,241,.055));box-shadow:0 8px 24px rgba(225,29,72,.12),0 2px 8px rgba(15,23,42,.07);overflow:hidden}
 #late-repaint-card .weekly-report-head{padding:13px 14px}
 #late-repaint-card .weekly-report-title strong{font-size:15px}
@@ -663,8 +658,11 @@ body.editing-record #manual-entry-wrap{display:block}
 #late-repaint-card.open{overflow-anchor:none;position:fixed;inset:12px;z-index:1100;margin:0;max-width:none;border-radius:18px;background:#fff;box-shadow:0 20px 60px rgba(15,23,42,.28),0 0 0 100vmax rgba(15,23,42,.48);overflow:hidden;display:flex;flex-direction:column}
 #late-repaint-card.open .weekly-report-head{padding:14px 16px;background:#fff;border-bottom:1px solid rgba(225,29,72,.16)}
 #late-repaint-card.open #lr-detail-open,#late-repaint-card.open #lr-open-add{display:none}
-#late-repaint-card.open .lr-card-note,#late-repaint-card.open .lr-main-summary{display:none}
+#late-repaint-card.open .lr-card-note,#late-repaint-card.open .lr-main-view{display:none}
 #late-repaint-card.open .lr-detail-body{display:block;overflow:auto;flex:1;padding:14px 16px 22px;background:linear-gradient(180deg,#fff7f8,#fff)}
+.lr-main-view{margin:0 12px 12px}.lr-main-view .lr-period-tabs{margin-bottom:8px}
+.lr-sum-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin:0 0 8px}.lr-sum-line span{font-size:10.5px;font-weight:800;color:var(--text-dim)}.lr-sum-line b{font-size:20px;font-weight:900;color:var(--accent-danger,#e11d48);margin-right:3px}.lr-sum-line em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:700;color:var(--text-dim)}
+.lr-sum-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:5px;max-height:176px;overflow:auto}.lr-sum-item{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 9px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11.5px}.lr-sum-item span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.lr-sum-item b{flex:0 0 auto;color:var(--accent-danger,#e11d48);font-weight:900}
 .lr-period-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:0 0 10px}
 .lr-period-tab{min-height:34px;border:1px solid var(--border-color);border-radius:8px;background:#fff;color:var(--text-dim);font-size:10.5px;font-weight:800;cursor:pointer}
 .lr-period-tab.active{border-color:rgba(225,29,72,.45);background:rgba(225,29,72,.09);color:var(--accent-danger,#e11d48);box-shadow:0 2px 7px rgba(225,29,72,.1)}
@@ -679,7 +677,7 @@ body.editing-record #manual-entry-wrap{display:block}
 .lr-detail-toolbar strong{font-size:13px}.lr-detail-count{font-size:10px;color:var(--text-dim);margin-left:6px}
 #lr-detail-search{width:min(280px,48%);min-height:34px;padding:6px 9px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11px}
 #lr-detail-list .empty-sm{padding:16px;text-align:center}
-@media(max-width:640px){.lr-main-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 9px 10px}.lr-main-stat{padding:8px 6px}.lr-main-stat b{font-size:18px}.lr-main-stat-prev b{font-size:15px}.lr-main-stat span{font-size:8.5px}.lr-f-name,.lr-f-cause,.lr-f-paint{grid-column:1/-1}.lr-f-qty,.lr-f-unit{grid-column:span 3}#late-repaint-card{margin-top:10px}#late-repaint-card.open{inset:8px;border-radius:14px}#late-repaint-card.open .weekly-report-head{padding:11px 12px}#late-repaint-card.open .weekly-report-title strong{font-size:15px}#late-repaint-card.open .lr-detail-body{padding:10px 10px 18px}.lr-detail-toolbar-top{width:100%}#lr-detail-search{width:100%;max-width:none}.lr-period-tabs{gap:4px}.lr-period-tab{min-height:36px;font-size:10px}.lr-custom-range{flex-wrap:wrap}.lr-custom-range input{flex-basis:45%}}
+@media(max-width:640px){.lr-main-view{margin:0 9px 10px}.lr-sum-list{grid-template-columns:repeat(2,minmax(0,1fr))}.lr-f-name,.lr-f-cause,.lr-f-paint{grid-column:1/-1}.lr-f-qty,.lr-f-unit{grid-column:span 3}#late-repaint-card{margin-top:10px}#late-repaint-card.open{inset:8px;border-radius:14px}#late-repaint-card.open .weekly-report-head{padding:11px 12px}#late-repaint-card.open .weekly-report-title strong{font-size:15px}#late-repaint-card.open .lr-detail-body{padding:10px 10px 18px}.lr-detail-toolbar-top{width:100%}#lr-detail-search{width:100%;max-width:none}.lr-period-tabs{gap:4px}.lr-period-tab{min-height:36px;font-size:10px}.lr-custom-range{flex-wrap:wrap}.lr-custom-range input{flex-basis:45%}}
 
 
 /* ---------- 週次振り返りレポート ---------- */
@@ -806,12 +804,12 @@ body.editing-record #manual-entry-wrap{display:block}
             <button type="button" class="weekly-report-btn primary" id="lr-open-add">＋ 登録</button>
           </div>
         </div>
-        <div class="lr-card-note">※後日の検品や客先でのNG品など、先週以前に塗装した物を今週再塗装した分の記録です。上の集計カード・グラフ（実質再塗装率など）には含まれません。</div>
-        <div class="lr-main-summary" id="lr-main-summary" aria-label="戻り品再塗装の数量と使用量"></div>
+        <div class="lr-card-note">※後日の検品や客先でのNG品など、先週以前に塗装した物を再塗装した分の記録です。上の集計カード・グラフ（実質再塗装率など）には含まれません。</div>
+        <div class="lr-main-view" id="lr-main-view"><div class="lr-period-tabs" id="lr-main-tabs" aria-label="戻り品再塗装の期間"></div><div id="lr-main-summary" aria-label="戻り品再塗装の品名と数量"></div></div>
         <div class="lr-detail-body">
           <div class="lr-period-tabs" id="lr-period-tabs" aria-label="戻り品再塗装の期間"></div>
           <div class="lr-custom-range" id="lr-custom-range">
-            <button type="button" class="weekly-report-btn" id="lr-custom-week-open">📅 任意の期間（週・月）を指定</button>
+            <button type="button" class="weekly-report-btn" id="lr-custom-week-open">📅 任意の期間（週・月・年）を指定</button>
             <span id="lr-custom-week-label"></span>
             <input type="hidden" id="lr-range-from"><input type="hidden" id="lr-range-to">
           </div>
@@ -1266,11 +1264,11 @@ body.editing-record #manual-entry-wrap{display:block}
 </div></div>
 
 <div id="custom-period-modal" class="modal-overlay"><div class="modal-content" style="max-width:440px">
-  <div class="modal-header"><div class="modal-title">📅 任意期間の指定（1週間／1か月）</div><button class="btn-close" onclick="hide('custom-period-modal')">×</button></div>
-  <div class="calendar-mode"><button type="button" class="btn-tab" id="cal-mode-week" onclick="calMode('week')">📆 1週間</button><button type="button" class="btn-tab" id="cal-mode-month" onclick="calMode('month')">🗓 1か月</button></div>
+  <div class="modal-header"><div class="modal-title">📅 任意期間の指定（1週間／1か月／1年）</div><button class="btn-close" onclick="hide('custom-period-modal')">×</button></div>
+  <div class="calendar-mode"><button type="button" class="btn-tab" id="cal-mode-week" onclick="calMode('week')">📆 1週間</button><button type="button" class="btn-tab" id="cal-mode-month" onclick="calMode('month')">🗓 1か月</button><button type="button" class="btn-tab" id="cal-mode-year" onclick="calMode('year')">📅 1年</button></div>
   <div id="cal-desc" style="font-size:12px;color:var(--text-dim);margin-bottom:8px"></div>
   <div class="calendar-container">
-    <div class="calendar-header"><button type="button" onclick="calMove(-1)">◀ 前月</button><span id="calendar-month-label" style="font-weight:700;font-size:14px"></span><button type="button" onclick="calMove(1)">翌月 ▶</button></div>
+    <div class="calendar-header"><button type="button" id="cal-prev" onclick="calMove(-1)">◀ 前月</button><span id="calendar-month-label" style="font-weight:700;font-size:14px"></span><button type="button" id="cal-next" onclick="calMove(1)">翌月 ▶</button></div>
     <div class="calendar-grid"><div class="calendar-day-head">月</div><div class="calendar-day-head">火</div><div class="calendar-day-head">水</div><div class="calendar-day-head">木</div><div class="calendar-day-head">金</div><div class="calendar-day-head sat">土</div><div class="calendar-day-head sun">日</div></div>
     <div id="calendar-days-grid" class="calendar-grid" style="margin-top:4px"></div>
   </div>
@@ -1729,33 +1727,39 @@ function ngOnly(){ngF=ngF?0:1;$('search-input').value='';pg.l=1;sched(2)}
 function clearT(){$('tochaku-search-input').value='';$('tochaku-filter-date').value='';setR('tk','all')}
 
 /* ---------- カレンダー（任意の1週間／1か月） ---------- */
-const monthR=d=>[ds(new Date(d.getFullYear(),d.getMonth(),1)),ds(new Date(d.getFullYear(),d.getMonth()+1,0))],isMonthR=(s,e)=>!!(s&&e&&pd(s).getDate()===1&&monthR(pd(s))[1]===e);
+const monthR=d=>[ds(new Date(d.getFullYear(),d.getMonth(),1)),ds(new Date(d.getFullYear(),d.getMonth()+1,0))],yearR=d=>[`${d.getFullYear()}-01-01`,`${d.getFullYear()}-12-31`],isMonthR=(s,e)=>!!(s&&e&&pd(s).getDate()===1&&monthR(pd(s))[1]===e),isYearR=(s,e)=>!!(s&&e&&s.slice(5)==='01-01'&&e===s.slice(0,4)+'-12-31');
 function openCal(t,init){
   const p=P[t],w=init||(p&&p.k==='custom'?[p.s,p.e]:wk(new Date()));
-  cal.t=t;cal.m=isMonthR(w[0],w[1])?'month':'week';cal.s=w[0];cal.e=w[1];cal.d=cal.m==='month'?pd(w[0]):new Date(D(pd(w[0]),3).getFullYear(),D(pd(w[0]),3).getMonth(),1);renderCal();show('custom-period-modal')
+  cal.t=t;cal.m=isYearR(w[0],w[1])?'year':isMonthR(w[0],w[1])?'month':'week';cal.s=w[0];cal.e=w[1];cal.d=cal.m==='week'?new Date(D(pd(w[0]),3).getFullYear(),D(pd(w[0]),3).getMonth(),1):pd(w[0]);renderCal();show('custom-period-modal')
 }
 function calMode(m){
-  if(cal.m===m)return;cal.m=m;
-  if(m==='month'){const r=monthR(pd(cal.s));cal.s=r[0];cal.e=r[1];cal.d=pd(r[0])}
-  else{const w=wk(pd(cal.s));cal.s=w[0];cal.e=w[1];cal.d=new Date(pd(cal.s).getFullYear(),pd(cal.s).getMonth(),1)}
+  if(cal.m===m)return;const b=pd(cal.s);cal.m=m;
+  if(m==='year'){const r=yearR(b);cal.s=r[0];cal.e=r[1];cal.d=pd(r[0])}
+  else if(m==='month'){const r=monthR(b);cal.s=r[0];cal.e=r[1];cal.d=pd(r[0])}
+  else{const w=wk(b);cal.s=w[0];cal.e=w[1];cal.d=new Date(pd(cal.s).getFullYear(),pd(cal.s).getMonth(),1)}
   renderCal()
 }
 function renderCal(){
-  const y=cal.d.getFullYear(),m=cal.d.getMonth(),mo=cal.m==='month';
-  $('calendar-month-label').textContent=`${y}年 ${m+1}月`;
+  const y=cal.d.getFullYear(),m=cal.d.getMonth(),mo=cal.m==='month',yr=cal.m==='year';
+  $('calendar-month-label').textContent=yr?`${y}年`:`${y}年 ${m+1}月`;
   let c=new Date(y,m,1-((new Date(y,m,1).getDay()+6)%7)),h='';
-  for(let w=0;w<6;w++){
-    h+=`<div class="calendar-row${!mo&&cal.s===ds(c)?' selected':''}" data-s="${ds(c)}" data-e="${ds(D(c,6))}">`;
+  if(!yr)for(let w=0;w<6;w++){
+    h+=`<div class="calendar-row${cal.m==='week'&&cal.s===ds(c)?' selected':''}" data-s="${ds(c)}" data-e="${ds(D(c,6))}">`;
     for(let d=0;d<7;d++){h+=`<div class="calendar-cell${c.getMonth()!==m?' other-month':''}${d===5?' sat':d===6?' sun':''}" data-d="${ds(c)}">${c.getDate()}</div>`;c=D(c,1)}
     h+='</div>'
   }
-  const g=$('calendar-days-grid');g.innerHTML=h;g.classList.toggle('month-mode',mo);
-  $('cal-mode-week').classList.toggle('active',!mo);$('cal-mode-month').classList.toggle('active',mo);
-  $('cal-desc').textContent=mo?'◀ 前月／翌月 ▶ で月を切り替え、日付をタップするとその月の1日～末日がまとめて指定されます。':'カレンダー上のいずれかの日付を選択してください。該当する1週間（月曜日～日曜日）がまとめて指定されます。';
-  $('cal-apply-btn').textContent=mo?'この1か月を集計':'この1週間を集計';
-  $('selected-week-range-label').textContent=mo?`${cal.s} ～ ${cal.e}（${cal.s.slice(0,4)}年${+cal.s.slice(5,7)}月）`:`${cal.s} (月) ～ ${cal.e} (日)`
+  const g=$('calendar-days-grid');g.innerHTML=h;g.classList.toggle('month-mode',mo);$('custom-period-modal').classList.toggle('year-mode',yr);
+  ['week','month','year'].forEach(k=>$('cal-mode-'+k).classList.toggle('active',cal.m===k));
+  $('cal-prev').textContent=yr?'◀ 前年':'◀ 前月';$('cal-next').textContent=yr?'翌年 ▶':'翌月 ▶';
+  $('cal-desc').textContent=yr?'◀ 前年／翌年 ▶ で年を切り替えると、その年の1/1～12/31がまとめて指定されます。':mo?'◀ 前月／翌月 ▶ で月を切り替え、日付をタップするとその月の1日～末日がまとめて指定されます。':'カレンダー上のいずれかの日付を選択してください。該当する1週間（月曜日～日曜日）がまとめて指定されます。';
+  $('cal-apply-btn').textContent=yr?'この1年を集計':mo?'この1か月を集計':'この1週間を集計';
+  $('selected-week-range-label').textContent=yr?`${cal.s} ～ ${cal.e}（${cal.s.slice(0,4)}年）`:mo?`${cal.s} ～ ${cal.e}（${cal.s.slice(0,4)}年${+cal.s.slice(5,7)}月）`:`${cal.s} (月) ～ ${cal.e} (日)`
 }
-function calMove(n){cal.d=new Date(cal.d.getFullYear(),cal.d.getMonth()+n,1);if(cal.m==='month'){const r=monthR(cal.d);cal.s=r[0];cal.e=r[1]}renderCal()}
+function calMove(n){
+  if(cal.m==='year'){cal.d=new Date(cal.d.getFullYear()+n,0,1);const r=yearR(cal.d);cal.s=r[0];cal.e=r[1]}
+  else{cal.d=new Date(cal.d.getFullYear(),cal.d.getMonth()+n,1);if(cal.m==='month'){const r=monthR(cal.d);cal.s=r[0];cal.e=r[1]}}
+  renderCal()
+}
 function calApply(){if(!cal.s)return uiAlert('カレンダーで期間を指定してください。');if(cal.t==='lr'){if(typeof window.__lrApplyCustomRange==='function')window.__lrApplyCustomRange(cal.s,cal.e);hide('custom-period-modal');return}setR(cal.t,'custom',cal.s,cal.e);hide('custom-period-modal')}
 $('calendar-days-grid').onclick=e=>{
   if(cal.m==='month'){const c=e.target.closest('.calendar-cell');if(c){const d=pd(c.dataset.d),r=monthR(d);cal.s=r[0];cal.e=r[1];cal.d=new Date(d.getFullYear(),d.getMonth(),1);renderCal()}return}
@@ -1831,7 +1835,7 @@ function trChartSVG(b,o){
     else if(dots)s+=v>0?`<circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="3.6" fill="#fff" stroke="${c2}" stroke-width="2"/>`:`<circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="2.4" fill="#cbd5e1"/>`;
   });
   vals.forEach((v,i)=>{if(v>0&&(two||i===peak))s+=label(i,Number.isInteger(v)?v:(Math.round(v*10)/10))});
-  const step=n<=14?1:Math.ceil(n/7),dowCol=d=>d===0?'#e11d48':d===6?'#0284c7':'#64748b';
+  const lw=Math.max(0,...b.map(x=>[...String(x.label)].reduce((a,c)=>a+(c.charCodeAt(0)>255?10:5.8),0))),step=two?(n<=14?1:Math.ceil(n/7)):Math.max(1,Math.ceil(n/Math.max(2,Math.floor(iw/(lw+12))))),dowCol=d=>d===0?'#e11d48':d===6?'#0284c7':'#64748b';
   b.forEach((x,i)=>{
     if(!(i%step===0||(i===n-1&&(n-1)%step>=Math.ceil(step/2))))return;
     s+=`<text x="${xs[i].toFixed(1)}" y="${base+15}" text-anchor="middle" font-size="10" fill="${dowCol(x.dow)}" font-weight="${two?700:500}">${esc(x.label)}</text>`;
@@ -1868,7 +1872,8 @@ function trBindTip(box){
 }
 function trHideTip(box){const t=box.querySelector('.tip');if(t)t.classList.remove('on');const g=box.querySelector('.tr-guide');if(g)g.setAttribute('visibility','hidden')}
 document.addEventListener('pointerdown',e=>{document.querySelectorAll('.summary-trend-chartbox').forEach(b=>{if(!b.contains(e.target))trHideTip(b)})});
-const trAdaptB=(arr,mode)=>arr.map(x=>({v:x.v,wk:!!x.weekend,dow:mode==='day'?pd(x.key).getDay():-1,label:x.label,sub:mode==='day'?trendWeekday(x.key):'',title:x.title}));
+/* 軸ラベルは短縮（月別=「1月」、週別=週の開始日）。複数年にまたがる場合のみ年を付す。詳細は吹き出し(title)に残す */
+const trAdaptB=(arr,mode)=>{const multi=new Set(arr.map(x=>x.key.slice(0,4))).size>1;return arr.map((x,i)=>{let label=x.label;if(mode==='month'){const[y,m]=x.key.split('-');label=multi&&(i===0||m==='01')?`${y}/${+m}`:`${+m}月`}else if(mode==='week')label=String(x.label).split('～')[0];return{v:x.v,wk:!!x.weekend,dow:mode==='day'?pd(x.key).getDay():-1,label,sub:mode==='day'?trendWeekday(x.key):'',title:x.title}})};
 function renderTrendPanel(kind,data,meta){
   const isNg=kind==='ng',cls=isNg?'ng':'qty',title=isNg?'再塗装発生の推移':'塗装数量の推移';
   const boxId='trbox-'+cls+'-'+(++TR_GID);meta.boxId=boxId;
@@ -2889,25 +2894,30 @@ const toggleCursor=()=>cur.toggle();
   }
   function lrOpenCustomWeek(){openCal('lr',lrPeriodRange()||ranges().week)}
   function lrCustomWeekLabel(){const r=lrPeriodRange(),el=$('lr-custom-week-label');if(el)el.textContent=r?`${r[0]} ～ ${r[1]}`:'期間を選択してください';}
-  window.__lrApplyCustomRange=function(from,to){$('lr-range-from').value=from;$('lr-range-to').value=to;lrPeriodTab='custom';lrRenderPeriodTabs();lrRenderDetail()};
+  window.__lrApplyCustomRange=function(from,to){$('lr-range-from').value=from;$('lr-range-to').value=to;lrPeriodTab='custom';lrRefresh()};
 
   function lrRenderPeriodTabs(){
-    const el=$('lr-period-tabs');if(!el)return;
-    el.innerHTML=LR_PERIODS.map(([k,label])=>`<button type="button" class="lr-period-tab${lrPeriodTab===k?' active':''}" data-lr-period="${k}">${label}</button>`).join('');
+    const h=LR_PERIODS.map(([k,label])=>`<button type="button" class="lr-period-tab${lrPeriodTab===k?' active':''}" data-lr-period="${k}">${label}</button>`).join('');
+    ['lr-period-tabs','lr-main-tabs'].forEach(id=>{const el=$(id);if(el)el.innerHTML=h});
     const cr=$('lr-custom-range');if(cr)cr.classList.toggle('show',lrPeriodTab==='custom');
     lrCustomWeekLabel();
   }
+  function lrRefresh(){lrRenderPeriodTabs();lrRenderMainSummary();lrRenderDetail()}
   function lrPeriodStats(range){let qty=0,paint=0;if(range)lrDocs.forEach(d=>{if(!d.date||d.date<range[0]||d.date>range[1])return;(d.items||[]).forEach(x=>{qty+=Number(x.qty)||0;paint+=Number(x.paint_weight)||0})});return{qty,paint}}
+  /* 戻り品再塗装カード（詳細を開かなくても期間切替でき、品名と数量だけを一覧表示） */
   function lrRenderMainSummary(){
-    const el=$('lr-main-summary');if(!el)return;const R=ranges(),w=lrPeriodStats(R.week),lw=lrPeriodStats(R.lastweek);
-    const st=(v,l,c)=>`<div class="lr-main-stat${c}"><b>${v}</b><span>${l}</span></div>`;
-    // メイン表示は数量・使用量のみ。補助集計は表示しない。
-    el.innerHTML=st(w.qty+'件','今週の数量','')+st(w.paint.toFixed(2)+'kg','今週の使用量','')+st(lw.qty+'件','先週の数量',' lr-main-stat-prev')+st(lw.paint.toFixed(2)+'kg','先週の使用量',' lr-main-stat-prev');
+    const el=$('lr-main-summary');if(!el)return;const range=lrPeriodRange();
+    if(!range){el.innerHTML='<div class="empty-sm">「任意」から期間（週・月・年）を指定してください。</div>';return}
+    const agg=new Map();let qty=0,paint=0;
+    lrDocs.forEach(d=>{if(!d.date||d.date<range[0]||d.date>range[1])return;(d.items||[]).forEach(x=>{const k=lrNormName(x.name);if(!k)return;let a=agg.get(k);if(!a)agg.set(k,a={name:String(x.name).trim(),u:{}});const u=x.unit||'台',q=Number(x.qty)||0;a.u[u]=(a.u[u]||0)+q;qty+=q;paint+=Number(x.paint_weight)||0})});
+    const rows=[...agg.values()].sort((a,b)=>a.name.localeCompare(b.name,'ja',{numeric:true,sensitivity:'base'}));
+    el.innerHTML=`<div class="lr-sum-line"><span><b>${qty.toLocaleString('ja-JP')}件</b>数量</span><span><b>${paint.toFixed(2)}kg</b>使用量</span><em>${range[0]} ～ ${range[1]}</em></div>`+
+      (rows.length?`<div class="lr-sum-list">${rows.map(a=>`<div class="lr-sum-item"><span title="${esc(a.name)}">${esc(a.name)}</span><b>${UNITS.filter(u=>a.u[u]).map(u=>a.u[u].toLocaleString('ja-JP')+u).join('・')}</b></div>`).join('')}</div>`:'<div class="empty-sm">この期間の戻り品再塗装はありません。</div>');
   }
   function lrRenderDetail(){
     const box=$('lr-detail-list'),count=$('lr-detail-count');if(!box)return;
     const range=lrPeriodRange(),kw=(V('lr-detail-search')||'').trim().toLowerCase();
-    if(!range){if(count)count.textContent='';box.innerHTML='<div class="empty-sm">「📅 任意の期間（週・月）を指定」から期間を選んでください。</div>';return}
+    if(!range){if(count)count.textContent='';box.innerHTML='<div class="empty-sm">「📅 任意の期間（週・月・年）を指定」から期間を選んでください。</div>';return}
     const cmp=(a,b)=>String(a||'').localeCompare(String(b||''),'ja',{numeric:true,sensitivity:'base'}),first=d=>(d.items||[]).map(x=>x.name).sort(cmp)[0]||'';
     const rows=lrDocs.filter(d=>d.date&&d.date>=range[0]&&d.date<=range[1]&&(!kw||(d.memo||'').toLowerCase().includes(kw)||(d.items||[]).some(x=>(x.name||'').toLowerCase().includes(kw)||(x.cause||'').toLowerCase().includes(kw)))).sort((a,b)=>cmp(first(a),first(b))||String(b.date).localeCompare(String(a.date))||cmp(a.docId,b.docId));
     if(count){const st=lrPeriodStats(range);count.textContent=`${st.qty}件・${st.paint.toFixed(2)}kg`}
@@ -2996,7 +3006,7 @@ const toggleCursor=()=>cur.toggle();
     on('lr-modal-close','click',cl);on('lr-modal-cancel','click',cl);
     on('lr-detail-open','click',tg(true));on('lr-detail-back-head','click',tg(false));on('late-repaint-card','click',e=>{if(e.target===e.currentTarget&&e.currentTarget.classList.contains('open'))lrDetailToggle(false)});
     on('lr-main-head','click',e=>{if(!e.target.closest('button'))lrDetailToggle(true)});on('lr-detail-search','input',lrRenderDetail);
-    on('lr-period-tabs','click',e=>{const b=e.target.closest('[data-lr-period]');if(!b)return;lrPeriodTab=b.dataset.lrPeriod;if(lrPeriodTab==='custom')lrOpenCustomWeek();lrRenderPeriodTabs();lrRenderDetail()});
+    ['lr-period-tabs','lr-main-tabs'].forEach(id=>on(id,'click',e=>{const b=e.target.closest('[data-lr-period]');if(!b)return;lrPeriodTab=b.dataset.lrPeriod;if(lrPeriodTab==='custom')lrOpenCustomWeek();lrRefresh()}));
     on('lr-custom-week-open','click',e=>{e.stopPropagation();lrOpenCustomWeek()});
     on('lr-detail-list','click',async e=>{const b=e.target.closest('[data-id]');if(!b)return;if(b.classList.contains('lr-del'))lrDelete(b.dataset.id);else{const d=lrDocs.find(x=>x.docId===b.dataset.id);if(d&&await adm())lrOpen(d)}});
     on('lr-rows','input',e=>{
@@ -3009,7 +3019,7 @@ const toggleCursor=()=>cur.toggle();
     });
     on('lr-rows','change',e=>{if(e.target.classList.contains('lr-unit'))lrRecalc(e.target.closest('.lr-row'))});
     on('lr-rows','click',e=>{const b=e.target.closest('[data-del]');if(!b)return;b.closest('.lr-row').remove();lrSyncAdd()});
-    lrRenderPeriodTabs();
+    lrRefresh();
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('late-repaint-card')?.classList.contains('open')&&!document.querySelector('.modal-overlay[style*="flex"]'))lrDetailToggle(false)})
   }
   window.initLateRepaints=function(){try{lrBind()}catch(e){console.error('戻り品再塗装UI初期化失敗:',e)}if(!db)return;try{db.collection(LR_COL).orderBy('date','desc').onSnapshot(s=>{lrDocs=[];s.forEach(d=>lrDocs.push({docId:d.id,...d.data()}));lrRecalcDone=false;lrRenderMainSummary();if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail();lrRecalcHistorical()},e=>console.warn('戻り品再塗装読込失敗:',e))}catch(e){console.warn('戻り品再塗装初期化失敗:',e)}};
