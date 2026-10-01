@@ -611,7 +611,15 @@ body.editing-record #manual-entry-wrap{display:block}
 .quick-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.quick-field{min-width:0}.quick-field-label{display:block;font-size:9.5px;font-weight:800;color:var(--text-muted);margin-bottom:3px}.quick-field select,.quick-field input{width:100%;min-width:0;min-height:40px;padding:5px 7px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:11px}.quick-field input{text-align:center}.quick-number-control{display:grid;grid-template-columns:48px minmax(60px,1fr) 48px;gap:4px;align-items:center}.quick-number-control button{min-height:40px;border:1px solid var(--border-color);border-radius:7px;background:#fff;font-size:15px;font-weight:900;cursor:pointer}.quick-number-control input{text-align:center}
 .quick-register-row{display:flex;gap:6px;margin-top:8px}.quick-next,.quick-submit{flex:1;min-height:42px;border:0;border-radius:8px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-indigo));color:#fff;font-size:12px;font-weight:900;cursor:pointer}.quick-back-step{min-width:84px}.quick-submit{font-size:13px}
 @media(max-width:767px){.quick-manual-label{margin-top:2px;padding:6px 8px;min-height:42px}.quick-manual-label .quick-action-btn{min-height:36px;padding:4px 9px}#quick-entry{margin-left:-2px;margin-right:-2px;padding:8px}.quick-entry-title span{display:none}.quick-progress{grid-template-columns:repeat(5,minmax(0,1fr))}.quick-progress button{min-height:34px;font-size:9px}.quick-summary{grid-template-columns:1.35fr .65fr}.quick-summary-box:nth-child(3),.quick-summary-box:nth-child(4){grid-column:span 1}.quick-select-grid{grid-template-columns:1fr}.quick-product-row{grid-template-columns:minmax(0,1fr);gap:4px}.quick-qty{grid-template-columns:48px minmax(60px,1fr) 48px}.quick-product-row input,.quick-field select,.quick-field input{min-height:42px}.quick-number-control{grid-template-columns:56px minmax(70px,1fr) 56px}.quick-number-control button{min-height:44px}.quick-register-row{flex-direction:row}.quick-back-step{min-width:72px;min-height:44px}.quick-next,.quick-submit{min-height:44px}.quick-product-presets{max-height:96px;overflow:auto}}
-@media(min-width:992px){#quick-entry{max-width:980px;margin:0 auto 12px}}
+.analysis-period{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:10px 16px;margin:0 0 12px;box-shadow:var(--shadow-glow)}.analysis-period small{font-weight:600;color:var(--text-dim);font-size:10.5px}.analysis-period .plbl{margin:6px 0 0}
+.analysis-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-bottom:18px}.analysis-cols>div{margin-bottom:0;display:flex;flex-direction:column;background:var(--bg-card)}.analysis-cols>div>.cause-analysis-card:last-child{flex:1}
+@media(min-width:992px){
+.analysis-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
+#quick-entry{display:grid;grid-template-columns:260px minmax(0,1fr);column-gap:16px;padding:14px 16px;margin:0 0 14px}
+#quick-entry>.quick-entry-head,#quick-entry>.quick-progress{grid-column:1/-1}
+#quick-entry>.quick-summary{grid-column:1;grid-row:3;grid-template-columns:minmax(0,1fr);align-content:start;margin-bottom:0}
+#quick-entry>.quick-step-panel{grid-column:2;grid-row:3}
+.quick-register-row{justify-content:flex-end}.quick-register-row .quick-next,.quick-register-row .quick-submit{flex:0 1 340px}}
 
 /* ---------- 戻り品再塗装 ---------- */
 .uf-row{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-input);margin-bottom:8px}.uf-name{flex:0 0 52px;text-align:center;font-size:20px;font-weight:800;color:var(--accent-indigo)}.uf-body{flex:1;min-width:0}.uf-in{width:100%;box-sizing:border-box;font-size:16px;font-weight:700}.uf-base{font-size:13px;font-weight:700;color:var(--text-dim);padding:8px 0}.uf-eg{font-size:11.5px;color:var(--text-dim);margin-top:4px}
@@ -863,9 +871,24 @@ body.editing-record #manual-entry-wrap{display:block}
           </div>
         </div>
       </section>
-      <div class="pc-two-columns">
-        <div>
-          <div class="form-section">
+      <div class="analysis-period">
+        <div class="cause-title" style="margin-bottom:0"><span>📈 集計期間の切替 <small>（再塗装・塗料使用量の両ダッシュボードに適用）</small></span><div class="cause-tabs" data-t="cause" data-k="week,lastweek,month,year"></div></div>
+        <div class="plbl" id="l-cause"></div>
+      </div>
+      <div class="analysis-cols">
+          <div class="ng-analysis-wrapper">
+            <div class="ng-analysis-banner"><i class="fa-solid fa-triangle-exclamation"></i> 再塗装(NG) 分析ダッシュボード</div>
+            <div class="cause-analysis-card ca"><div class="cause-title sm">🚨 原因別ランキング (再塗装発生数)</div><div class="analysis-mini-grid" id="ng-analysis-summary"></div><div class="cause-list" id="cause-analysis-list"></div></div>
+            <div class="cause-analysis-card ca b"><div class="cause-title sm">📦 台数別ランキング (再塗装発生台数)</div><div class="cause-list" id="product-analysis-list"></div></div>
+          </div>
+          <div class="paint-analysis-wrapper">
+            <div class="paint-analysis-banner"><i class="fa-solid fa-palette"></i> 品名別 塗料使用量 分析ダッシュボード</div>
+            <div class="cause-analysis-card ca b"><div class="cause-title sm">🎨 品名別 塗料総使用量ランキング</div><div style="font-size:10.5px;color:var(--text-dim);margin:-2px 0 8px">同時塗装は「数量×換算係数」の比で按分しています（係数は⚙設定の📐換算係数）</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
+            <div class="cause-analysis-card ca b"><div class="cause-title sm">🎨 塗料別 使用量</div><div class="cause-list" id="paint-performance-list"></div></div>
+          </div>
+      </div>
+
+      <div class="form-section" id="quick-section">
             <form id="p-form"><div id="quick-entry" aria-label="簡易実績登録">
   <div class="quick-entry-head">
     <div class="quick-entry-title"><strong>⚡ 簡易登録</strong><span>5段階・戻る／クリア対応</span></div>
@@ -995,29 +1018,6 @@ body.editing-record #manual-entry-wrap{display:block}
 </div>
             </form>
           </div>
-        </div>
-
-        <div>
-          <div class="ng-analysis-wrapper">
-            <div class="ng-analysis-banner"><i class="fa-solid fa-triangle-exclamation"></i> 再塗装(NG) 分析ダッシュボード</div>
-            <div class="cause-analysis-card ca t">
-              <div class="cause-title" style="margin-bottom:0"><span>📈 集計期間の切替</span><div class="cause-tabs" data-t="cause" data-k="week,lastweek,month,year"></div></div>
-              <div class="plbl" id="l-cause"></div>
-            </div>
-            <div class="cause-analysis-card ca"><div class="cause-title sm">🚨 原因別ランキング (再塗装発生数)</div><div class="analysis-mini-grid" id="ng-analysis-summary"></div><div class="cause-list" id="cause-analysis-list"></div></div>
-            <div class="cause-analysis-card ca b"><div class="cause-title sm">📦 台数別ランキング (再塗装発生台数)</div><div class="cause-list" id="product-analysis-list"></div></div>
-          </div>
-          <div class="paint-analysis-wrapper">
-            <div class="paint-analysis-banner"><i class="fa-solid fa-palette"></i> 品名別 塗料使用量 分析ダッシュボード</div>
-            <div class="cause-analysis-card ca t">
-              <div class="cause-title" style="margin-bottom:0"><span>📈 集計期間の切替</span><div class="cause-tabs" data-t="paint" data-k="week,lastweek,month,year"></div></div>
-              <div class="plbl" id="l-paint"></div>
-            </div>
-            <div class="cause-analysis-card ca b"><div class="cause-title sm">🎨 品名別 塗料総使用量ランキング</div><div style="font-size:10.5px;color:var(--text-dim);margin:-2px 0 8px">同時塗装は「数量×換算係数」の比で按分しています（係数は⚙設定の📐換算係数）</div><div class="cause-list" id="paint-usage-analysis-list"></div></div>
-            <div class="cause-analysis-card ca b"><div class="cause-title sm">🎨 塗料別 使用量</div><div class="cause-list" id="paint-performance-list"></div></div>
-          </div>
-        </div>
-      </div>
 
       <div class="list-section">
         <div class="list-title"><span>📋 登録実績一覧</span><div class="cause-tabs" data-t="list" data-k="all,week,lastweek,month,year"></div></div>
@@ -1340,8 +1340,8 @@ nn=id=>parseFloat(V(id))||0,pf=(id,d)=>{const v=parseFloat(V(id));return isNaN(v
 show=id=>$(id).style.display='flex',hide=id=>$(id).style.display='none',mn=()=>$('menu').classList.remove('open');
 
 const LOC={fukuyama:{lat:34.4858,lon:133.3642,label:'福山市'},hiroshima:{lat:34.3853,lon:132.4553,label:'広島市'},okayama:{lat:34.6617,lon:133.935,label:'岡山市'},tokyo:{lat:35.6895,lon:139.6917,label:'東京都'},osaka:{lat:34.6937,lon:135.5023,label:'大阪市'},nagoya:{lat:35.1815,lon:136.9066,label:'名古屋市'},fukuoka:{lat:33.5904,lon:130.4017,label:'福岡市'},sendai:{lat:38.2682,lon:140.8694,label:'仙台市'},sapporo:{lat:43.0642,lon:141.3469,label:'札幌市'}};
-const NM={all:'すべて',week:'今週',lastweek:'先週',month:'今月',year:'今年',custom:'指定期間'},F={sum:1,cause:1,paint:1,list:2,tk:4};
-const P={sum:{k:'week'},cause:{k:'week'},paint:{k:'week'},list:{k:'all'},tk:{k:'all'}};
+const NM={all:'すべて',week:'今週',lastweek:'先週',month:'今月',year:'今年',custom:'指定期間'},F={sum:1,cause:1,list:2,tk:4};
+const P={sum:{k:'week'},cause:{k:'week'},list:{k:'all'},tk:{k:'all'}};
 const WIN=(new Date().getFullYear()-1)+'-12-01',M={r:new Map(),t:new Map()},A={r:{m:new Map(),s:0},t:{m:new Map(),s:0}},cache={},pg={l:1,t:1},pageSize={l:10,t:10},cal={t:'',s:'',e:'',d:new Date()};
 
 let pw=atob('MTIzNA=='),apw=atob('MTk4NTA3MTU='),ops=['担当者A','担当者B','担当者C'],prods=[],
@@ -1904,10 +1904,10 @@ function renderSummaryTrends(g){
 }
 function sum(){
   const R=ranges(),sumG=rg('sum',R);
-  need('r',['sum','cause','paint'],R);
+  need('r',['sum','cause'],R);
   if(sumG&&sumG[0]<WIN)loadArch('r');
-  lbl('sum',R);lbl('cause',R);lbl('paint',R);
-  const cg=rg('cause',R)||R.week,pg_=rg('paint',R)||R.week,G=[R.lastweek,R.week,R.month,R.year,sumG,cg].filter(Boolean),S=G.map(()=>({w:0,q:0,n:0,qc:0,units:{}})),cc={},np={},npUnit={},pp={},pq={},pst={};
+  lbl('sum',R);lbl('cause',R);
+  const cg=rg('cause',R)||R.week,G=[R.lastweek,R.week,R.month,R.year,sumG,cg].filter(Boolean),S=G.map(()=>({w:0,q:0,n:0,qc:0,units:{}})),cc={},np={},npUnit={},pp={},pq={},pst={};
   for(const r of all('r')){
     const d=r.date;if(!d)continue;
     G.forEach((g,i)=>{
@@ -1929,8 +1929,8 @@ function sum(){
       if(Array.isArray(r.ng_products)&&r.ng_products.length)r.ng_products.forEach(x=>{const k=x.name||'不明';np[k]=(np[k]||0)+(Number(x.qty)||0);if(!npUnit[k]){const it=Array.isArray(r.items)?r.items.find(i=>i.name===x.name):null;npUnit[k]=(it&&it.unit)||'台'}});
       else{const k=r.ng_product||'不明';np[k]=(np[k]||0)+(Number(r.ng_qty)||1);if(!npUnit[k]){const it=Array.isArray(r.items)?r.items.find(i=>i.name===r.ng_product):null;npUnit[k]=(it&&it.unit)||'台'}}
     }
-    if(d>=pg_[0]&&d<=pg_[1]&&r._w>0){const pn=r.paint_name||'未選択';pst[pn]=(pst[pn]||0)+r._w}
-    if(d>=pg_[0]&&d<=pg_[1]&&r._w>0&&r._q>0&&Array.isArray(r.items)){const sh=itemShares(r,r._w);r.items.forEach((i,j)=>{const k=i.name||'不明',u=i.unit||'台',o=pq[k]||(pq[k]={});pp[k]=(pp[k]||0)+sh[j];o[u]=(o[u]||0)+(Number(i.qty)||0)})}
+    if(d>=cg[0]&&d<=cg[1]&&r._w>0){const pn=r.paint_name||'未選択';pst[pn]=(pst[pn]||0)+r._w}
+    if(d>=cg[0]&&d<=cg[1]&&r._w>0&&r._q>0&&Array.isArray(r.items)){const sh=itemShares(r,r._w);r.items.forEach((i,j)=>{const k=i.name||'不明',u=i.unit||'台',o=pq[k]||(pq[k]={});pp[k]=(pp[k]||0)+sh[j];o[u]=(o[u]||0)+(Number(i.qty)||0)})}
   }
 
   const selectedIndex=sumG?G.findIndex(g=>g[0]===sumG[0]&&g[1]===sumG[1]):-1;
