@@ -89,6 +89,10 @@ body{background:radial-gradient(circle at 8% 0%,rgba(14,165,233,.10),transparent
 .cause-tabs{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .btn-tab{padding:5px 12px;font-size:11px;border-radius:6px;border:1px solid var(--border-color);background:#fff;color:var(--text-muted);cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:3px}
 .btn-tab.active{background:var(--accent-cyan);color:#fff;border-color:var(--accent-cyan)}
+.btn-tab.pt{padding:9px 16px;min-height:38px;font-size:13px;font-weight:800;border-radius:10px;justify-content:center;box-shadow:0 1px 3px rgba(15,23,42,.07);transition:background .15s,box-shadow .15s}
+.btn-tab.pt.active{box-shadow:0 4px 12px rgba(2,132,199,.3)}.pt-row{gap:6px}.pt-wrap{flex-wrap:wrap;gap:8px 12px}.plbl{font-size:11.5px}
+.lr-main-view .pt-row{width:100%;margin-bottom:10px}.lr-main-view .btn-tab.pt{flex:1 1 0;padding:9px 4px}
+@media(max-width:640px){.pt-row{width:100%}.pt-row .btn-tab.pt{flex:1 1 auto;padding:9px 6px;font-size:12.5px}}
 .cause-list{display:flex;flex-direction:column;gap:10px;margin-top:8px;max-height:180px;overflow-y:auto;padding-right:4px}
 .cause-item{font-size:12px}
 .cause-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;color:var(--text-muted)}
@@ -660,7 +664,7 @@ body.editing-record #manual-entry-wrap{display:block}
 #late-repaint-card.open #lr-detail-open,#late-repaint-card.open #lr-open-add{display:none}
 #late-repaint-card.open .lr-card-note,#late-repaint-card.open .lr-main-view{display:none}
 #late-repaint-card.open .lr-detail-body{display:block;overflow:auto;flex:1;padding:14px 16px 22px;background:linear-gradient(180deg,#fff7f8,#fff)}
-.lr-main-view{margin:0 12px 12px}.lr-main-view .lr-period-tabs{margin-bottom:8px}
+.lr-main-view{margin:0 12px 12px}
 .lr-sum-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin:0 0 8px}.lr-sum-line span{font-size:10.5px;font-weight:800;color:var(--text-dim)}.lr-sum-line b{font-size:20px;font-weight:900;color:var(--accent-danger,#e11d48);margin-right:3px}.lr-sum-line em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:700;color:var(--text-dim)}
 .lr-sum-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:5px;max-height:176px;overflow:auto}.lr-sum-item{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 9px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:11.5px}.lr-sum-item span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.lr-sum-item b{flex:0 0 auto;color:var(--accent-danger,#e11d48);font-weight:900}
 .lr-period-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:0 0 10px}
@@ -805,7 +809,7 @@ body.editing-record #manual-entry-wrap{display:block}
           </div>
         </div>
         <div class="lr-card-note">※後日の検品や客先でのNG品など、先週以前に塗装した物を再塗装した分の記録です。上の集計カード・グラフ（実質再塗装率など）には含まれません。</div>
-        <div class="lr-main-view" id="lr-main-view"><div class="lr-period-tabs" id="lr-main-tabs" aria-label="戻り品再塗装の期間"></div><div id="lr-main-summary" aria-label="戻り品再塗装の品名と数量"></div></div>
+        <div class="lr-main-view" id="lr-main-view"><div class="cause-tabs" data-t="lrm" data-k="week,lastweek,month,year" id="lr-main-tabs" aria-label="戻り品再塗装の期間"></div><div id="lr-main-summary" aria-label="戻り品再塗装の品名と数量"></div></div>
         <div class="lr-detail-body">
           <div class="lr-period-tabs" id="lr-period-tabs" aria-label="戻り品再塗装の期間"></div>
           <div class="lr-custom-range" id="lr-custom-range">
@@ -816,11 +820,11 @@ body.editing-record #manual-entry-wrap{display:block}
           <div class="lr-detail-toolbar">
             <div class="lr-detail-toolbar-top">
               <div><strong>戻り品再塗装 詳細</strong><span id="lr-detail-count" class="lr-detail-count"></span></div>
-              <button type="button" class="lr-detail-back" id="lr-detail-back-head" aria-label="戻り品再塗装の詳細を閉じる">← 戻る</button>
+              <span style="display:flex;gap:6px"><button type="button" class="lr-detail-back" id="lr-recalc-btn" title="過去ログの自動計算を最新の実績・換算係数で更新します（管理者）">🔄 再計算</button><button type="button" class="lr-detail-back" id="lr-detail-back-head" aria-label="戻り品再塗装の詳細を閉じる">← 戻る</button></span>
             </div>
             <input type="search" id="lr-detail-search" placeholder="品名・原因・メモで検索" aria-label="戻り品再塗装を検索">
           </div>
-          <div class="lr-auto-legend">🧮 <strong>自動計算</strong>＝過去の塗装実績から算出した使用量です。過去ログも対象です。</div>
+          <div class="lr-auto-legend">🧮 <strong>自動計算</strong>＝過去の塗装実績から算出した使用量です。過去ログへの反映は「🔄 再計算」で行います（換算係数の保存時は自動）。</div>
           <div id="lr-detail-list"></div>
         </div>
       </section>
@@ -870,7 +874,7 @@ body.editing-record #manual-entry-wrap{display:block}
         </div>
       </section>
       <div class="analysis-period">
-        <div class="cause-title" style="margin-bottom:0"><span>📈 集計期間の切替 <small>（再塗装・塗料使用量の両ダッシュボードに適用）</small></span><div class="cause-tabs" data-t="cause" data-k="week,lastweek,month,year"></div></div>
+        <div class="cause-title" style="margin-bottom:0"><span>📈 集計期間の切替 <small>（集計サマリー・戻り品再塗装と共通）</small></span><div class="cause-tabs" data-t="cause" data-k="week,lastweek,month,year"></div></div>
         <div class="plbl" id="l-cause"></div>
       </div>
       <div class="analysis-cols">
@@ -1339,7 +1343,7 @@ show=id=>$(id).style.display='flex',hide=id=>$(id).style.display='none',mn=()=>$
 
 const LOC={fukuyama:{lat:34.4858,lon:133.3642,label:'福山市'},hiroshima:{lat:34.3853,lon:132.4553,label:'広島市'},okayama:{lat:34.6617,lon:133.935,label:'岡山市'},tokyo:{lat:35.6895,lon:139.6917,label:'東京都'},osaka:{lat:34.6937,lon:135.5023,label:'大阪市'},nagoya:{lat:35.1815,lon:136.9066,label:'名古屋市'},fukuoka:{lat:33.5904,lon:130.4017,label:'福岡市'},sendai:{lat:38.2682,lon:140.8694,label:'仙台市'},sapporo:{lat:43.0642,lon:141.3469,label:'札幌市'}};
 const NM={all:'すべて',week:'今週',lastweek:'先週',month:'今月',year:'今年',custom:'指定期間'},F={sum:1,cause:1,list:2,tk:4};
-const P={sum:{k:'week'},cause:{k:'week'},list:{k:'all'},tk:{k:'all'}};
+const P={sum:{k:'week'},cause:{k:'week'},lrm:{k:'week'},list:{k:'all'},tk:{k:'all'}},SH=['sum','cause','lrm'];
 const WIN=(new Date().getFullYear()-1)+'-12-01',M={r:new Map(),t:new Map()},A={r:{m:new Map(),s:0},t:{m:new Map(),s:0}},cache={},pg={l:1,t:1},pageSize={l:10,t:10},cal={t:'',s:'',e:'',d:new Date()};
 
 let pw=atob('MTIzNA=='),apw=atob('MTk4NTA3MTU='),ops=['担当者A','担当者B','担当者C'],prods=[],
@@ -1353,10 +1357,17 @@ selNo=null,selName='',pRe=0,cfgOk=0,started=0,curTab='main',editId=null,tEdit=nu
 try{
   firebase.initializeApp({apiKey:"AIzaSyC4K1DTi4GLHmCRGHP1d4UglfzMSgNzSVM",authDomain:"powdercoating-9254b.firebaseapp.com",projectId:"powdercoating-9254b",storageBucket:"powdercoating-9254b.firebasestorage.app",messagingSenderId:"1094264514813",appId:"1:1094264514813:web:a6edb6b3c96b12fbbc7694"});
   db=firebase.firestore();
-  db.enablePersistence({synchronizeTabs:true}).catch(()=>{});
+  db.enablePersistence({synchronizeTabs:true}).catch(e=>console.warn('オフライン保存を有効にできませんでした（通信が切れると保存が反映されません）:',e&&e.code||e));
 }catch(e){console.error('Firebase 初期化エラー:',e)}
 cfgOk=!db;
-const CFG=()=>db.collection('settings').doc('config'),setCfg=o=>CFG().set(o,{merge:true}),arr=x=>Array.isArray(x)&&x.length;
+/* 書き込みが通信待ち（オフライン等）で戻らない場合も、端末に保存済みとして案内して処理を続行する。送信失敗は後から通知 */
+function commitW(p){
+  let t;return Promise.race([p,new Promise(r=>{t=setTimeout(()=>r('queued'),navigator.onLine===false?1500:8000)})]).then(v=>{
+    clearTimeout(t);
+    if(v==='queued'){window.appToast&&window.appToast('📡 通信待ちです。端末に保存済みで、接続後に自動送信されます');p.catch(e=>{console.warn('保存の送信に失敗:',e);window.appToast&&window.appToast('⚠️ 送信できなかった保存があります: '+(e&&e.message||e))})}
+    return v})
+}
+const CFG=()=>db.collection('settings').doc('config'),setCfg=o=>commitW(CFG().set(o,{merge:true})),arr=x=>Array.isArray(x)&&x.length;
 
 db&&CFG().onSnapshot(d=>{
   const x=d.exists?d.data():{};
@@ -1393,6 +1404,10 @@ const uiAlert=m=>appDialog.alert(m),uiConfirm=m=>appDialog.confirm(m),uiPrompt=(
 async function adm(){const s=await uiPrompt('【管理者専用機能】\n管理者パスワードを入力してください:');if(s===null)return!1;if(s.trim()===String(apw).trim())return!0;await uiAlert('管理者パスワードが違います。権限がありません。');return!1}
 function badge(){const e=$('preset-active-badge');e.className='pb'+(selNo?' on':'');e.innerHTML=selNo?`🎛 現在選択中のプリセット: <strong>P${selNo}（${esc(selName||'プリセット'+selNo)}）</strong>　<span style="font-weight:500;color:var(--text-dim)">全ユーザーで共有中</span>`:'🎛 現在選択中のプリセット: <strong>未選択</strong>'}
 function refreshModals(){['p','c'].forEach(t=>{if($(T[t].o).style.display==='flex')lst(t)});const m=$('machine-preset-modal');if(m.style.display==='flex'&&!m.contains(document.activeElement))pList()}
+
+/* ---------- 想定外のエラーを黙殺せず通知（連続表示は抑制） ---------- */
+(()=>{let last=0;const report=m=>{console.error(m);const n=Date.now();if(n-last>8000&&window.appToast){last=n;window.appToast('⚠️ 処理中にエラーが発生しました。もう一度お試しください')}};
+window.addEventListener('error',e=>{if(e.error||e.message)report(e.error||e.message)});window.addEventListener('unhandledrejection',e=>report(e.reason))})();
 
 /* ---------- ログイン ---------- */
 function checkPassword(){
@@ -1476,7 +1491,7 @@ function ufSave(){
   const nf={台:1};
   for(const u of UNITS.filter(x=>x!=='台')){const n=parseFloat(document.querySelector(`.uf-in[data-u="${u}"]`).value);if(!isFinite(n)||n<=0)return uiAlert(`「${u}」は0より大きい数値で入力してください。`);nf[u]=Math.round(n*1000)/1000}
   const before={...unitFactors};unitFactors=nf;sched(1);hide('uf-modal');
-  setCfg({unitFactors:nf}).then(()=>window.appToast&&window.appToast('✅ 換算係数を保存しました')).catch(e=>{unitFactors=before;sched(1);uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。')})
+  setCfg({unitFactors:nf}).then(()=>{window.appToast&&window.appToast('✅ 換算係数を保存しました');window.__lrRecalc&&window.__lrRecalc().then(n=>n&&window.appToast&&window.appToast(`🔄 戻り品 ${n}件の自動計算を更新しました`)).catch(e=>console.warn('戻り品の再計算に失敗:',e))}).catch(e=>{unitFactors=before;sched(1);uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。')})
 }
 const T={
   p:{a:()=>prods,k:'products',o:'product-modal',m:'modal-product-list',c:'product-count',i:'new-product-name',du:'既に登録されています。',mx:'最大登録数(50件)に達しています。',ed:'品名を編集:',dd:'既に同じ品名が存在します。',rm:'この品名を削除しますか？'},
@@ -1485,7 +1500,7 @@ const T={
 async function lOpen(t){if(!db)return uiAlert('データベースに接続されていません');if(!(await adm()))return;show(T[t].o);lst(t)}
 function lst(t){const o=T[t],a=o.a();$(o.m).innerHTML=a.map((v,i)=>`<div class="product-item"><span style="flex:1;word-break:break-all">${esc(v)}</span><button type="button" class="btn-edit" onclick="lEd('${t}',${i})">編集</button><button type="button" class="btn-del" onclick="lDel('${t}',${i})">削除</button></div>`).join('');$(o.c).textContent=a.length+' / 50 件'}
 function lSave(t,before){const o=T[t],next=o.a().slice();return setCfg({[o.k]:next}).then(()=>{lst(t);window.appToast&&window.appToast('✅ 設定を保存しました')}).catch(e=>{o.a().splice(0,o.a().length,...(before||[]));lst(t);uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。');throw e})}
-function lAdd(t){const o=T[t],i=$(o.i),n=i.value.trim(),a=o.a(),before=a.slice();if(!n)return;if(a.includes(n))return uiAlert(o.du);if(a.length>=50)return uiAlert(o.mx);a.push(n);i.value='';lSave(t,before).catch(()=>{})}
+function lAdd(t){const o=T[t],i=$(o.i),n=i.value.trim(),a=o.a(),before=a.slice();if(!n)return;if(a.includes(n))return uiAlert(o.du);if(a.length>=50)return uiAlert(o.mx);a.push(n);i.value='';lSave(t,before).catch(()=>{}).catch(()=>{})}
 async function lEd(t,i){const o=T[t],a=o.a(),old=a[i],before=a.slice(),n=await uiPrompt(o.ed,old);if(n===null)return;const v=n.trim();if(!v)return;if(a.includes(v)&&v!==old)return uiAlert(o.dd);a[i]=v;try{await lSave(t,before)}catch(e){return}if(t==='c'&&v!==old)await syncCauseRename(old,v)}
 async function lDel(t,i){const o=T[t];if(!(await uiConfirm(o.rm)))return;const a=o.a(),before=a.slice();a.splice(i,1);try{await lSave(t,before)}catch(e){}}
 /* 「原因内容設定」で原因名を編集した際、Firestore上の過去ログ（records全件）に登録済みの原因名も自動で同期する */
@@ -1693,13 +1708,13 @@ function loadArch(c){
 }
 function need(c,ts,R){if(A[c].s)return;for(const t of ts){const g=rg(t,R);if(g&&g[0]<WIN){loadArch(c);return}}}
 function save(c,id,rec){
-  const col=db.collection(COL[c]);
-  return(id?col.doc(id).set(rec,{merge:true}).then(()=>id):col.add(rec).then(r=>r.id)).then(i=>{
+  const ref=id?db.collection(COL[c]).doc(id):db.collection(COL[c]).doc();
+  return commitW(ref.set(rec,{merge:true})).then(()=>ref.id).then(i=>{
     rec.date<WIN?A[c].m.set(i,prep(c,{docId:i,...rec})):A[c].m.delete(i);
     cache[c]=0;sched(7);return i
   })
 }
-function del(c,id){return db.collection(COL[c]).doc(id).delete().then(()=>{A[c].m.delete(id);M[c].delete(id);cache[c]=0;sched(7)})}
+function del(c,id){return commitW(db.collection(COL[c]).doc(id).delete()).then(()=>{A[c].m.delete(id);M[c].delete(id);cache[c]=0;sched(7)})}
 
 /* ---------- 描画スケジューラ（連続更新をまとめ、表示中のタブだけ描画） ---------- */
 function sched(b){dirty|=b;tm||(tm=setTimeout(flush,30))}
@@ -1721,7 +1736,7 @@ function lbl(t,R){
   $('l-'+t).textContent=g?`対象期間: ${g[0]} ～ ${g[1]} (${NM[p.k]})`:'対象期間: '+(A[t==='tk'?'t':'r'].s===2?'すべての実績':`${WIN} 以降の実績（過去分は「過去データを読み込む」で追加）`)
 }
 function mark(t){Object.keys(NM).forEach(k=>{const b=$(`t-${t}-${k}`);b&&b.classList.toggle('active',P[t].k===k)})}
-function setR(t,k,s,e){P[t]={k,s:s||'',e:e||''};mark(t);if(t==='list')pg.l=1;if(t==='tk')pg.t=1;sched(F[t])}
+function setR(t,k,s,e){const sh=SH.includes(t);(sh?SH:[t]).forEach(x=>{P[x]={k,s:s||'',e:e||''};mark(x)});if(t==='list')pg.l=1;if(t==='tk')pg.t=1;sched(sh?F.sum|F.cause:F[t]);if(sh&&window.__lrMain)window.__lrMain()}
 function clearF(){ngF=0;$('search-input').value='';setR('list','all')}
 function ngOnly(){ngF=ngF?0:1;$('search-input').value='';pg.l=1;sched(2)}
 function clearT(){$('tochaku-search-input').value='';$('tochaku-filter-date').value='';setR('tk','all')}
@@ -2437,7 +2452,8 @@ $('sum-cards').innerHTML=`<div class="summary-grid-ng summary-dashboard-cards">
 <div id="summary-trends-card" class="summary-trends-card"></div>`;
 document.querySelectorAll('.cause-tabs[data-t]').forEach(e=>{
   const t=e.dataset.t;
-  e.innerHTML=e.dataset.k.split(',').map(k=>`<button type="button" class="btn-tab" id="t-${t}-${k}" onclick="setR('${t}','${k}')">${NM[k]}</button>`).join('')+`<button type="button" class="btn-tab" id="t-${t}-custom" onclick="openCal('${t}')">📅 任意</button>`;
+  const bc=t==='list'?'btn-tab':'btn-tab pt';if(t!=='list'){e.classList.add('pt-row');e.parentElement&&e.parentElement.classList.add('pt-wrap')}
+  e.innerHTML=e.dataset.k.split(',').map(k=>`<button type="button" class="${bc}" id="t-${t}-${k}" onclick="setR('${t}','${k}')">${NM[k]}</button>`).join('')+`<button type="button" class="${bc}" id="t-${t}-custom" onclick="openCal('${t}')">📅 任意</button>`;
   mark(t)
 });
 ngProductUI();ngCauseUI();sbtn('p',0);sbtn('t',0);fill();spUI();runPaintCalc();
@@ -2866,7 +2882,7 @@ const toggleCursor=()=>cur.toggle();
     if(!lrTouch())setTimeout(()=>document.querySelector('#lr-rows .lr-name')?.focus(),0);
     if(isEdit)return;
     // 過去実績の読み込み完了後に、入力済みの行を再計算する
-    try{await (typeof loadArch==='function'?loadArch('r'):null)}catch(e){}
+    try{await (typeof loadArch==='function'?loadArch('r'):null)}catch(e){console.warn('過去実績の読込に失敗:',e)}
     const again=()=>lrRowEls().forEach(lrRecalc);
     if(typeof A!=='undefined'&&A.r&&A.r.s===1){const t=setInterval(()=>{if(A.r.s!==1){clearInterval(t);again()}},50);setTimeout(()=>clearInterval(t),15000)}else again();
   }
@@ -2883,7 +2899,7 @@ const toggleCursor=()=>cur.toggle();
     if(items.some(x=>!(x.paint_weight>0))&&!(await uiConfirm('使用塗料量が未入力（0kg）の品目があります。このまま登録しますか？')))return;
     const doc={date,items,memo},isEdit=!!lrEditId,btn=$('lr-save');btn.disabled=true;
     try{
-      if(isEdit)await db.collection(LR_COL).doc(lrEditId).update(doc);else await db.collection(LR_COL).add({...doc,timestamp:Date.now()});
+      if(isEdit)await commitW(db.collection(LR_COL).doc(lrEditId).update(doc));else await commitW(db.collection(LR_COL).doc().set({...doc,timestamp:Date.now()}));
       hide('late-repaint-modal');lrEditId=null;lrEditSnapshot=null;window.appToast&&window.appToast(isEdit?'✅ 戻り品再塗装を更新しました':'✅ 戻り品再塗装を登録しました');
     }catch(e){uiAlert('保存に失敗しました: '+e.message)}finally{btn.disabled=false}
   }
@@ -2897,16 +2913,15 @@ const toggleCursor=()=>cur.toggle();
   window.__lrApplyCustomRange=function(from,to){$('lr-range-from').value=from;$('lr-range-to').value=to;lrPeriodTab='custom';lrRefresh()};
 
   function lrRenderPeriodTabs(){
-    const h=LR_PERIODS.map(([k,label])=>`<button type="button" class="lr-period-tab${lrPeriodTab===k?' active':''}" data-lr-period="${k}">${label}</button>`).join('');
-    ['lr-period-tabs','lr-main-tabs'].forEach(id=>{const el=$(id);if(el)el.innerHTML=h});
+    const d=$('lr-period-tabs');if(d)d.innerHTML=LR_PERIODS.map(([k,label])=>`<button type="button" class="lr-period-tab${lrPeriodTab===k?' active':''}" data-lr-period="${k}">${label}</button>`).join('');
     const cr=$('lr-custom-range');if(cr)cr.classList.toggle('show',lrPeriodTab==='custom');
     lrCustomWeekLabel();
   }
-  function lrRefresh(){lrRenderPeriodTabs();lrRenderMainSummary();lrRenderDetail()}
+  function lrRefresh(){lrRenderPeriodTabs();lrRenderDetail()}
   function lrPeriodStats(range){let qty=0,paint=0;if(range)lrDocs.forEach(d=>{if(!d.date||d.date<range[0]||d.date>range[1])return;(d.items||[]).forEach(x=>{qty+=Number(x.qty)||0;paint+=Number(x.paint_weight)||0})});return{qty,paint}}
   /* 戻り品再塗装カード（詳細を開かなくても期間切替でき、品名と数量だけを一覧表示） */
   function lrRenderMainSummary(){
-    const el=$('lr-main-summary');if(!el)return;const range=lrPeriodRange();
+    const el=$('lr-main-summary');if(!el)return;const g=rg('lrm',ranges()),range=g&&g[0]&&g[1]?g:null;
     if(!range){el.innerHTML='<div class="empty-sm">「任意」から期間（週・月・年）を指定してください。</div>';return}
     const agg=new Map();let qty=0,paint=0;
     lrDocs.forEach(d=>{if(!d.date||d.date<range[0]||d.date>range[1])return;(d.items||[]).forEach(x=>{const k=lrNormName(x.name);if(!k)return;let a=agg.get(k);if(!a)agg.set(k,a={name:String(x.name).trim(),u:{}});const u=x.unit||'台',q=Number(x.qty)||0;a.u[u]=(a.u[u]||0)+q;qty+=q;paint+=Number(x.paint_weight)||0})});
@@ -2923,9 +2938,9 @@ const toggleCursor=()=>cur.toggle();
     if(count){const st=lrPeriodStats(range);count.textContent=`${st.qty}件・${st.paint.toFixed(2)}kg`}
     box.innerHTML=rows.length?rows.map(d=>`<div class="lr-entry"><div class="lr-entry-head"><span class="lr-entry-date">${esc(d.date)}</span><span class="lr-entry-actions"><button type="button" class="lr-act lr-edit" data-id="${d.docId}">✏️ 編集</button><button type="button" class="lr-act lr-del" data-id="${d.docId}">🗑 削除</button></span></div>${d.memo?`<div class="lr-entry-memo">📝 ${esc(d.memo)}</div>`:''}<table class="lr-entry-table"><thead><tr><th>品名</th><th>原因</th><th>数量</th><th>使用量(kg)</th></tr></thead><tbody>${(d.items||[]).slice().sort((a,b)=>cmp(a.name,b.name)).map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.cause)}</td><td>${esc(x.qty)}${esc(x.unit||'台')}</td><td><span>${Number(x.paint_weight||0).toFixed(2)}</span>${x.paint_weight_auto?` <span class="lr-auto-badge">🧮 自動計算</span>`:''}</td></tr>`).join('')}</tbody></table></div>`).join(''):'<div class="empty-sm">対象の戻り品再塗装ログはありません。</div>';
   }
-  let lrRecalcRunning=false,lrRecalcDone=false;
+  let lrRecalcRunning=false;
   async function lrRecalcHistorical(){
-    if(lrRecalcRunning||lrRecalcDone||!db||!lrDocs.length)return;
+    if(lrRecalcRunning||!db||!lrDocs.length)return 0;
     lrRecalcRunning=true;
     try{
       await loadArch('r');
@@ -2960,13 +2975,19 @@ const toggleCursor=()=>cur.toggle();
         await batch.commit();
       }
       if(updates.length)updates.forEach(u=>{const d=lrDocs.find(x=>x.docId===u.id);if(d)d.items=u.items});
-      lrRecalcDone=true;
       lrDocs=lrDocs.slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
       lrRenderMainSummary();
       if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail();
-    }catch(e){console.warn('戻り品再塗装の過去ログ自動再計算に失敗:',e)}
+      return updates.length;
+    }catch(e){console.warn('戻り品再塗装の過去ログ再計算に失敗:',e);throw e}
     finally{lrRecalcRunning=false}
   }
+  async function lrRecalcClick(){
+    if(!(await adm()))return;const b=$('lr-recalc-btn');b.disabled=true;
+    try{const n=await lrRecalcHistorical();window.appToast&&window.appToast(n?`✅ ${n}件の自動計算を更新しました`:'✅ 更新が必要な記録はありませんでした')}
+    catch(e){uiAlert('再計算に失敗しました: '+e.message)}finally{b.disabled=false}
+  }
+  window.__lrRecalc=lrRecalcHistorical;window.__lrMain=lrRenderMainSummary;
   let lrDetailScrollY=0;
   function lrDetailClearInputFocus(){
     const q=$('lr-detail-search');
@@ -2977,6 +2998,7 @@ const toggleCursor=()=>cur.toggle();
     const c=$('late-repaint-card');if(!c)return;
     if(open){
       lrDetailScrollY=window.pageYOffset||document.documentElement.scrollTop||document.body.scrollTop||0;
+      {const p=P.lrm;lrPeriodTab=p.k==='custom'?'custom':LR_PERIODS.some(x=>x[0]===p.k)?p.k:'week';if(p.k==='custom'){$('lr-range-from').value=p.s;$('lr-range-to').value=p.e}lrRenderPeriodTabs()}
       c.classList.add('open');
       lrRenderDetail();
       lrDetailClearInputFocus();
@@ -2998,15 +3020,15 @@ const toggleCursor=()=>cur.toggle();
     });
   }
   window.__lrHasUnsaved=function(){if(lrEditId&&lrEditSnapshot)return lrSnapshot()!==lrEditSnapshot;return lrRowEls().some(row=>row.querySelector('.lr-name').value.trim()||Number(row.querySelector('.lr-qty').value)>0)||!!V('lr-memo')}
-  async function lrDelete(id){if(!(await adm()))return;if(!(await uiConfirm('この記録を削除しますか？元に戻せません。')))return;try{await db.collection(LR_COL).doc(id).delete();lrDocs=lrDocs.filter(d=>d.docId!==id);lrRenderMainSummary();lrRenderDetail()}catch(e){uiAlert('削除に失敗しました: '+e.message)}}
+  async function lrDelete(id){if(!(await adm()))return;if(!(await uiConfirm('この記録を削除しますか？元に戻せません。')))return;try{await commitW(db.collection(LR_COL).doc(id).delete());lrDocs=lrDocs.filter(d=>d.docId!==id);lrRenderMainSummary();lrRenderDetail()}catch(e){uiAlert('削除に失敗しました: '+e.message)}}
   function lrBind(){
     if(lrBound)return;lrBound=true;
     const on=(id,ev,fn)=>{const e=$(id);e&&e.addEventListener(ev,fn)},tg=o=>e=>{e.preventDefault();e.stopPropagation();lrDetailToggle(o)},cl=e=>{e.preventDefault();e.stopPropagation();lrCloseModal()};
-    on('lr-open-add','click',e=>{e.stopPropagation();lrOpen()});on('lr-add-row','click',lrAddRow);on('lr-save','click',lrSave);
+    on('lr-open-add','click',e=>{e.stopPropagation();lrOpen()});on('lr-add-row','click',lrAddRow);on('lr-recalc-btn','click',lrRecalcClick);on('lr-save','click',lrSave);
     on('lr-modal-close','click',cl);on('lr-modal-cancel','click',cl);
     on('lr-detail-open','click',tg(true));on('lr-detail-back-head','click',tg(false));on('late-repaint-card','click',e=>{if(e.target===e.currentTarget&&e.currentTarget.classList.contains('open'))lrDetailToggle(false)});
     on('lr-main-head','click',e=>{if(!e.target.closest('button'))lrDetailToggle(true)});on('lr-detail-search','input',lrRenderDetail);
-    ['lr-period-tabs','lr-main-tabs'].forEach(id=>on(id,'click',e=>{const b=e.target.closest('[data-lr-period]');if(!b)return;lrPeriodTab=b.dataset.lrPeriod;if(lrPeriodTab==='custom')lrOpenCustomWeek();lrRefresh()}));
+    on('lr-period-tabs','click',e=>{const b=e.target.closest('[data-lr-period]');if(!b)return;lrPeriodTab=b.dataset.lrPeriod;if(lrPeriodTab==='custom')lrOpenCustomWeek();lrRefresh()});
     on('lr-custom-week-open','click',e=>{e.stopPropagation();lrOpenCustomWeek()});
     on('lr-detail-list','click',async e=>{const b=e.target.closest('[data-id]');if(!b)return;if(b.classList.contains('lr-del'))lrDelete(b.dataset.id);else{const d=lrDocs.find(x=>x.docId===b.dataset.id);if(d&&await adm())lrOpen(d)}});
     on('lr-rows','input',e=>{
@@ -3022,7 +3044,7 @@ const toggleCursor=()=>cur.toggle();
     lrRefresh();
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('late-repaint-card')?.classList.contains('open')&&!document.querySelector('.modal-overlay[style*="flex"]'))lrDetailToggle(false)})
   }
-  window.initLateRepaints=function(){try{lrBind()}catch(e){console.error('戻り品再塗装UI初期化失敗:',e)}if(!db)return;try{db.collection(LR_COL).orderBy('date','desc').onSnapshot(s=>{lrDocs=[];s.forEach(d=>lrDocs.push({docId:d.id,...d.data()}));lrRecalcDone=false;lrRenderMainSummary();if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail();lrRecalcHistorical()},e=>console.warn('戻り品再塗装読込失敗:',e))}catch(e){console.warn('戻り品再塗装初期化失敗:',e)}};
+  window.initLateRepaints=function(){try{lrBind()}catch(e){console.error('戻り品再塗装UI初期化失敗:',e)}if(!db)return;try{db.collection(LR_COL).orderBy('date','desc').onSnapshot(s=>{lrDocs=[];s.forEach(d=>lrDocs.push({docId:d.id,...d.data()}));lrRenderMainSummary();if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail()},e=>console.warn('戻り品再塗装読込失敗:',e))}catch(e){console.warn('戻り品再塗装初期化失敗:',e)}};
 })();
 
 /* ---------- 簡易実績登録：5段階ステップ（既存保存処理を使用） ---------- */
