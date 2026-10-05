@@ -1611,7 +1611,17 @@ function showBakeInfo(){
   if(!p){uiAlert('該当する塗料プリセットが見つかりません。');return}
   uiAlert(`🌡️ 基準焼付条件\n塗料名：${p.name}\n焼付温度：${p.temp} ℃\n焼付時間：${p.time} 分`)
 }
-function setBakePaintByName(name){const s=$('bake_paint_select');if(!s)return;fillBakePresets();const i=bakePresets.findIndex(p=>String(p.name).trim()===String(name||'').trim());if(i>=0){s.value=String(i);bakeStatus(`📋 登録済みプリセット：${bakePresets[i].name} / ${bakePresets[i].temp}℃ / ${bakePresets[i].time}分`);return}if(name){const o=new Option(`過去実績：${name}`,`stored:${encodeURIComponent(name)}`);s.appendChild(o);s.value=o.value;bakeStatus(`📋 過去実績に記録された塗料名：${name}（現在のプリセットには未登録）`)}else bakeStatus('',false)}
+/* 塗料名→焼付条件：登録済みプリセットがあればその温度・時間、無ければ既定(200℃/20分)。表記ゆれ（全角半角・空白）は同一視 */
+function bakeOf(name){const n=normName(name),p=n?bakePresets.find(x=>normName(x.name)===n):null;return p?{temp:Number(p.temp),time:Number(p.time),preset:true,name:p.name}:{temp:200,time:20,preset:false,name:String(name||'').trim()}}
+function bakeDefaults(){$('bake_temp').value=200;$('bake_time').value=20}
+/* apply=true（簡易登録）の場合は、焼付温度・時間も塗料に合わせて必ず設定し直す（前回の塗料の値を引きずらない）。編集の呼び出しは記録済みの値を保つため apply なし */
+function setBakePaintByName(name,apply){
+  const s=$('bake_paint_select');if(!s)return;fillBakePresets();
+  const b=bakeOf(name),i=b.preset?bakePresets.findIndex(p=>normName(p.name)===normName(name)):-1;
+  if(apply){if(name){$('bake_temp').value=b.temp;$('bake_time').value=b.time}else bakeDefaults()}
+  if(i>=0){s.value=String(i);bakeStatus(`${apply?'✅ 焼付条件を適用':'📋 登録済みプリセット'}：${bakePresets[i].name} / ${bakePresets[i].temp}℃ / ${bakePresets[i].time}分`);return}
+  if(name){const o=new Option(`過去実績：${name}`,`stored:${encodeURIComponent(name)}`);s.appendChild(o);s.value=o.value;bakeStatus(`📋 ${name}（現在のプリセットには未登録）${apply?'：焼付条件は既定の200℃ / 20分です':''}`)}else bakeStatus('',false)
+}
 function bakeValidate(name,temp,time){const n=String(name||'').trim(),t=Number(temp),tm=Number(time);if(!n)return '塗料名を入力してください。';if(!Number.isFinite(t)||!Number.isInteger(t)||t<0)return '焼付温度は0以上の整数で入力してください。';if(!Number.isFinite(tm)||!Number.isInteger(tm)||tm<0)return '焼付時間は0以上の整数で入力してください。';return ''}
 function bakeSetLocal(next){bakeLocalChange=Date.now()+2500;bakePresets=next.slice(0,50);bakeConfigLast=JSON.stringify(bakePresets);bakeConfigReady=1;fillBakePresets();bakeList()}
 function bakeOpen(){show('bake-preset-modal');bakeList()}
@@ -2224,7 +2234,7 @@ function resetP(){
   $('weather-time').value='12:00';$('weather').value='晴れ';$('temp').value='';$('humidity').value='';const ws=$('weather-fetch-status');if(ws){ws.className='weather-fetch-status';ws.textContent='当日12:00の天候を自動取得'}
   for(let i=1;i<=10;i++){$('product'+i).value='';$('quantity'+i).value='';$('unit'+i)&&($('unit'+i).value='台')}sr('p',2);
   $('operator2').value='';$('machine1').value='旭サナック';$('machine2').value='';
-  $('paint_weight').value='';$('bake_paint_select').value='';bakeStatus('',false);$('thickness').value='50';$('memo').value='';$('status').value='OK';
+  $('paint_weight').value='';$('bake_paint_select').value='';bakeStatus('',false);bakeDefaults();$('thickness').value='50';$('memo').value='';$('status').value='OK';
   ngProductCount=1;ngProductUI([]);ngCauseCount=1;ngCauseUI([]);ngToggle();editId=null;pRe=0;applyPreset(1);sbtn('p',0);pg.l=1;leaveRecordEditMode();window.__resetQuickEntry&&window.__resetQuickEntry()
 }
 function resetT(d){tf.reset();sr('t',2);$('t_calc_mode').value='auto';$('t_date').value=d;$('t_qty1').value=1;isAtt=0;tEdit=null;sbtn('t',0);tPrev();pg.t=1}
@@ -3105,7 +3115,7 @@ const toggleCursor=()=>cur.toggle();
   function syncProducts(){if(typeof sr==='function')sr('p',Math.max(1,rowCount));for(let i=1;i<=MAX;i++){const a=q('quick-product-'+i),b=q('quick-qty-'+i),pa=q('product'+i),pb=q('quantity'+i);if(pa&&pb){pa.value=a?.value||'';pb.value=b?.value||'';pa.dispatchEvent(new Event('input',{bubbles:true}));pb.dispatchEvent(new Event('input',{bubbles:true}))}}}
   function syncAll(){
     syncProducts();set('operator1',q('quick-operator1')?.value||'');set('operator2',q('quick-operator2')?.value||'');set('machine1',q('quick-machine1')?.value||'旭サナック');set('machine2',q('quick-machine2')?.value||'');
-    const pn=q('quick-paint')?.value||'';if(pn&&typeof setBakePaintByName==='function')setBakePaintByName(pn);else set('bake_paint_select','');
+    const pn=q('quick-paint')?.value||'';if(pn)setBakePaintByName(pn,true);else{set('bake_paint_select','');bakeDefaults()}
     const w=q('quick-paint-weight')?.value||'';set('paint_weight',w);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}));set('status','OK');ngToggle();
   }
   function markSelectedPreset(){
@@ -3116,7 +3126,7 @@ const toggleCursor=()=>cur.toggle();
   function update(){
     markSelectedPreset();
     const ps=[];for(let i=1;i<=rowCount;i++){const n=q('quick-product-'+i)?.value?.trim(),v=q('quick-qty-'+i)?.value;if(n)ps.push(v?`${n} × ${v}`:n)}
-    const op=[q('quick-operator1')?.value,q('quick-operator2')?.value].filter(Boolean).join('・'),ma=[q('quick-machine1')?.value,q('quick-machine2')?.value].filter(Boolean).join('・'),pa=[q('quick-paint')?.value,q('quick-paint-weight')?.value?`${q('quick-paint-weight').value}kg`:'' ].filter(Boolean).join(' / ');
+    const op=[q('quick-operator1')?.value,q('quick-operator2')?.value].filter(Boolean).join('・'),ma=[q('quick-machine1')?.value,q('quick-machine2')?.value].filter(Boolean).join('・'),pn_=q('quick-paint')?.value||'',bk=pn_?bakeOf(pn_):null,pa=[pn_,q('quick-paint-weight')?.value?`${q('quick-paint-weight').value}kg`:'',bk?`焼付 ${bk.temp}℃/${bk.time}分${bk.preset?'':'（既定）'}`:''].filter(Boolean).join(' / ');
     const put=(id,v)=>{const e=q(id);if(!e)return;e.textContent=v||'未入力';e.classList.toggle('empty',!v)};put('quick-summary-product',ps.join(' / '));put('quick-summary-operator',op);put('quick-summary-machine',ma);put('quick-summary-paint',pa);const c=q('quick-confirm-text');if(c)c.textContent=`品名・数：${ps.join(' / ')||'未入力'} ｜ 塗装者：${op||'未入力'} ｜ 塗装機：${ma||'未入力'} ｜ 塗料・使用量：${pa||'未入力'} ｜ 判定：OK`;
   }
   function setStep(n){
@@ -3135,7 +3145,7 @@ const toggleCursor=()=>cur.toggle();
   }
   function next(){if(!valid(step))return;syncAll();setStep(step+1)}
   function changePaint(delta){const e=q('quick-paint-weight');if(!e)return;const cur=Number(e.value)||0,n=Math.max(0,Math.round((cur+delta)*10)/10);e.value=n>0?String(n):'';e.dispatchEvent(new Event('input',{bubbles:true}));update()}
-  function doClearQuick(){rowCount=1;currentRow=1;productRows();['quick-operator1','quick-operator2','quick-machine2','quick-paint','quick-paint-weight'].forEach(id=>set(id,''));set('quick-machine1','旭サナック');set('operator1','');set('operator2','');set('machine1','旭サナック');set('machine2','');set('bake_paint_select','');set('paint_weight','');set('status','OK');ngToggle();paintPresets();setStep(0);productButtons()}
+  function doClearQuick(){rowCount=1;currentRow=1;productRows();['quick-operator1','quick-operator2','quick-machine2','quick-paint','quick-paint-weight'].forEach(id=>set(id,''));set('quick-machine1','旭サナック');set('operator1','');set('operator2','');set('machine1','旭サナック');set('machine2','');set('bake_paint_select','');bakeDefaults();set('paint_weight','');set('status','OK');ngToggle();paintPresets();setStep(0);productButtons()}
   function clearQuick(){
     if(typeof uiConfirm==='function')uiConfirm('簡易登録の入力内容をクリアしますか？').then(ok=>{if(ok)doClearQuick()});else if(confirm('簡易登録の入力内容をクリアしますか？'))doClearQuick();
   }
@@ -3156,7 +3166,7 @@ const toggleCursor=()=>cur.toggle();
     /* PCだけ先頭入力へフォーカス。preventScrollで画面位置は動かさない。 */
     if(window.matchMedia?.('(pointer:fine)').matches){const first=q('quick-product-1');if(first)try{first.focus({preventScroll:true})}catch(_){first.focus()}}
     root.addEventListener('input',e=>{const id=e.target?.id||'';if(id.startsWith('quick-product-')||id.startsWith('quick-qty-')){const m=id.match(/quick-(?:product|qty)-(\d+)/);if(m)currentRow=Number(m[1]);syncProducts()}if(id==='quick-paint-weight'){set('paint_weight',e.target.value);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}))}update()});
-    root.addEventListener('change',e=>{const id=e.target?.id||'';if(id==='quick-operator1'||id==='quick-operator2')set(id==='quick-operator1'?'operator1':'operator2',e.target.value);if(id==='quick-machine1'||id==='quick-machine2')set(id==='quick-machine1'?'machine1':'machine2',e.target.value);if(id==='quick-paint'){if(e.target.value&&typeof setBakePaintByName==='function')setBakePaintByName(e.target.value);else set('bake_paint_select','')}update()});
+    root.addEventListener('change',e=>{const id=e.target?.id||'';if(id==='quick-operator1'||id==='quick-operator2')set(id==='quick-operator1'?'operator1':'operator2',e.target.value);if(id==='quick-machine1'||id==='quick-machine2')set(id==='quick-machine1'?'machine1':'machine2',e.target.value);if(id==='quick-paint'){if(e.target.value)setBakePaintByName(e.target.value,true);else{set('bake_paint_select','');bakeDefaults()}}update()});
     root.addEventListener('click',e=>{
       const b=e.target.closest('button');if(!b||!root.contains(b))return;
       if(b.dataset.qStep!==undefined){const n=Number(b.dataset.qStep);if(n<=step)setStep(n);return}
