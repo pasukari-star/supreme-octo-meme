@@ -611,11 +611,12 @@ body.editing-record #manual-entry-wrap{display:block}
 .quick-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-bottom:8px}.quick-progress button{min-height:30px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-dim);font-size:9.5px;font-weight:800;cursor:pointer}.quick-progress button.active{background:rgba(2,132,199,.1);border-color:rgba(2,132,199,.35);color:var(--accent-cyan)}.quick-progress button.done{color:var(--text-main)}
 .quick-summary{display:grid;grid-template-columns:1.7fr .9fr 1fr 1.2fr;gap:6px;margin-bottom:8px}.quick-summary-box{min-width:0;padding:6px 7px;border:1px solid rgba(2,132,199,.14);border-radius:7px;background:#fff}.quick-summary-label{display:block;font-size:8.5px;font-weight:800;color:var(--text-muted);margin-bottom:2px}.quick-summary-value{display:block;font-size:10.5px;font-weight:800;color:var(--text-main);min-height:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.quick-summary-value.empty{color:var(--text-dim);font-weight:700}
 .quick-step-panel{display:none;border:1px solid rgba(2,132,199,.16);border-radius:9px;background:#fff;padding:9px}.quick-step-panel.active{display:block}.quick-step-title{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:7px}.quick-step-title strong{font-size:12px}.quick-step-title span{font-size:9px;color:var(--text-dim);font-weight:700}.quick-step-help{font-size:9.5px;color:var(--text-dim);margin:0 0 7px;line-height:1.4}
-.quick-product-row{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(235px,.8fr) 34px;gap:5px;align-items:center;margin-top:5px}.quick-product-row:first-child{margin-top:0}.quick-product-row input{width:100%;min-width:0;min-height:38px;padding:5px 7px;border:1px solid var(--border-color);border-radius:7px;background:#fff;font-size:11px}.quick-product-row input[readonly]{background:#f8fafc;cursor:pointer}.quick-qty{display:grid;grid-template-columns:42px minmax(55px,1fr) 42px 64px;gap:3px;align-items:center}.quick-unit{min-height:38px;width:100%;min-width:0;padding:0 2px;border:1px solid rgba(2,132,199,.35);border-radius:7px;background:#f0f9ff;color:#0369a1;font-size:13px;font-weight:800;text-align:center}.quick-qty input{text-align:center}.quick-step-btn,.quick-remove-btn,.quick-add-btn,.quick-option-btn{min-height:38px;padding:4px 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:11px;font-weight:900;cursor:pointer}.quick-step-btn{font-size:16px}.quick-remove-btn{color:var(--accent-danger)}.quick-add-btn{margin-top:7px;color:var(--accent-cyan);border-color:rgba(2,132,199,.25)}
+.quick-product-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(335px,1fr) 34px;gap:5px;align-items:center;margin-top:5px}.quick-product-row:first-child{margin-top:0}.quick-product-row input{width:100%;min-width:0;min-height:38px;padding:5px 7px;border:1px solid var(--border-color);border-radius:7px;background:#fff;font-size:11px}.quick-product-row input[readonly]{background:#f8fafc;cursor:pointer}.quick-chip-label{font-size:10.5px;font-weight:700;color:var(--text-dim);margin-right:2px}.quick-bake{display:flex;align-items:center;gap:6px}.quick-bake input{width:92px;min-height:40px;padding:5px 8px;border:1px solid var(--border-color);border-radius:8px;font-size:15px;font-weight:700;text-align:center}.quick-bake span{font-size:13px;font-weight:700;color:var(--text-dim)}.quick-bake-note{margin-top:5px;font-size:11px;line-height:1.45;color:var(--accent-cyan)}.quick-bake-note.warn{color:var(--accent-warn,#d97706);font-weight:700}
+.quick-qty{display:grid;grid-template-columns:repeat(3,minmax(26px,32px)) minmax(54px,1fr) repeat(3,minmax(26px,32px)) 60px;gap:3px;align-items:center}.quick-qty .qd{height:30px;padding:0;border:1px solid var(--border-color);border-radius:6px;background:#f8fafc;font-size:10.5px;font-weight:800;line-height:1;cursor:pointer;white-space:nowrap}.quick-qty .qd.m{color:#b91c1c;background:#fff7f7;border-color:#fecaca}.quick-qty .qd.p{color:#047857;background:#f0fdf4;border-color:#bbf7d0}.quick-qty .qd:active{transform:scale(.94)}.quick-qty input{height:36px;font-size:14px!important;font-weight:800}.quick-unit{min-height:38px;width:100%;min-width:0;padding:0 2px;border:1px solid rgba(2,132,199,.35);border-radius:7px;background:#f0f9ff;color:#0369a1;font-size:13px;font-weight:800;text-align:center}.quick-qty input{text-align:center}.quick-remove-btn,.quick-add-btn,.quick-option-btn{min-height:38px;padding:4px 9px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:11px;font-weight:900;cursor:pointer}.quick-remove-btn{color:var(--accent-danger)}.quick-add-btn{margin-top:7px;color:var(--accent-cyan);border-color:rgba(2,132,199,.25)}
 .quick-product-presets{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;max-height:86px;overflow:auto;padding:2px}.quick-option-btn{min-height:34px;font-size:10px}.quick-option-btn.selected{background:rgba(2,132,199,.1);border-color:rgba(2,132,199,.4);color:var(--accent-cyan)}
 .quick-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.quick-field{min-width:0}.quick-field-label{display:block;font-size:9.5px;font-weight:800;color:var(--text-muted);margin-bottom:3px}.quick-field select,.quick-field input{width:100%;min-width:0;min-height:40px;padding:5px 7px;border:1px solid var(--border-color);border-radius:7px;background:#fff;color:var(--text-main);font-size:11px}.quick-field input{text-align:center}.quick-number-control{display:grid;grid-template-columns:48px minmax(60px,1fr) 48px;gap:4px;align-items:center}.quick-number-control button{min-height:40px;border:1px solid var(--border-color);border-radius:7px;background:#fff;font-size:15px;font-weight:900;cursor:pointer}.quick-number-control input{text-align:center}
 .quick-register-row{display:flex;gap:6px;margin-top:8px}.quick-next,.quick-submit{flex:1;min-height:42px;border:0;border-radius:8px;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-indigo));color:#fff;font-size:12px;font-weight:900;cursor:pointer}.quick-back-step{min-width:84px}.quick-submit{font-size:13px}
-@media(max-width:767px){.quick-manual-label{margin-top:2px;padding:6px 8px;min-height:42px}.quick-manual-label .quick-action-btn{min-height:36px;padding:4px 9px}#quick-entry{margin-left:-2px;margin-right:-2px;padding:8px}.quick-entry-title span{display:none}.quick-progress{grid-template-columns:repeat(5,minmax(0,1fr))}.quick-progress button{min-height:34px;font-size:9px}.quick-summary{grid-template-columns:1.35fr .65fr}.quick-summary-box:nth-child(3),.quick-summary-box:nth-child(4){grid-column:span 1}.quick-select-grid{grid-template-columns:1fr}.quick-product-row{grid-template-columns:minmax(0,1fr);gap:4px}.quick-qty{grid-template-columns:48px minmax(56px,1fr) 48px 66px}.quick-product-row input,.quick-field select,.quick-field input{min-height:42px}.quick-number-control{grid-template-columns:56px minmax(70px,1fr) 56px}.quick-number-control button{min-height:44px}.quick-register-row{flex-direction:row}.quick-back-step{min-width:72px;min-height:44px}.quick-next,.quick-submit{min-height:44px}.quick-product-presets{max-height:96px;overflow:auto}}
+@media(max-width:767px){.quick-manual-label{margin-top:2px;padding:6px 8px;min-height:42px}.quick-manual-label .quick-action-btn{min-height:36px;padding:4px 9px}#quick-entry{margin-left:-2px;margin-right:-2px;padding:8px}.quick-entry-title span{display:none}.quick-progress{grid-template-columns:repeat(5,minmax(0,1fr))}.quick-progress button{min-height:34px;font-size:9px}.quick-summary{grid-template-columns:1.35fr .65fr}.quick-summary-box:nth-child(3),.quick-summary-box:nth-child(4){grid-column:span 1}.quick-select-grid{grid-template-columns:1fr}.quick-product-row{grid-template-columns:minmax(0,1fr);gap:4px}.quick-qty{grid-template-columns:repeat(6,minmax(0,1fr))}.quick-qty input{grid-column:1/5;grid-row:1;font-size:16px!important}.quick-qty .quick-unit{grid-column:5/7;grid-row:1}.quick-qty .qd{grid-row:2;height:30px}.quick-qty .qd:nth-of-type(1){grid-column:1}.quick-qty .qd:nth-of-type(2){grid-column:2}.quick-qty .qd:nth-of-type(3){grid-column:3}.quick-qty .qd:nth-of-type(4){grid-column:4}.quick-qty .qd:nth-of-type(5){grid-column:5}.quick-qty .qd:nth-of-type(6){grid-column:6}.quick-product-row input,.quick-field select,.quick-field input{min-height:42px}.quick-number-control{grid-template-columns:56px minmax(70px,1fr) 56px}.quick-number-control button{min-height:44px}.quick-register-row{flex-direction:row}.quick-back-step{min-width:72px;min-height:44px}.quick-next,.quick-submit{min-height:44px}.quick-product-presets{max-height:96px;overflow:auto}}
 .analysis-period{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius);padding:10px 16px;margin:0 0 12px;box-shadow:var(--shadow-glow)}.analysis-period small{font-weight:600;color:var(--text-dim);font-size:10.5px}.analysis-period .plbl{margin:6px 0 0}
 .analysis-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-bottom:18px}.analysis-cols>div{margin-bottom:0;display:flex;flex-direction:column;background:var(--bg-card)}.analysis-cols>div>.cause-analysis-card:last-child{flex:1}
 @media(min-width:992px){
@@ -908,7 +909,7 @@ body.editing-record #manual-entry-wrap{display:block}
 
   <section class="quick-step-panel active" data-q-panel="0">
     <div class="quick-step-title"><strong>1. 品名と数</strong><span>最大10種類</span></div>
-    <p class="quick-step-help">登録品・過去ログは並び順で表示。未登録の品名も直接入力できます。数は＋／−で入力。</p>
+    <p class="quick-step-help">登録品・過去ログは並び順で表示。未登録の品名も直接入力できます。数は直接入力するか、−10〜＋10で調整できます。</p>
     <div id="quick-product-presets" class="quick-product-presets" aria-label="登録済み品名"></div>
     <div id="quick-product-rows"></div>
     <button type="button" class="quick-add-btn" id="quick-product-add">＋ 品名を追加</button>
@@ -935,8 +936,9 @@ body.editing-record #manual-entry-wrap{display:block}
 
   <section class="quick-step-panel" data-q-panel="3">
     <div class="quick-step-title"><strong>4. 塗料と使用量</strong><span>0.1kg単位・正数</span></div>
-    <div class="quick-field"><label class="quick-field-label" for="quick-paint">塗料名</label><select id="quick-paint"><option value="">-- 塗料を選択 --</option></select></div>
+    <div class="quick-field"><label class="quick-field-label" for="quick-paint">塗料名</label><select id="quick-paint"><option value="">-- 塗料を選択 --</option></select><div id="quick-paint-chips" class="quick-product-presets" style="display:none;align-items:center"></div><div id="quick-paint-note" class="quick-bake-note"></div></div>
     <div class="quick-field" style="margin-top:7px"><label class="quick-field-label" for="quick-paint-weight">使用量 (kg)</label><div class="quick-number-control"><button type="button" data-q-paint-delta="-0.1">−0.1</button><input type="number" id="quick-paint-weight" inputmode="decimal" step="0.1" min="0.1" placeholder="0.1"><button type="button" data-q-paint-delta="0.1">＋0.1</button></div></div>
+    <div class="quick-field" style="margin-top:9px"><label class="quick-field-label" for="quick-bake-temp">焼付条件（塗料に合わせて自動入力・修正可）</label><div class="quick-bake"><input type="number" id="quick-bake-temp" inputmode="numeric" min="0" step="5" placeholder="温度"><span>℃</span><input type="number" id="quick-bake-time" inputmode="numeric" min="0" step="1" placeholder="時間"><span>分</span></div><div id="quick-bake-note" class="quick-bake-note"></div></div>
     <div class="quick-product-presets" aria-label="使用量クイック入力"><button type="button" class="quick-option-btn" data-q-paint-delta="-5">−5kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="-1">−1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="-0.1">−0.1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="0.1">＋0.1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="1">＋1kg</button><button type="button" class="quick-option-btn" data-q-paint-delta="5">＋5kg</button></div>
     <div class="quick-register-row"><button type="button" class="quick-back-step" data-q-back="2">← 戻る</button><button type="button" class="quick-next" data-q-next="4">次へ → 確認</button></div>
   </section>
@@ -1386,7 +1388,7 @@ db&&CFG().onSnapshot(d=>{
 
 /* ---------- 共通UI ---------- */
 function opts(id,a,f){const s=$(id),v=s.value;s.innerHTML='';if(f!=null)s.appendChild(new Option(f,''));a.forEach(x=>s.appendChild(new Option(x,x)));if(v&&a.includes(v))s.value=v}
-function fill(){opts('operator1',ops);opts('t_operator',ops);opts('operator2',ops,'-- 2人目なし --');opts('registered-products',prods);fillBakePresets();}
+function fill(){opts('operator1',ops);opts('t_operator',ops);opts('operator2',ops,'-- 2人目なし --');opts('registered-products',prods);fillBakePresets();window.__quickPaintRefresh&&window.__quickPaintRefresh();}
 function setV(id,v){const s=$(id);if(s.tagName==='SELECT'&&v&&v!=='-'&&![...s.options].some(o=>o.value===v))s.appendChild(new Option(v,v));s.value=v==null?'':v}
 const appDialog=(()=>{
   const O=$('app-dialog-overlay'),D=$('app-dialog'),T=$('app-dialog-title').querySelector('span'),M=$('app-dialog-message'),I=$('app-dialog-input'),A=$('app-dialog-actions'),C=$('app-dialog-cancel'),K=$('app-dialog-ok');
@@ -1611,15 +1613,22 @@ function showBakeInfo(){
   if(!p){uiAlert('該当する塗料プリセットが見つかりません。');return}
   uiAlert(`🌡️ 基準焼付条件\n塗料名：${p.name}\n焼付温度：${p.temp} ℃\n焼付時間：${p.time} 分`)
 }
-/* 塗料名→焼付条件：登録済みプリセットがあればその温度・時間、無ければ既定(200℃/20分)。表記ゆれ（全角半角・空白）は同一視 */
-function bakeOf(name){const n=normName(name),p=n?bakePresets.find(x=>normName(x.name)===n):null;return p?{temp:Number(p.temp),time:Number(p.time),preset:true,name:p.name}:{temp:200,time:20,preset:false,name:String(name||'').trim()}}
+/* 塗料名→焼付条件。①表記ゆれ（全角半角・空白）を無視した完全一致 ②「黒系」と「セイコー黒系」のような包含で候補が1件だけの場合 ③無ければ既定(200℃/20分・未登録として警告) */
+function bakeMatch(name){
+  const n=normName(name);if(!n)return -1;
+  let i=bakePresets.findIndex(x=>normName(x.name)===n);if(i>=0)return i;
+  const c=[];bakePresets.forEach((x,k)=>{const m=normName(x.name);if(m&&(m.includes(n)||n.includes(m)))c.push(k)});
+  return c.length===1?c[0]:-1
+}
+function bakeOf(name){const i=bakeMatch(name),p=i>=0?bakePresets[i]:null;return p?{temp:Number(p.temp),time:Number(p.time),preset:true,idx:i,name:p.name}:{temp:200,time:20,preset:false,idx:-1,name:String(name||'').trim()}}
 function bakeDefaults(){$('bake_temp').value=200;$('bake_time').value=20}
 /* apply=true（簡易登録）の場合は、焼付温度・時間も塗料に合わせて必ず設定し直す（前回の塗料の値を引きずらない）。編集の呼び出しは記録済みの値を保つため apply なし */
 function setBakePaintByName(name,apply){
   const s=$('bake_paint_select');if(!s)return;fillBakePresets();
-  const b=bakeOf(name),i=b.preset?bakePresets.findIndex(p=>normName(p.name)===normName(name)):-1;
+  [...s.options].forEach(o=>{if(o.value.startsWith('stored:'))o.remove()});
+  const b=bakeOf(name);
   if(apply){if(name){$('bake_temp').value=b.temp;$('bake_time').value=b.time}else bakeDefaults()}
-  if(i>=0){s.value=String(i);bakeStatus(`${apply?'✅ 焼付条件を適用':'📋 登録済みプリセット'}：${bakePresets[i].name} / ${bakePresets[i].temp}℃ / ${bakePresets[i].time}分`);return}
+  if(b.idx>=0){s.value=String(b.idx);bakeStatus(`${apply?'✅ 焼付条件を適用':'📋 登録済みプリセット'}：${bakePresets[b.idx].name} / ${bakePresets[b.idx].temp}℃ / ${bakePresets[b.idx].time}分`);return}
   if(name){const o=new Option(`過去実績：${name}`,`stored:${encodeURIComponent(name)}`);s.appendChild(o);s.value=o.value;bakeStatus(`📋 ${name}（現在のプリセットには未登録）${apply?'：焼付条件は既定の200℃ / 20分です':''}`)}else bakeStatus('',false)
 }
 function bakeValidate(name,temp,time){const n=String(name||'').trim(),t=Number(temp),tm=Number(time);if(!n)return '塗料名を入力してください。';if(!Number.isFinite(t)||!Number.isInteger(t)||t<0)return '焼付温度は0以上の整数で入力してください。';if(!Number.isFinite(tm)||!Number.isInteger(tm)||tm<0)return '焼付時間は0以上の整数で入力してください。';return ''}
@@ -2205,7 +2214,7 @@ $('p-form').onsubmit=e=>{
     if(causeQ!==ngQ)return uiAlert(`NG台数の合計 ${ngQ}台 と、不具合原因の個数合計 ${causeQ}個 は一致させてください。1台につき1個の原因として記録する運用です。`);
   }
   const th=V('thickness'),old=editId&&fnd('r',editId),
-  rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),weather_time:V('weather-time')||'12:00',location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,paint_name:(V('bake_paint_select')===''?'':(V('bake_paint_select').startsWith('stored:')?(old&&old.paint_name||''):((bakePresets[Number(V('bake_paint_select'))]||{}).name||''))),source_type:'manual',bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_products:ngProducts,ng_details:ngD,memo:V('memo')||'-'};
+  rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),weather_time:V('weather-time')||'12:00',location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,paint_name:(V('bake_paint_select')===''?'':(V('bake_paint_select').startsWith('stored:')?(old&&old.paint_name||decodeURIComponent(V('bake_paint_select').slice(7))):((bakePresets[Number(V('bake_paint_select'))]||{}).name||''))),source_type:'manual',bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_products:ngProducts,ng_details:ngD,memo:V('memo')||'-'};
   const wasEdit=!!editId;
   busy(e.target,()=>save('r',editId,rec).then(()=>{const chg=date!==today();resetP();setToday();wx(today(),fillWx);chg&&onDate();window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました')}).catch(er=>uiAlert('保存エラー: '+er.message)))
 };
@@ -3060,7 +3069,7 @@ const toggleCursor=()=>cur.toggle();
 /* ---------- 簡易実績登録：5段階ステップ（既存保存処理を使用） ---------- */
 (function(){
   const q=id=>document.getElementById(id),MAX=10;
-  let step=0,rowCount=1,currentRow=1,bound=false,historyReady=false,historyPromise=null,paintHistory={},unitHistory={},historyProducts=new Set();
+  let step=0,rowCount=1,currentRow=1,bound=false,historyReady=false,historyPromise=null,paintHistory={},paintsByProduct={},unitHistory={},historyProducts=new Set();
   const products=()=>Array.isArray(prods)?prods.map(x=>String(x).trim()).filter(Boolean):[];
   const set=(id,v)=>{const e=q(id);if(e)e.value=v==null?'':v};
   const sortNames=(arr)=>[...new Set(arr.map(x=>String(x||'').trim()).filter(Boolean))].sort((a,b)=>{
@@ -3074,13 +3083,13 @@ const toggleCursor=()=>cur.toggle();
     if(historyReady)return paintHistory;
     if(historyPromise)return historyPromise;
     historyPromise=(async()=>{
-      const map={};
+      const map={};paintsByProduct={};
       try{
         const rows=[];
         all('r').forEach(r=>rows.push(r));
         if(db){const snap=await db.collection(COL.r).orderBy('timestamp','desc').limit(500).get();snap.forEach(d=>rows.push({docId:d.id,...d.data()}));}
         rows.sort((a,b)=>(Number(b.timestamp)||0)-(Number(a.timestamp)||0));
-        rows.forEach(r=>{const paint=String(r.paint_name||'').trim();if(!paint||!Array.isArray(r.items))return;r.items.forEach(it=>{const name=String(it&&it.name||'').trim();if(!name)return;historyProducts.add(name);if(paint&&!map[name])map[name]=paint})});
+        rows.forEach(r=>{const paint=String(r.paint_name||'').trim();if(!paint||!Array.isArray(r.items))return;r.items.forEach(it=>{const name=String(it&&it.name||'').trim();if(!name)return;historyProducts.add(name);if(paint&&!map[name])map[name]=paint;if(paint){const k=normName(name),a=paintsByProduct[k]||(paintsByProduct[k]=[]);if(!a.includes(paint))a.push(paint)}})});
         rows.forEach(r=>{if(Array.isArray(r.items))r.items.forEach(it=>{const k=normName(it&&it.name);if(k&&it.unit&&!unitHistory[k])unitHistory[k]=it.unit})});
       }catch(e){console.warn('簡易登録：過去ログから塗料名の取得に失敗',e)}
       paintHistory=map;historyReady=true;return map;
@@ -3100,13 +3109,32 @@ const toggleCursor=()=>cur.toggle();
     box.innerHTML=list.slice(0,80).map(n=>`<button type="button" class="quick-option-btn" data-q-product="${esc(n)}">${esc(n)}</button>`).join('');
   }
   function autoUnit(i){const sel=q('quick-unit-'+i);if(!sel||sel.dataset.manual==='1')return;const u=unitHistory[normName(q('quick-product-'+i)?.value)];if(u&&UNITS.includes(u))sel.value=u}
+  /* 入力済みの品名のうち、過去実績のある最初の品名で使った塗料（新しい順） */
+  function suggestPaint(){for(let i=1;i<=rowCount;i++){const n=q('quick-product-'+i)?.value?.trim(),l=n&&paintsByProduct[normName(n)];if(l&&l.length)return{product:n,list:l}}return null}
+  function paintChips(){
+    const box=q('quick-paint-chips'),note=q('quick-paint-note'),sel=q('quick-paint');if(!box||!sel)return;
+    const sg=suggestPaint();
+    if(!sg){box.style.display='none';box.innerHTML='';if(note)note.textContent='';return}
+    const cur=sel.value;box.style.display='';
+    box.innerHTML=`<span class="quick-chip-label">「${esc(sg.product)}」で使った塗料：</span>`+sg.list.slice(0,6).map(n=>`<button type="button" class="quick-option-btn${n===cur?' selected':''}" data-q-paintpick="${esc(n)}">${esc(n)}</button>`).join('');
+    if(note){note.className='quick-bake-note';note.textContent=sel.dataset.auto==='1'&&sel.dataset.manual!=='1'&&cur===sg.list[0]?'🔁 前回この品名で使った塗料を自動選択しました。違う塗料の場合は選び直してください（焼付条件も選んだ塗料に切り替わります）':''}
+  }
+  function applyQuickBake(){
+    const bt=q('quick-bake-temp'),bm=q('quick-bake-time'),nt=q('quick-bake-note'),pn=q('quick-paint')?.value||'';if(!bt||!bm)return;
+    const note=(t,w)=>{if(nt){nt.textContent=t;nt.className='quick-bake-note'+(w?' warn':'')}};
+    if(bt.dataset.paint!==pn){bt.dataset.paint=pn;bt.dataset.manual=''}
+    if(bt.dataset.manual==='1'){note('✏️ 手動で変更した焼付条件で登録します');return}
+    if(!pn){bt.value='';bm.value='';note('塗料を選ぶと焼付条件が自動入力されます');return}
+    const b=bakeOf(pn);bt.value=b.temp;bm.value=b.time;
+    b.preset?note(`✅ 塗料・焼付条件設定「${b.name}」の条件を自動入力しました`):note('⚠️ この塗料名は塗料・焼付条件設定に未登録のため、既定の200℃/20分です。違う場合は直接修正してください',1)
+  }
   function productRows(){
     const box=q('quick-product-rows');if(!box)return;const old={};
     for(let i=1;i<=MAX;i++)old[i]=[q('quick-product-'+i)?.value||V('product'+i)||'',q('quick-qty-'+i)?.value||V('quantity'+i)||'',q('quick-unit-'+i)?.value||V('unit'+i)||'台',q('quick-unit-'+i)?.dataset.manual||''];
     box.innerHTML='';
     for(let i=1;i<=rowCount;i++){
       const r=document.createElement('div');r.className='quick-product-row';
-      r.innerHTML=`<input type="text" id="quick-product-${i}" list="registered-products" autocomplete="off" placeholder="品名${i}${i===1?'（必須）':''}"><div class="quick-qty"><button type="button" class="quick-step-btn" data-q-delta="-1" data-q-index="${i}">−</button><input type="number" id="quick-qty-${i}" inputmode="numeric" min="1" step="1" placeholder="数${i}"><button type="button" class="quick-step-btn" data-q-delta="1" data-q-index="${i}">＋</button><select id="quick-unit-${i}" class="quick-unit" aria-label="単位${i}" title="計数の単位（実質換算・塗料按分に使用）">${UNITS.map(u=>`<option value="${u}">${u}</option>`).join('')}</select></div>${i>1?`<button type="button" class="quick-remove-btn" data-q-remove="${i}">×</button>`:'<span></span>'}`;
+      r.innerHTML=`<input type="text" id="quick-product-${i}" list="registered-products" autocomplete="off" placeholder="品名${i}${i===1?'（必須）':''}"><div class="quick-qty"><button type="button" class="qd m" data-q-delta="-10" data-q-index="${i}" aria-label="−10">−10</button><button type="button" class="qd m" data-q-delta="-5" data-q-index="${i}" aria-label="−5">−5</button><button type="button" class="qd m" data-q-delta="-1" data-q-index="${i}" aria-label="−1">−1</button><input type="number" id="quick-qty-${i}" inputmode="numeric" min="1" step="1" placeholder="数${i}" aria-label="数${i}（直接入力できます）"><button type="button" class="qd p" data-q-delta="1" data-q-index="${i}" aria-label="＋1">＋1</button><button type="button" class="qd p" data-q-delta="5" data-q-index="${i}" aria-label="＋5">＋5</button><button type="button" class="qd p" data-q-delta="10" data-q-index="${i}" aria-label="＋10">＋10</button><select id="quick-unit-${i}" class="quick-unit" aria-label="単位${i}" title="計数の単位（実質換算・塗料按分に使用）">${UNITS.map(u=>`<option value="${u}">${u}</option>`).join('')}</select></div>${i>1?`<button type="button" class="quick-remove-btn" data-q-remove="${i}">×</button>`:'<span></span>'}`;
       box.appendChild(r);set('quick-product-'+i,old[i][0]);set('quick-qty-'+i,old[i][1]);{const u=q('quick-unit-'+i);if(u){u.value=old[i][2];u.dataset.manual=old[i][3]||''}}
     }
     syncProducts();applyTouchNumericMode();update();
@@ -3118,6 +3146,7 @@ const toggleCursor=()=>cur.toggle();
   function syncAll(){
     syncProducts();set('operator1',q('quick-operator1')?.value||'');set('operator2',q('quick-operator2')?.value||'');set('machine1',q('quick-machine1')?.value||'旭サナック');set('machine2',q('quick-machine2')?.value||'');
     const pn=q('quick-paint')?.value||'';if(pn)setBakePaintByName(pn,true);else{set('bake_paint_select','');bakeDefaults()}
+    {const t=q('quick-bake-temp')?.value,m=q('quick-bake-time')?.value;if(pn&&t!==''&&t!=null)set('bake_temp',t);if(pn&&m!==''&&m!=null)set('bake_time',m)}
     const w=q('quick-paint-weight')?.value||'';set('paint_weight',w);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}));set('status','OK');ngToggle();
   }
   function markSelectedPreset(){
@@ -3126,9 +3155,9 @@ const toggleCursor=()=>cur.toggle();
     box.querySelectorAll('.quick-option-btn').forEach(b=>b.classList.toggle('selected',!!cur&&b.dataset.qProduct===cur));
   }
   function update(){
-    markSelectedPreset();
+    markSelectedPreset();applyQuickBake();paintChips();
     const ps=[];for(let i=1;i<=rowCount;i++){const n=q('quick-product-'+i)?.value?.trim(),v=q('quick-qty-'+i)?.value;if(n)ps.push(v?`${n} × ${v}${q('quick-unit-'+i)?.value||'台'}`:n)}
-    const op=[q('quick-operator1')?.value,q('quick-operator2')?.value].filter(Boolean).join('・'),ma=[q('quick-machine1')?.value,q('quick-machine2')?.value].filter(Boolean).join('・'),pn_=q('quick-paint')?.value||'',bk=pn_?bakeOf(pn_):null,pa=[pn_,q('quick-paint-weight')?.value?`${q('quick-paint-weight').value}kg`:'',bk?`焼付 ${bk.temp}℃/${bk.time}分${bk.preset?'':'（既定）'}`:''].filter(Boolean).join(' / ');
+    const op=[q('quick-operator1')?.value,q('quick-operator2')?.value].filter(Boolean).join('・'),ma=[q('quick-machine1')?.value,q('quick-machine2')?.value].filter(Boolean).join('・'),pn_=q('quick-paint')?.value||'',bt_=q('quick-bake-temp')?.value,bm_=q('quick-bake-time')?.value,bk=pn_&&bt_!==''&&bt_!=null&&bm_!==''&&bm_!=null?{temp:bt_,time:bm_,def:!bakeOf(pn_).preset&&q('quick-bake-temp').dataset.manual!=='1'}:null,pa=[pn_,q('quick-paint-weight')?.value?`${q('quick-paint-weight').value}kg`:'',bk?`焼付 ${bk.temp}℃/${bk.time}分${bk.def?'（既定）':''}`:''].filter(Boolean).join(' / ');
     const put=(id,v)=>{const e=q(id);if(!e)return;e.textContent=v||'未入力';e.classList.toggle('empty',!v)};put('quick-summary-product',ps.join(' / '));put('quick-summary-operator',op);put('quick-summary-machine',ma);put('quick-summary-paint',pa);const c=q('quick-confirm-text');if(c)c.textContent=`品名・数：${ps.join(' / ')||'未入力'} ｜ 塗装者：${op||'未入力'} ｜ 塗装機：${ma||'未入力'} ｜ 塗料・使用量：${pa||'未入力'} ｜ 判定：OK`;
   }
   function setStep(n){
@@ -3137,7 +3166,10 @@ const toggleCursor=()=>cur.toggle();
     root?.querySelectorAll('[data-q-panel]').forEach(e=>e.classList.toggle('active',Number(e.dataset.qPanel)===step));
     root?.querySelectorAll('[data-q-step]').forEach(e=>{const i=Number(e.dataset.qStep);e.classList.toggle('active',i===step);e.classList.toggle('done',i<step)});
     update();
-    if(step===3){const first=q('quick-product-1')?.value.trim();if(first){loadPaintHistory().then(map=>{paintPresets(map[first]||q('quick-paint')?.value||'');productButtons();update()})}else paintPresets();}
+    if(step===3){loadPaintHistory().then(()=>{
+      const sel=q('quick-paint'),sg=suggestPaint();let prefer=sel?.value||'';
+      if(sg&&sel&&sel.dataset.manual!=='1'&&(!prefer||sel.dataset.auto==='1')){prefer=sg.list[0];sel.dataset.auto='1'}
+      paintPresets(prefer);productButtons();update()})}
   }
   function valid(n){
     if(n===0){syncProducts();for(let i=1;i<=rowCount;i++){const p=q('quick-product-'+i)?.value.trim(),v=q('quick-qty-'+i)?.value;if((p&&!v)||(!p&&v)){appToast?.(`品名${i}と数${i}をそろえてください`);return false}}if(!(q('quick-product-1')?.value.trim())||!(Number(q('quick-qty-1')?.value)>0)){appToast?.('品名1と数1を入力してください');return false}}
@@ -3147,16 +3179,16 @@ const toggleCursor=()=>cur.toggle();
   }
   function next(){if(!valid(step))return;syncAll();setStep(step+1)}
   function changePaint(delta){const e=q('quick-paint-weight');if(!e)return;const cur=Number(e.value)||0,n=Math.max(0,Math.round((cur+delta)*10)/10);e.value=n>0?String(n):'';e.dispatchEvent(new Event('input',{bubbles:true}));update()}
-  function doClearQuick(){rowCount=1;currentRow=1;for(let i=1;i<=MAX;i++){set('quick-product-'+i,'');set('quick-qty-'+i,'');set('product'+i,'');set('quantity'+i,'');set('unit'+i,'台');const u=q('quick-unit-'+i);if(u){u.value='台';u.dataset.manual=''}}productRows();['quick-operator1','quick-operator2','quick-machine2','quick-paint','quick-paint-weight'].forEach(id=>set(id,''));set('quick-machine1','旭サナック');set('operator1','');set('operator2','');set('machine1','旭サナック');set('machine2','');set('bake_paint_select','');bakeDefaults();set('paint_weight','');set('status','OK');ngToggle();paintPresets();setStep(0);productButtons()}
+  function doClearQuick(){rowCount=1;currentRow=1;{const sp=q('quick-paint');if(sp){sp.dataset.manual='';sp.dataset.auto=''}}{const t=q('quick-bake-temp');if(t){t.value='';t.dataset.manual=''}const m=q('quick-bake-time');if(m)m.value=''}for(let i=1;i<=MAX;i++){set('quick-product-'+i,'');set('quick-qty-'+i,'');set('product'+i,'');set('quantity'+i,'');set('unit'+i,'台');const u=q('quick-unit-'+i);if(u){u.value='台';u.dataset.manual=''}}productRows();['quick-operator1','quick-operator2','quick-machine2','quick-paint','quick-paint-weight'].forEach(id=>set(id,''));set('quick-machine1','旭サナック');set('operator1','');set('operator2','');set('machine1','旭サナック');set('machine2','');set('bake_paint_select','');bakeDefaults();set('paint_weight','');set('status','OK');ngToggle();paintPresets();setStep(0);productButtons()}
   function clearQuick(){
     if(typeof uiConfirm==='function')uiConfirm('簡易登録の入力内容をクリアしますか？').then(ok=>{if(ok)doClearQuick()});else if(confirm('簡易登録の入力内容をクリアしますか？'))doClearQuick();
   }
   /* 登録・更新の保存成功後、通常フォームのresetPからも呼べるよう公開（確認ダイアログなしで自動的に空にする） */
-  window.__resetQuickEntry=()=>{doClearQuick()};
+  window.__resetQuickEntry=()=>{doClearQuick()};window.__quickPaintRefresh=()=>{paintPresets();update()};
   function applyTouchNumericMode(){
     const touch=window.matchMedia?.('(pointer:coarse)').matches;
     q('quick-entry')?.querySelectorAll('input[type="number"]').forEach(el=>{
-      if(el.id==='quick-paint-weight'||el.id.startsWith('quick-qty-')){
+      if(el.id==='quick-paint-weight'){
         el.readOnly=!!touch;
         el.setAttribute('aria-readonly',String(!!touch));
       }
@@ -3167,13 +3199,14 @@ const toggleCursor=()=>cur.toggle();
     productRows();applyTouchNumericMode();operators();paintPresets();productButtons();loadPaintHistory().then(()=>{productButtons();paintPresets();for(let i=1;i<=rowCount;i++)autoUnit(i);syncProducts()});set('status','OK');ngToggle();setStep(0);
     /* PCだけ先頭入力へフォーカス。preventScrollで画面位置は動かさない。 */
     if(window.matchMedia?.('(pointer:fine)').matches){const first=q('quick-product-1');if(first)try{first.focus({preventScroll:true})}catch(_){first.focus()}}
-    root.addEventListener('input',e=>{const id=e.target?.id||'';if(id.startsWith('quick-product-')||id.startsWith('quick-qty-')){const m=id.match(/quick-(?:product|qty)-(\d+)/);if(m)currentRow=Number(m[1]);if(id.startsWith('quick-product-'))autoUnit(Number(id.slice(14)));syncProducts()}if(id==='quick-paint-weight'){set('paint_weight',e.target.value);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}))}update()});
-    root.addEventListener('change',e=>{const id=e.target?.id||'';if(id==='quick-operator1'||id==='quick-operator2')set(id==='quick-operator1'?'operator1':'operator2',e.target.value);if(id==='quick-machine1'||id==='quick-machine2')set(id==='quick-machine1'?'machine1':'machine2',e.target.value);if(id==='quick-paint'){if(e.target.value)setBakePaintByName(e.target.value,true);else{set('bake_paint_select','');bakeDefaults()}}if(id.startsWith('quick-unit-')){e.target.dataset.manual='1';syncProducts()}update()});
+    root.addEventListener('input',e=>{const id=e.target?.id||'';if(id.startsWith('quick-product-')||id.startsWith('quick-qty-')){const m=id.match(/quick-(?:product|qty)-(\d+)/);if(m)currentRow=Number(m[1]);if(id.startsWith('quick-product-'))autoUnit(Number(id.slice(14)));syncProducts()}if(id==='quick-bake-temp'||id==='quick-bake-time'){const t=q('quick-bake-temp');if(t)t.dataset.manual='1'}if(id==='quick-paint-weight'){set('paint_weight',e.target.value);$('paint_weight').dispatchEvent(new Event('input',{bubbles:true}))}update()});
+    root.addEventListener('change',e=>{const id=e.target?.id||'';if(id==='quick-operator1'||id==='quick-operator2')set(id==='quick-operator1'?'operator1':'operator2',e.target.value);if(id==='quick-machine1'||id==='quick-machine2')set(id==='quick-machine1'?'machine1':'machine2',e.target.value);if(id==='quick-paint'){e.target.dataset.manual=e.target.value?'1':'';e.target.dataset.auto='';{const t=q('quick-bake-temp');if(t)t.dataset.manual=''}if(e.target.value)setBakePaintByName(e.target.value,true);else{set('bake_paint_select','');bakeDefaults()}}if(id.startsWith('quick-unit-')){e.target.dataset.manual='1';syncProducts()}update()});
     root.addEventListener('click',e=>{
       const b=e.target.closest('button');if(!b||!root.contains(b))return;
       if(b.dataset.qStep!==undefined){const n=Number(b.dataset.qStep);if(n<=step)setStep(n);return}
       if(b.dataset.qNext!==undefined){next();return}
       if(b.dataset.qBack!==undefined){syncAll();setStep(Number(b.dataset.qBack));return}
+      if(b.dataset.qPaintpick!==undefined){const sel=q('quick-paint');if(sel){sel.value=b.dataset.qPaintpick;sel.dispatchEvent(new Event('change',{bubbles:true}))}return}
       if(b.dataset.qProduct!==undefined){set('quick-product-'+currentRow,b.dataset.qProduct);autoUnit(currentRow);syncProducts();update();return}
       if(b.dataset.qDelta){const i=Number(b.dataset.qIndex),el=q('quick-qty-'+i);if(el){const v=Math.max(0,(parseInt(el.value,10)||0)+Number(b.dataset.qDelta));el.value=v>0?String(v):'';el.dispatchEvent(new Event('input',{bubbles:true}))}return}
       if(b.dataset.qRemove){const i=Number(b.dataset.qRemove);if(i===rowCount&&rowCount>1){rowCount--;productRows();currentRow=Math.min(currentRow,rowCount)}return}
