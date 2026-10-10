@@ -146,7 +146,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .card-label{color:var(--text-dim);font-weight:500;min-width:75px;flex-shrink:0}
 .card-value-text{color:var(--text-main);font-weight:600;flex:1;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
 .chip{background:rgba(2,132,199,.08);color:var(--accent-cyan);padding:2px 8px;border-radius:6px;font-weight:700;display:inline-block;margin:2px 2px 2px 0;border:1px solid rgba(2,132,199,.2);word-break:break-all}
-.chip small{font-weight:400;color:var(--text-dim);font-size:inherit}.chip .chip-w{font-size:11.5px;color:var(--text-dim)}.chip-note{font-size:11px;color:var(--text-dim);line-height:1.5;margin:4px 0 2px;width:100%}.chip-set{border:1px solid #d97706;background:rgba(217,119,6,.1);color:#b45309;border-radius:6px;font-size:11.5px;font-weight:700;padding:1px 6px;cursor:pointer;margin-left:2px}
+.chip small{font-weight:400;color:var(--text-dim);font-size:inherit}.chip .chip-w{font-size:11.5px;color:var(--text-dim)}.chip-edit{border:1px dashed var(--border-color);background:transparent;border-radius:6px;padding:0 5px;cursor:pointer;font-family:inherit}.chip-why{display:block;font-size:11px;color:#b45309;line-height:1.5;margin:2px 0 0}.chip-note{font-size:11px;color:var(--text-dim);line-height:1.5;margin:4px 0 2px;width:100%}.chip-set{border:1px solid #d97706;background:rgba(217,119,6,.1);color:#b45309;border-radius:6px;font-size:11.5px;font-weight:700;padding:1px 6px;cursor:pointer;margin-left:2px}
 .tg{font-size:9.5px;padding:1px 4px;border-radius:4px;font-weight:700}
 .tg.a{background:rgba(2,132,199,.12);color:var(--accent-cyan)}
 .tg.m{background:rgba(5,150,105,.1);color:var(--accent-success)}
@@ -628,7 +628,7 @@ body.editing-record #manual-entry-wrap{display:block}
 .quick-register-row{justify-content:flex-end}.quick-register-row .quick-next,.quick-register-row .quick-submit{flex:0 1 340px}}
 
 /* ---------- 戻り品再塗装 ---------- */
-.uf-row{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-input);margin-bottom:8px}.uf-name{flex:0 0 52px;text-align:center;font-size:20px;font-weight:800;color:var(--accent-indigo)}.uf-body{flex:1;min-width:0}.uf-in{width:100%;box-sizing:border-box;font-size:16px;font-weight:700}.uf-base{font-size:13px;font-weight:700;color:var(--text-dim);padding:8px 0}.pf-help{font-size:11.5px;color:var(--text-dim);line-height:1.7;margin-top:10px;padding:8px 10px;border:1px dashed var(--border-color);border-radius:8px;background:var(--bg-input)}.pf-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;flex-wrap:wrap}.pf-auto{font-size:12.5px;display:flex;align-items:center;gap:4px;cursor:pointer}.pf-auto input{width:18px!important;height:18px!important;min-height:0!important;padding:0!important;margin:0!important;flex:0 0 auto}.pf-filter{width:100%;box-sizing:border-box;margin-bottom:6px;font-size:14px}.pf-rows{max-height:34vh;overflow:auto;border:1px solid var(--border-color);border-radius:10px}.pf-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1.2fr) 84px 54px;gap:6px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border-color);font-size:12.5px}.pf-row:last-child{border-bottom:0}.pf-row .pf-n{word-break:break-all;font-weight:700}.pf-row .pf-n small{font-weight:400;color:var(--text-dim)}.pf-row .pf-a{color:var(--text-dim);font-size:11.5px}.pf-row input{width:100%;box-sizing:border-box;font-size:14px;padding:4px 6px}.pf-row .pf-v{text-align:right;font-weight:800;color:var(--accent-indigo)}.pf-row .pf-v.m{color:#d97706}.pf-row.pf-th{position:sticky;top:0;background:var(--bg-input);font-size:11px;color:var(--text-dim);z-index:1}.uf-eg{font-size:11.5px;color:var(--text-dim);margin-top:4px}
+.uf-row{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-input);margin-bottom:8px}.uf-name{flex:0 0 52px;text-align:center;font-size:20px;font-weight:800;color:var(--accent-indigo)}.uf-body{flex:1;min-width:0}.uf-in{width:100%;box-sizing:border-box;font-size:16px;font-weight:700}.uf-base{font-size:13px;font-weight:700;color:var(--text-dim);padding:8px 0}.pf-help{font-size:11.5px;color:var(--text-dim);line-height:1.7;margin-top:10px;padding:8px 10px;border:1px dashed var(--border-color);border-radius:8px;background:var(--bg-input)}.pf-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;flex-wrap:wrap}.pf-auto{font-size:12.5px;display:flex;align-items:center;gap:4px;cursor:pointer}.pf-auto input{width:18px!important;height:18px!important;min-height:0!important;padding:0!important;margin:0!important;flex:0 0 auto}.pf-filter{width:100%;box-sizing:border-box;margin-bottom:6px;font-size:14px}.pf-rows{flex:0 0 auto;min-height:min(150px,30vh);max-height:34vh;overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border-color);border-radius:10px}.pf-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1.2fr) 84px 54px;gap:6px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border-color);font-size:12.5px}.pf-row:last-child{border-bottom:0}.pf-row .pf-n{word-break:break-all;font-weight:700}.pf-row .pf-n small{font-weight:400;color:var(--text-dim)}.pf-row .pf-a{color:var(--text-dim);font-size:11.5px}.pf-row input{width:100%;box-sizing:border-box;font-size:14px;padding:4px 6px}.pf-row .pf-v{text-align:right;font-weight:800;color:var(--accent-indigo)}.pf-row .pf-v.m{color:#d97706}.pf-row.pf-th{position:sticky;top:0;background:var(--bg-input);font-size:11px;color:var(--text-dim);z-index:1}.uf-eg{font-size:11.5px;color:var(--text-dim);margin-top:4px}
 .lr-row{border:1px solid var(--border-color);border-radius:10px;padding:10px;margin-bottom:10px;background:var(--bg-input)}
 #lr-rows{counter-reset:lr}.lr-row{counter-increment:lr}
 .lr-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
@@ -1528,8 +1528,8 @@ function pfListRender(init){
   const box=$('pf-rows');if(!box)return;
   if(!init)pfCollect();
   const on=$('pf-auto-on').checked,full=pfAuto(),rowsM=new Map();
-  (prods||[]).forEach(n=>{const k=pfKey(n,'台');if(normName(n))rowsM.set(k,{n,u:'台'})});
-  full.list.forEach(e=>rowsM.set(e.k,{n:e.name,u:e.u}));
+  full.map.forEach(e=>rowsM.set(e.k,{n:e.name,u:e.u}));
+  (prods||[]).forEach(n=>{const nk=normName(n);if(nk&&![...full.map.values()].some(e=>normName(e.name)===nk))rowsM.set(pfKey(n,'台'),{n,u:'台'})});
   window.__pfDraft.forEach((v,k)=>{if(!rowsM.has(k))rowsM.set(k,{n:v.n,u:v.u})});
   const kw=normName($('pf-filter').value);
   const rows=[...rowsM.entries()].filter(([k])=>!kw||k.includes(kw)).sort((a,b)=>String(a[1].n).localeCompare(String(b[1].n),'ja',{numeric:true})||UNITS.indexOf(a[1].u)-UNITS.indexOf(b[1].u));
@@ -1537,7 +1537,7 @@ function pfListRender(init){
   if(note)note.innerHTML=full.base?` <span style="color:#16a34a">基準 ${esc(full.base.name)} 1台＝${(full.base.perDai*1000).toFixed(0)}g（${full.base.n}件の実績）</span>`:` <span style="color:#dc2626">⚠️ OW2の実績（2件以上または10台以上）が無いため自動算出できません。手動係数・単位係数のみ有効です。</span>`;
   box.innerHTML='<div class="pf-row pf-th"><span>品名（単位）</span><span>自動算出</span><span>手動</span><span style="text-align:right">適用</span></div>'+(rows.length?rows.map(([k,o])=>{
     const a=full.map.get(k),d=window.__pfDraft.get(k),manual=d?d.f:'';
-    const at=a?(a.f!=null?`×${a.f.toFixed(2)}（1${o.u}≒${Math.round(a.c*1000)}g・${a.n}件${a.est?'・同時登録から逆算':''}）`:`実績不足（${a.n}件）`):'実績なし';
+    const at=a?(a.f!=null?`×${a.f.toFixed(2)}（1${o.u}≒${Math.round(a.c*1000)}g・${a.n}件${a.est?'・同時登録から逆算':''}${a.few?'・1件のみの目安':''}）`:`${a.reason==='nobase'?'OW2基準が不足':a.reason==='sep'?'要指定（単独では分離不可）':a.reason==='range'?'要指定（実績が不整合）':'実績不足'}（${a.n}件）`):'実績なし';
     const ap=d?d.f:(on&&a&&a.f!=null?a.f:uf(o.u));
     return `<div class="pf-row" data-k="${esc(k)}" data-n="${esc(o.n)}" data-u="${esc(o.u)}"><span class="pf-n">${esc(o.n)}<small>（${esc(o.u)}）</small></span><span class="pf-a">${at}</span><input type="number" class="pf-in" min="0.01" max="100" step="0.05" inputmode="decimal" placeholder="自動" value="${manual}" oninput="pfRowPreview(this)"><span class="pf-v${d?' m':''}">×${(+ap.toFixed(2))}</span></div>`}).join(''):'<div class="empty-sm" style="padding:12px">該当する品名がありません</div>');
 }
@@ -1778,33 +1778,53 @@ const normName=n=>String(n||'').normalize('NFKC').toLowerCase().replace(/[\s\u30
    OW2が1台500gなら、1枚250gの品は0.5、1台1kgの品は2.0。実績が足りない品は手動係数、それも無ければ単位係数。保存値ではなく表示のたびに求めるため過去ログにも自動で適用される。 */
 const PF_BASE='OW2',PF_MIN_N=2,PF_MIN_Q=10,pfOk=e=>e.c>0&&!!e.ok,PF_LO=0.01,PF_HI=100,pfKey=(n,u)=>normName(n)+'|'+(u||'台');
 let pfMemo=null;
+/* 左右違い（sidepanel L / R など）は同じ大きさとみなし、1つの係数をまとめて推定する */
+const pfGrp=n=>normName(String(n||'').replace(/(^|[\s_\-　])[LR](?=$|[\s_\-　\d])|左|右/gi,'$1'));
 function pfAuto(){
   const rs=all('r'),sig=JSON.stringify(unitFactors)+'|'+pfAutoOn;
   if(pfMemo&&pfMemo.rs===rs&&pfMemo.sig===sig)return pfMemo.v;
+  let v=pfRun(rs,new Set());
+  /* 同じ品が別の単位（例：過去は枚、今回は台）で登録されていて、片方だけ実績が十分な場合は、同じ品として実績をまとめて（個数あたりで）推定し直す */
+  const byNk=new Map();v.list.forEach(e=>{let m=byNk.get(e.nk);if(!m)byNk.set(e.nk,m=[]);m.push(e)});
+  const need=new Set();byNk.forEach((m,nk)=>{if(m.length>1&&m.some(e=>e.ok)&&m.some(e=>!e.ok))need.add(nk)});
+  if(need.size)v=pfRun(rs,need);
+  pfMemo={rs,sig,v};return v;
+}
+function pfRun(rs,merge){
+  const dom=new Map();
+  if(merge.size){const cnt=new Map();for(const r of rs){const w=Number(r._w)||Number(r.paint_weight)||0;if(!(w>0)||!Array.isArray(r.items))continue;for(const i of r.items){if(!i||!(Number(i.qty)>0))continue;const nk=pfGrp(i.name);if(!merge.has(nk))continue;let m=cnt.get(nk);if(!m)cnt.set(nk,m=new Map());const u=i.unit||'台';m.set(u,(m.get(u)||0)+1)}}
+    cnt.forEach((m,nk)=>{dom.set(nk,[...m.entries()].sort((a,b)=>b[1]-a[1]||(b[0]==='台')-(a[0]==='台'))[0][0])})}
   const recs=[],P=new Map();let sw=0,se=0;
   for(const r of rs){
     const w=Number(r._w)||Number(r.paint_weight)||0;if(!(w>0)||!Array.isArray(r.items))continue;
     const m=new Map();
-    for(const i of r.items){if(!i||!(Number(i.qty)>0))continue;const nk=normName(i.name);if(!nk)continue;const u=i.unit||'台',k=nk+'|'+u,q=Number(i.qty);let x=m.get(k);if(!x){x={k,q:0};m.set(k,x)}x.q+=q;if(!P.has(k))P.set(k,{k,nk,u,name:i.name,n:0,q:0,c:0})}
+    for(const i of r.items){if(!i||!(Number(i.qty)>0))continue;const nk=pfGrp(i.name);if(!nk)continue;const u=merge.has(nk)&&dom.has(nk)?dom.get(nk):(i.unit||'台'),k=nk+'|'+u,q=Number(i.qty);let x=m.get(k);if(!x){x={k,q:0};m.set(k,x)}x.q+=q;if(!P.has(k))P.set(k,{k,nk,u,name:i.name,n:0,q:0,c:0,mem:new Map()});P.get(k).mem.set(pfKey(i.name,i.unit||'台'),i.name)}
     if(!m.size)continue;const parts=[...m.values()];recs.push({w,parts});sw+=w;se+=parts.reduce((a,x)=>a+x.q*uf(P.get(x.k).u),0);
     parts.forEach(x=>{const p=P.get(x.k);p.n++;p.q+=x.q;p.ri=recs.length-1});
   }
   /* 単品・同時登録の両方から、品ごとの「1台/1枚/1個…あたりの使用塗料量(kg)」を反復計算（EM法）で推定 */
   const c0=se>0?sw/se:0;P.forEach(p=>p.c=c0*uf(p.u));
+  /* 単品登録の実績がある品は、その実績だけで確定（同時登録の記録には引きずられない）。残りの品だけを同時登録から逆算する */
+  const sg=new Map();for(const r of recs)if(r.parts.length===1){const x=r.parts[0];let e=sg.get(x.k);if(!e)sg.set(x.k,e={w:0,q:0});e.w+=r.w;e.q+=x.q}
+  sg.forEach((e,k)=>{const p=P.get(k);if(e.q>0){p.c=e.w/e.q;p.fixed=true}});
   for(let it=0;it<40&&c0>0;it++){
     const acc=new Map();
     for(const r of recs){const t=r.parts.reduce((a,x)=>a+x.q*P.get(x.k).c,0);if(!(t>0))continue;r.parts.forEach(x=>{acc.set(x.k,(acc.get(x.k)||0)+r.w*x.q*P.get(x.k).c/t)})}
-    P.forEach(p=>{const v=acc.get(p.k);if(v>0&&p.q>0)p.c=v/p.q});
+    P.forEach(p=>{if(p.fixed)return;const v=acc.get(p.k);if(v>0&&p.q>0)p.c=v/p.q});
   }
   const list=[...P.values()];
   /* 実績が少ない品でも、同時登録の相手がすべて十分な実績のある品なら「合計−相手の分」で逆算できる */
-  list.forEach(e=>{e.strong=e.n>=PF_MIN_N||e.q>=PF_MIN_Q;e.est=false});
-  list.forEach(e=>{e.ok=e.strong;if(!e.strong&&e.n===1&&recs[e.ri]){const o=recs[e.ri].parts.filter(x=>x.k!==e.k);if(o.length&&o.every(x=>P.get(x.k).strong)){e.ok=true;e.est=true}}});
+  /* 「根拠あり」判定：単品登録の実績がある、または同時登録の相手がすべて根拠ありの品。
+     いつも同じ品と一緒にしか登録されていない品は使用量を分けられないため、自動係数にせず「要指定」にする */
+  const anch=new Set();
+  for(let ch=true;ch;){ch=false;for(const r of recs)for(const x of r.parts){if(!anch.has(x.k)&&r.parts.every(y=>y.k===x.k||anch.has(y.k))){anch.add(x.k);ch=true}}}
+  list.forEach(e=>{e.anch=anch.has(e.k);e.strong=e.anch&&(e.n>=PF_MIN_N||e.q>=PF_MIN_Q);e.est=false});
+  list.forEach(e=>{e.ok=e.strong;e.few=false;if(!e.strong&&e.anch&&e.n===1&&recs[e.ri]){const o=recs[e.ri].parts.filter(x=>x.k!==e.k);if(!o.length){e.ok=true;e.few=true}else if(o.every(x=>P.get(x.k).strong)){e.ok=true;e.est=true;e.few=true}}});
   const bk=normName(PF_BASE);let bases=list.filter(e=>e.nk===bk);if(!bases.length)bases=list.filter(e=>e.nk.includes(bk));
   bases=bases.filter(e=>e.strong).sort((a,b)=>(b.u==='台')-(a.u==='台')||b.n-a.n);
   const be=bases[0]||null,base=be?{...be,perDai:be.c/uf(be.u)}:null,map=new Map();
-  list.forEach(e=>{map.set(e.k,{...e,f:base&&pfOk(e)?Math.min(PF_HI,Math.max(PF_LO,e.c/base.perDai)):null})});
-  const v={map,base,list};pfMemo={rs,sig,v};return v;
+  list.forEach(e=>{const raw=base&&pfOk(e)?e.c/base.perDai:null,f=raw!=null&&raw>=PF_LO&&raw<=PF_HI?raw:null; /* 範囲外（残りがほぼ0以下＝合計と実績が不整合）は自動にせず要指定 */ const reason=f!=null?'':!base?'nobase':!e.anch?'sep':raw==null?'few':'range';e.mem.forEach((nm,mk)=>map.set(mk,{...e,k:mk,name:nm,u:mk.split('|').pop(),f,reason,merged:merge.has(e.nk)}))});
+  return{map,base,list};
 }
 /* 品名＋単位ごとの係数：手動 ＞ 自動(OW2の1台=1.0 基準) ＞ 単位係数(台1/枚0.3/個0.1/本0.4) */
 function pfInfo(name,unit){
@@ -1813,8 +1833,14 @@ function pfInfo(name,unit){
   if(pfAutoOn){
     /* 過去データ(アーカイブ)未読込の間は、最後に保存した全期間ベースの自動係数(pfSnap)を使い、年をまたいでも値がぶれないようにする */
     if(A.r.s!==2&&pfSnap.has(k))return{f:pfSnap.get(k),src:'auto'};
-    const a=pfAuto().map.get(k);if(a&&a.f!=null)return{f:a.f,src:a.est?'residual':'auto',n:a.n}}
+    const a=pfAuto().map.get(k);if(a&&a.f!=null)return{f:a.f,src:a.est?'residual':'auto',n:a.n,few:!!a.few}}
   return{f:uf(u),src:'none'};
+}
+/* 自動で係数が出ない理由（画面表示用） */
+function pfWhy(name,unit){
+  const k=pfKey(name,unit||'台'),a=pfAuto().map.get(k),b=pfAuto().base;
+  const t=!pfAutoOn?'「過去実績から自動算出」がオフになっています。':!a?'この品名・単位の過去実績（使用塗料量つき）が見つかりません。':a.reason==='nobase'||!b?'基準のOW2の実績が不足しています（2件以上、または10台以上が必要）。':a.reason==='sep'?`同じ品の組み合わせ（${a.n}件）でしか登録実績がなく、使用量を分けられません。`:a.reason==='few'?'同時登録の相手品の実績が不足していて、逆算できません。':a.reason==='range'?'他の品の過去実績どおりに使用量を数えると、この記録の合計を超えてしまい、この品の分が残りません。他の品の係数が大きすぎる可能性があります。':'';
+  return t+(A.r.s!==2?'（古い年の実績は未読込です。📐設定を開くと全期間で再計算します）':'');
 }
 const pfv=(name,unit)=>pfInfo(name,unit).f;
 const itemW=i=>(Number(i&&i.qty)||0)*pfv(i&&i.name,i&&i.unit);
@@ -2129,11 +2155,11 @@ function sum(){
 }
 
 /* ---------- 一覧 ---------- */
-const pfOpenFor=async(n,u)=>{await ufSet();const f=$('pf-filter');if(f){f.value=n;pfListRender()}},
+const pfOpenFor=async(n,u)=>{await ufSet();const f=$('pf-filter');if(!f)return;f.value=n;pfListRender();setTimeout(()=>{const row=[...document.querySelectorAll('#pf-rows .pf-row[data-k]')].find(r=>r.dataset.k===pfKey(n,u))||document.querySelector('#pf-rows .pf-row[data-k]');if(row){row.scrollIntoView({block:'center'});const i=row.querySelector('.pf-in');i&&i.focus()}},60)},
 chipP=(i,w,multi)=>{
-  const inf=pfInfo(i.name,i.unit||'台'),src=inf.src,tip={manual:'手動で指定した係数です（📐換算係数設定）',residual:'同時登録の合計から、相手品（実績十分）の使用量を引いて逆算した係数です',auto:'過去実績から自動算出した係数です（OW2の1台＝1.0）',none:''}[src];
-  const tag=src==='none'?`<button type="button" class="chip-set" title="実績が少なく係数を自動判定できないため、単位係数で仮に按分しています。押すと係数を指定できます" onclick="pfOpenFor(decodeURIComponent('${encodeURIComponent(i.name||'')}'),'${esc(i.unit||'台')}')">⚠️係数を指定</button>`:`<small class="chip-w" title="${tip}">${src==='manual'?'✍️手動':src==='residual'?'🧮逆算':'🧮自動'} ×${+inf.f.toFixed(2)}</small>`;
-  return `<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.unit||'台')})</small>${multi?` <small class="chip-w">≒${w.toFixed(2)}kg</small> ${tag}`:''}</span>`},
+  const inf=pfInfo(i.name,i.unit||'台'),src=inf.src,tip={manual:'手動で指定した係数です（📐換算係数設定）',residual:'同時登録の合計から、相手品（実績十分）の使用量を引いて逆算した係数です',auto:inf.few?'実績1件のみから算出した目安の係数です。実績が増えると精度が上がります（OW2の1台＝1.0）':'過去実績から自動算出した係数です（OW2の1台＝1.0）',none:''}[src];
+  const tag=src==='none'?`<button type="button" class="chip-set" title="係数を自動判定できないため、単位係数で仮に按分しています。押すと係数を指定できます" onclick="pfOpenFor(decodeURIComponent('${encodeURIComponent(i.name||'')}'),'${esc(i.unit||'台')}')">⚠️係数を指定</button><span class="chip-why">理由：${esc(pfWhy(i.name,i.unit))}</span>`:`<button type="button" class="chip-w chip-edit" title="${tip}　タップで係数を変更できます" onclick="pfOpenFor(decodeURIComponent('${encodeURIComponent(i.name||'')}'),'${esc(i.unit||'台')}')">${src==='manual'?'✍️手動':src==='residual'?'🧮逆算':'🧮自動'}${inf.few?'(1件のみ)':''} ×${+inf.f.toFixed(2)} ✎</button>`;
+  return `<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.unit||'台')})</small>${multi?` <small class="chip-w">${src==='none'?'仮 ':''}≒${w.toFixed(2)}kg</small>`:''} ${tag}</span>`},
 chip=i=>`<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.unit||'台')})</small></span>`,
 tg=m=>m?'<span class="tg m">📊実測</span>':'<span class="tg a">✨自動</span>',
 row=(l,v,c)=>`<div class="card-data-row${c?' '+c:''}"><span class="card-label">${l}</span><span class="card-value-text">${v}</span></div>`,
@@ -2155,7 +2181,7 @@ function recHtml(r){
   return `<div class="card-item${ng?' ng-item':''}"><div class="card-header"><span>📅 ${esc(r.date)}</span><span class="${r.status==='OK'?'badge-ok':'badge-ng'}">${ng?'⚠️ <span class="text-danger">再塗装(NG)</span>':'OK'}</span></div>`+
   recordSummary(r.items,r.operator,fw(r.paint_weight),r.paint_name||'-',`${r.bake_temp||'-'}℃/${r.bake_time||'-'}分`)+
   `<div class="mobile-card-details"><div class="source-status"><span class="${r.source_type==='auto'?'auto':'real'}">${recordSource}</span><span>実績入力値を基準に表示</span></div>`+
-  `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?(()=>{const m=r.items.length>1&&Number(r._w)>0,sh=m?itemShares(r,Number(r._w)):[];return r.items.map((i,ix)=>chipP(i,sh[ix]||0,m)).join('')+(m?'<div class="chip-note">※同時登録の使用塗料は、各品の「数量×サイズ係数（OW2の1台＝1.0）」の比で按分した目安値です。🧮自動＝過去実績から算出／🧮逆算＝合計から相手品の分を引いて算出／✍️手動＝指定した係数／⚠️＝実績不足のため単位係数で仮按分（タップで係数を指定）</div>':'')})():'-'}</div><div class="card-data-grid">`+
+  `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?(()=>{const m=r.items.length>1&&Number(r._w)>0,sh=m?itemShares(r,Number(r._w)):[];return r.items.map((i,ix)=>chipP(i,sh[ix]||0,m)).join('')+(m?'<div class="chip-note">※同時登録の使用塗料は、各品の「数量×サイズ係数（OW2の1台＝1.0）」の比で按分した目安値です。🧮自動＝過去実績から算出／🧮逆算＝合計から相手品の分を引いて算出／✍️手動＝指定した係数／⚠️＝係数を算出できないため、単位係数で仮に按分した値（「仮≒」表示）。係数のタグ（✎）をタップすると、その品の係数を手動で指定・変更できます</div>':'')})():'-'}</div><div class="card-data-grid">`+
   row('塗装者:',esc(r.operator))+row('塗装機:',esc(r.machine||'旭サナック'))+
   row(`天候${r.location?`(${esc(r.location)})`:'(福山市)'}:`,`${esc(r.weather)} (${esc(r.temp)}℃ / ${esc(r.humidity)}%)`)+
   row('塗料名:',esc(r.paint_name||'未選択'))+row('塗料使用量:',fw(r.paint_weight))+row('膜厚:',r.thickness!=null&&r.thickness!==''?Number(r.thickness).toFixed(1)+'μm':'未入力')+
