@@ -146,7 +146,7 @@ input[type=date].filter-date-input:invalid::before{content:"📅 日付を選択
 .card-label{color:var(--text-dim);font-weight:500;min-width:75px;flex-shrink:0}
 .card-value-text{color:var(--text-main);font-weight:600;flex:1;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
 .chip{background:rgba(2,132,199,.08);color:var(--accent-cyan);padding:2px 8px;border-radius:6px;font-weight:700;display:inline-block;margin:2px 2px 2px 0;border:1px solid rgba(2,132,199,.2);word-break:break-all}
-.chip small{font-weight:400;color:var(--text-dim);font-size:inherit}
+.chip small{font-weight:400;color:var(--text-dim);font-size:inherit}.chip .chip-w{font-size:11.5px;color:var(--text-dim)}.chip-note{font-size:11px;color:var(--text-dim);line-height:1.5;margin:4px 0 2px;width:100%}.chip-set{border:1px solid #d97706;background:rgba(217,119,6,.1);color:#b45309;border-radius:6px;font-size:11.5px;font-weight:700;padding:1px 6px;cursor:pointer;margin-left:2px}
 .tg{font-size:9.5px;padding:1px 4px;border-radius:4px;font-weight:700}
 .tg.a{background:rgba(2,132,199,.12);color:var(--accent-cyan)}
 .tg.m{background:rgba(5,150,105,.1);color:var(--accent-success)}
@@ -628,7 +628,7 @@ body.editing-record #manual-entry-wrap{display:block}
 .quick-register-row{justify-content:flex-end}.quick-register-row .quick-next,.quick-register-row .quick-submit{flex:0 1 340px}}
 
 /* ---------- 戻り品再塗装 ---------- */
-.uf-row{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-input);margin-bottom:8px}.uf-name{flex:0 0 52px;text-align:center;font-size:20px;font-weight:800;color:var(--accent-indigo)}.uf-body{flex:1;min-width:0}.uf-in{width:100%;box-sizing:border-box;font-size:16px;font-weight:700}.uf-base{font-size:13px;font-weight:700;color:var(--text-dim);padding:8px 0}.uf-eg{font-size:11.5px;color:var(--text-dim);margin-top:4px}
+.uf-row{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-input);margin-bottom:8px}.uf-name{flex:0 0 52px;text-align:center;font-size:20px;font-weight:800;color:var(--accent-indigo)}.uf-body{flex:1;min-width:0}.uf-in{width:100%;box-sizing:border-box;font-size:16px;font-weight:700}.uf-base{font-size:13px;font-weight:700;color:var(--text-dim);padding:8px 0}.pf-help{font-size:11.5px;color:var(--text-dim);line-height:1.7;margin-top:10px;padding:8px 10px;border:1px dashed var(--border-color);border-radius:8px;background:var(--bg-input)}.pf-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;flex-wrap:wrap}.pf-auto{font-size:12.5px;display:flex;align-items:center;gap:4px;cursor:pointer}.pf-auto input{width:18px!important;height:18px!important;min-height:0!important;padding:0!important;margin:0!important;flex:0 0 auto}.pf-filter{width:100%;box-sizing:border-box;margin-bottom:6px;font-size:14px}.pf-rows{max-height:34vh;overflow:auto;border:1px solid var(--border-color);border-radius:10px}.pf-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1.2fr) 84px 54px;gap:6px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--border-color);font-size:12.5px}.pf-row:last-child{border-bottom:0}.pf-row .pf-n{word-break:break-all;font-weight:700}.pf-row .pf-n small{font-weight:400;color:var(--text-dim)}.pf-row .pf-a{color:var(--text-dim);font-size:11.5px}.pf-row input{width:100%;box-sizing:border-box;font-size:14px;padding:4px 6px}.pf-row .pf-v{text-align:right;font-weight:800;color:var(--accent-indigo)}.pf-row .pf-v.m{color:#d97706}.pf-row.pf-th{position:sticky;top:0;background:var(--bg-input);font-size:11px;color:var(--text-dim);z-index:1}.uf-eg{font-size:11.5px;color:var(--text-dim);margin-top:4px}
 .lr-row{border:1px solid var(--border-color);border-radius:10px;padding:10px;margin-bottom:10px;background:var(--bg-input)}
 #lr-rows{counter-reset:lr}.lr-row{counter-increment:lr}
 .lr-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
@@ -1285,10 +1285,15 @@ body.editing-record #manual-entry-wrap{display:block}
   </div>
 </div></div>
 
-<div id="uf-modal" class="modal-overlay"><div class="modal-content" style="max-width:440px">
+<div id="uf-modal" class="modal-overlay"><div class="modal-content" style="max-width:600px">
   <div class="modal-header"><div class="modal-title">📐 換算係数設定</div><button type="button" class="btn-close" onclick="hide('uf-modal')">×</button></div>
-  <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:12px">「1台」を <b>1.0</b> としたとき、各単位1つが何台分に当たるかを設定します。実質換算数・実質再塗装率と、同時塗装の塗料按分に使われます。</div>
+  <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:12px">製品別係数を自動算出できない品（実績が少ない品）に使う<b>予備の係数</b>です（「1台」を1.0としたときの、各単位1つの台数換算）。製品別係数がある品には使われません。</div>
   <div id="uf-rows" oninput="ufPreview()"></div>
+  <div class="pf-head"><b>🧮 製品別サイズ係数</b><label class="pf-auto"><input type="checkbox" id="pf-auto-on" onchange="pfListRender()"> 過去実績から自動算出する</label></div>
+  <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin:6px 0 8px"><b>OW2の1台の使用塗料量 ＝ 係数1.0</b> です。各品の<b>1台・1枚・1個…あたり</b>の使用量がOW2の1台より多ければ1.0より大きく、少なければ小さくなります（例：OW2が500gなら、1枚250gの品は0.5、1台1kgの品は2.0）。実質件数・再塗装率・塗料按分に反映されます。自動算出は<b>実績が2件以上、または合計10個(台)以上</b>ある品・単位が対象（同時登録の実績も塗料量を按分して使用）。実績が足りない品は「手動」欄に係数を入れてください（空欄＝自動、自動も無ければ上の単位係数）。<span id="pf-base-note"></span></div>
+  <input type="search" id="pf-filter" class="pf-filter" placeholder="品名で絞り込み" oninput="pfListRender()">
+  <div id="pf-rows" class="pf-rows"></div>
+  <div class="pf-help"><b>係数の決まり方</b>（優先順）<br>① ✍️手動欄に入れた係数 ＞ ② 🧮自動算出（過去実績）＞ ③ 上の単位係数<br><b>自動算出</b>：単品登録は使用量そのまま、同時登録は合計から係数が分かっている品の分を引いて算出します。<br><b>逆算</b>：実績が1件だけでも、同時登録の相手がすべて実績十分なら算出できます。<br><b>更新のタイミング</b>：画面上は新しい実績で自動更新。過去の年のデータを読み込んでいない間は、最後に保存した係数を使うため、実績が増えたら「保存する」で最新化してください。<br><b>手動欄</b>：空欄＝自動。入力した値は自動より優先されます。</div><div style="font-size:11.5px;color:#d97706;margin-top:8px">※保存すると過去ログの実質件数・塗料按分・戻り品の自動計算も新しい係数で再計算されます（手入力・実測の値は変更しません）。</div>
   <div style="display:flex;gap:8px;margin-top:16px"><button type="button" class="btn-settings btn-add" onclick="ufSave()" style="flex:1;font-weight:700">保存する</button><button type="button" class="btn-settings" onclick="hide('uf-modal')" style="flex:1;height:42px">キャンセル</button></div>
 </div></div>
 
@@ -1352,6 +1357,7 @@ let pw=atob('MTIzNA=='),apw=atob('MTk4NTA3MTU='),ops=['担当者A','担当者B',
 causes=['ブツ・ゴミ・毛など','湧き','マスキング跡','弾き','クレーター','傷','肌荒れ','色散り','板金の凹み','脱脂不良','アース不良','膜厚不足','その他'],
 UNITS=['台','枚','個','本'],unitFactors={台:1,枚:0.3,個:0.1,本:0.4},
 uf=u=>{const v=unitFactors[u];return typeof v==='number'&&v>0?v:1},
+pfManual=[],pfAutoOn=true,pfSnap=new Map(),
 presets=Array.from({length:10},(_,i)=>({no:i+1,name:'プリセット'+(i+1),voltage:50,current:20,discharge:300,air:250})),
 bakePresets=[],bakeLocalChange=0,bakeConfigReady=0,bakeConfigLast='',presetLocalChange=0,presetConfigReady=0,presetConfigLast='',
 selNo=null,selName='',pRe=0,cfgOk=0,started=0,curTab='main',editId=null,tEdit=null,isAtt=0,psig='',wt=0,ngF=0,lastDay='',autoD='',tm=0,dirty=7,db=null;
@@ -1371,6 +1377,14 @@ function commitW(p){
 }
 const CFG=()=>db.collection('settings').doc('config'),setCfg=o=>commitW(CFG().set(o,{merge:true})),arr=x=>Array.isArray(x)&&x.length;
 
+/* Firestoreのルール期限切れ等（permission-denied）を、原因が分かる形で画面上部に常時表示する */
+function dbDenied(e){
+  if(!e||e.code!=='permission-denied'||document.getElementById('db-denied'))return;
+  const d=document.createElement('div');d.id='db-denied';d.setAttribute('role','alert');
+  d.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99999;background:#b91c1c;color:#fff;padding:10px 40px 10px 14px;font-size:13px;font-weight:700;line-height:1.5;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.3)';
+  d.innerHTML='🔒 データベースへのアクセスが拒否されました（Firebaseのセキュリティルールの有効期限切れの可能性）。データの読み込み・保存ができません。管理者はFirebaseコンソールでFirestoreのルールを更新してください。<button type="button" aria-label="閉じる" style="position:absolute;right:8px;top:6px;background:none;border:none;color:#fff;font-size:20px;cursor:pointer" onclick="this.parentNode.remove()">×</button>';
+  document.body.appendChild(d)
+}
 db&&CFG().onSnapshot(d=>{
   const x=d.exists?d.data():{};
   if(x.password!=null)pw=String(x.password);
@@ -1381,10 +1395,14 @@ db&&CFG().onSnapshot(d=>{
   if(arr(x.machinePresets)){const nextPresets=x.machinePresets,sigP=JSON.stringify(nextPresets);if(presetConfigReady&&sigP!==presetConfigLast&&Date.now()>presetLocalChange&&window.appToast)window.appToast('🔄 塗装機プリセットが更新されました');presets=nextPresets;presetConfigLast=sigP;presetConfigReady=1;}
   if(Array.isArray(x.bakePresets)){const nextBake=x.bakePresets.slice(0,50),sig=JSON.stringify(nextBake);if(bakeConfigReady&&sig!==bakeConfigLast&&Date.now()>bakeLocalChange&&window.appToast)window.appToast('🔄 塗料・焼付条件設定が更新されました');bakePresets=nextBake;bakeConfigLast=sig;bakeConfigReady=1;}
   if(x.unitFactors&&typeof x.unitFactors==='object')UNITS.forEach(u=>{if(typeof x.unitFactors[u]==='number'&&x.unitFactors[u]>0)unitFactors[u]=x.unitFactors[u]});
+  if(Array.isArray(x.productFactors))pfManual=x.productFactors.filter(p=>p&&typeof p.k==='string'&&p.k.includes('|')&&typeof p.f==='number'&&p.f>0);
+  if(typeof x.pfAutoOn==='boolean')pfAutoOn=x.pfAutoOn;
+  if(Array.isArray(x.pfSnap))pfSnap=new Map(x.pfSnap.filter(p=>p&&typeof p.k==='string'&&p.f>0).map(p=>[p.k,p.f]));
+  cache.r=0;
   if(x.selectedPresetNo!==undefined)selNo=x.selectedPresetNo;
   if(x.selectedPresetName!==undefined)selName=x.selectedPresetName;
   cfgOk=1;fill();refreshModals();badge();applyPreset();if(V('status')==='NG')ngCauseUI();sched(1)
-},()=>{cfgOk=1});
+},e=>{cfgOk=1;dbDenied(e)});
 
 /* ---------- 共通UI ---------- */
 function opts(id,a,f){const s=$(id),v=s.value;s.innerHTML='';if(f!=null)s.appendChild(new Option(f,''));a.forEach(x=>s.appendChild(new Option(x,x)));if(v&&a.includes(v))s.value=v}
@@ -1486,14 +1504,73 @@ async function pwSet(k,m,t){if(!db||!(await adm()))return;const v=await uiPrompt
 async function ufSet(){
   if(!db||!(await adm()))return;
   $('uf-rows').innerHTML=UNITS.map(u=>`<div class="uf-row"><div class="uf-name">${u}</div><div class="uf-body">${u==='台'?'<div class="uf-base">1.0（基準・変更不可）</div>':`<input type="number" class="uf-in" data-u="${u}" min="0.001" max="100" step="0.01" inputmode="decimal" value="${unitFactors[u]}">`}<div class="uf-eg" data-eg="${u}"></div></div></div>`).join('');
-  ufPreview();show('uf-modal');
+  await pfLoadAll();
+  $('pf-auto-on').checked=pfAutoOn;$('pf-filter').value='';
+  window.__pfDraft=new Map(pfManual.map(p=>[p.k,{n:p.n||p.k,u:p.u||p.k.split('|')[1]||'台',f:p.f}]));
+  ufPreview();pfListRender(1);show('uf-modal');
+}
+function pfCheckAfterSave(items){
+  if(!Array.isArray(items)||items.length<2)return;
+  setTimeout(async()=>{
+    const un=[...new Map(items.filter(i=>i&&i.name&&pfInfo(i.name,i.unit||'台').src==='none').map(i=>[pfKey(i.name,i.unit||'台'),i])).values()];
+    if(!un.length)return;
+    const names=un.map(i=>`「${i.name}（${i.unit||'台'}）」`).join('、');
+    if(await uiConfirm(`同時登録の${names}は実績が少なく、係数を自動判定できません。\n今は単位係数で塗料を按分しています。\n今すぐ係数を指定しますか？`))pfOpenFor(un[0].name,un[0].unit||'台')
+  },1800)
+}
+async function pfLoadAll(){
+  if(!db||A.r.s===2)return;
+  window.appToast&&window.appToast('⏳ 全期間の実績を読み込み中…');
+  await loadArch('r');
+  if(A.r.s===1)await new Promise(res=>{const t=setInterval(()=>{if(A.r.s!==1){clearInterval(t);res()}},50);setTimeout(()=>{clearInterval(t);res()},20000)});
+}
+function pfListRender(init){
+  const box=$('pf-rows');if(!box)return;
+  if(!init)pfCollect();
+  const on=$('pf-auto-on').checked,full=pfAuto(),rowsM=new Map();
+  (prods||[]).forEach(n=>{const k=pfKey(n,'台');if(normName(n))rowsM.set(k,{n,u:'台'})});
+  full.list.forEach(e=>rowsM.set(e.k,{n:e.name,u:e.u}));
+  window.__pfDraft.forEach((v,k)=>{if(!rowsM.has(k))rowsM.set(k,{n:v.n,u:v.u})});
+  const kw=normName($('pf-filter').value);
+  const rows=[...rowsM.entries()].filter(([k])=>!kw||k.includes(kw)).sort((a,b)=>String(a[1].n).localeCompare(String(b[1].n),'ja',{numeric:true})||UNITS.indexOf(a[1].u)-UNITS.indexOf(b[1].u));
+  const note=$('pf-base-note');
+  if(note)note.innerHTML=full.base?` <span style="color:#16a34a">基準 ${esc(full.base.name)} 1台＝${(full.base.perDai*1000).toFixed(0)}g（${full.base.n}件の実績）</span>`:` <span style="color:#dc2626">⚠️ OW2の実績（2件以上または10台以上）が無いため自動算出できません。手動係数・単位係数のみ有効です。</span>`;
+  box.innerHTML='<div class="pf-row pf-th"><span>品名（単位）</span><span>自動算出</span><span>手動</span><span style="text-align:right">適用</span></div>'+(rows.length?rows.map(([k,o])=>{
+    const a=full.map.get(k),d=window.__pfDraft.get(k),manual=d?d.f:'';
+    const at=a?(a.f!=null?`×${a.f.toFixed(2)}（1${o.u}≒${Math.round(a.c*1000)}g・${a.n}件${a.est?'・同時登録から逆算':''}）`:`実績不足（${a.n}件）`):'実績なし';
+    const ap=d?d.f:(on&&a&&a.f!=null?a.f:uf(o.u));
+    return `<div class="pf-row" data-k="${esc(k)}" data-n="${esc(o.n)}" data-u="${esc(o.u)}"><span class="pf-n">${esc(o.n)}<small>（${esc(o.u)}）</small></span><span class="pf-a">${at}</span><input type="number" class="pf-in" min="0.01" max="100" step="0.05" inputmode="decimal" placeholder="自動" value="${manual}" oninput="pfRowPreview(this)"><span class="pf-v${d?' m':''}">×${(+ap.toFixed(2))}</span></div>`}).join(''):'<div class="empty-sm" style="padding:12px">該当する品名がありません</div>');
+}
+function pfRowPreview(inp){
+  const row=inp.closest('.pf-row'),k=row.dataset.k,v=parseFloat(inp.value),a=pfAuto().map.get(k),on=$('pf-auto-on').checked,vEl=row.querySelector('.pf-v');
+  const ok=isFinite(v)&&v>0;vEl.classList.toggle('m',ok);
+  vEl.textContent='×'+(+(ok?v:(on&&a&&a.f!=null?a.f:uf(row.dataset.u))).toFixed(2));
+}
+function pfCollect(){
+  document.querySelectorAll('#pf-rows .pf-row[data-k]').forEach(r=>{
+    const v=parseFloat(r.querySelector('.pf-in').value);
+    if(isFinite(v)&&v>0)window.__pfDraft.set(r.dataset.k,{n:r.dataset.n,u:r.dataset.u,f:v});else window.__pfDraft.delete(r.dataset.k);
+  });
 }
 function ufPreview(){UNITS.forEach(u=>{const el=document.querySelector(`[data-eg="${u}"]`);if(!el)return;const i=document.querySelector(`.uf-in[data-u="${u}"]`),v=i?parseFloat(i.value):1;el.textContent=isFinite(v)&&v>0?`10${u} ＝ ${+(v*10).toFixed(2)}台分`:'0より大きい数値を入力してください'})}
-function ufSave(){
+async function ufSave(){
   const nf={台:1};
   for(const u of UNITS.filter(x=>x!=='台')){const n=parseFloat(document.querySelector(`.uf-in[data-u="${u}"]`).value);if(!isFinite(n)||n<=0)return uiAlert(`「${u}」は0より大きい数値で入力してください。`);nf[u]=Math.round(n*1000)/1000}
-  const before={...unitFactors};unitFactors=nf;sched(1);hide('uf-modal');
-  setCfg({unitFactors:nf}).then(()=>{window.appToast&&window.appToast('✅ 換算係数を保存しました');window.__lrRecalc&&window.__lrRecalc().then(n=>n&&window.appToast&&window.appToast(`🔄 戻り品 ${n}件の自動計算を更新しました`)).catch(e=>console.warn('戻り品の再計算に失敗:',e))}).catch(e=>{unitFactors=before;sched(1);uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。')})
+  pfCollect();
+  const nm=[...window.__pfDraft.entries()].map(([k,v])=>({k,n:v.n,u:v.u,f:Math.round(Math.min(PF_HI,Math.max(PF_LO,v.f))*1000)/1000}));
+  const na=$('pf-auto-on').checked;
+  const before={...unitFactors},bm=pfManual,ba=pfAutoOn,bs=pfSnap;unitFactors=nf;pfManual=nm;pfAutoOn=na;cache.r=0;sched(1);hide('uf-modal');
+  try{
+    await pfLoadAll();
+    /* 全期間の実績から自動係数を確定し保存（以後アーカイブ未読込でも同じ係数で集計される） */
+    const snapArr=A.r.s===2&&na?[...pfAuto().map.values()].filter(e=>e.f!=null).map(e=>({k:e.k,f:Math.round(e.f*10000)/10000})):null;
+    const upd={unitFactors:nf,productFactors:nm,pfAutoOn:na};if(snapArr)upd.pfSnap=snapArr;
+    if(snapArr)pfSnap=new Map(snapArr.map(p=>[p.k,p.f]));
+    cache.r=0;sched(1);
+    await setCfg(upd);
+    window.appToast&&window.appToast('✅ 換算係数を保存し、全期間の過去ログに反映しました');
+    if(window.__lrRecalc)window.__lrRecalc().then(n=>n&&window.appToast&&window.appToast(`🔄 戻り品 ${n}件の自動計算を更新しました`)).catch(e=>console.warn('戻り品の再計算に失敗:',e))
+  }catch(e){unitFactors=before;pfManual=bm;pfAutoOn=ba;pfSnap=bs;cache.r=0;sched(1);uiAlert('保存エラー: '+e.message+'\n画面上の変更も元に戻しました。')}
 }
 const T={
   p:{a:()=>prods,k:'products',o:'product-modal',m:'modal-product-list',c:'product-count',i:'new-product-name',du:'既に登録されています。',mx:'最大登録数(50件)に達しています。',ed:'品名を編集:',dd:'既に同じ品名が存在します。',rm:'この品名を削除しますか？'},
@@ -1696,8 +1773,53 @@ function prep(c,o){
    1件に複数品名を同時登録した場合の使用塗料は、各品名の「数量×換算係数（換算係数設定の値）」の比で按分する。
    単位の違う品（板金の「個」など）が台数と同じ重みにならないための処理。保存値ではなく表示・計算のたびに求めるため、過去ログにも自動で適用される。 */
 const normName=n=>String(n||'').normalize('NFKC').toLowerCase().replace(/[\s\u3000_\-‐‑–—\/／・.．,，:：;；'"`´~〜()（）\[\]［］【】{}｛｝]/g,'').trim();
+/* ---------- 製品別サイズ係数（自動＋手動） ----------
+   基準品OW2の「1台あたり使用塗料量」を 1.0 とし、各品の「1台・1枚・1個…あたり使用塗料量」÷ OW2の1台 を係数とする（同時登録も含め反復計算で推定）。
+   OW2が1台500gなら、1枚250gの品は0.5、1台1kgの品は2.0。実績が足りない品は手動係数、それも無ければ単位係数。保存値ではなく表示のたびに求めるため過去ログにも自動で適用される。 */
+const PF_BASE='OW2',PF_MIN_N=2,PF_MIN_Q=10,pfOk=e=>e.c>0&&!!e.ok,PF_LO=0.01,PF_HI=100,pfKey=(n,u)=>normName(n)+'|'+(u||'台');
+let pfMemo=null;
+function pfAuto(){
+  const rs=all('r'),sig=JSON.stringify(unitFactors)+'|'+pfAutoOn;
+  if(pfMemo&&pfMemo.rs===rs&&pfMemo.sig===sig)return pfMemo.v;
+  const recs=[],P=new Map();let sw=0,se=0;
+  for(const r of rs){
+    const w=Number(r._w)||Number(r.paint_weight)||0;if(!(w>0)||!Array.isArray(r.items))continue;
+    const m=new Map();
+    for(const i of r.items){if(!i||!(Number(i.qty)>0))continue;const nk=normName(i.name);if(!nk)continue;const u=i.unit||'台',k=nk+'|'+u,q=Number(i.qty);let x=m.get(k);if(!x){x={k,q:0};m.set(k,x)}x.q+=q;if(!P.has(k))P.set(k,{k,nk,u,name:i.name,n:0,q:0,c:0})}
+    if(!m.size)continue;const parts=[...m.values()];recs.push({w,parts});sw+=w;se+=parts.reduce((a,x)=>a+x.q*uf(P.get(x.k).u),0);
+    parts.forEach(x=>{const p=P.get(x.k);p.n++;p.q+=x.q;p.ri=recs.length-1});
+  }
+  /* 単品・同時登録の両方から、品ごとの「1台/1枚/1個…あたりの使用塗料量(kg)」を反復計算（EM法）で推定 */
+  const c0=se>0?sw/se:0;P.forEach(p=>p.c=c0*uf(p.u));
+  for(let it=0;it<40&&c0>0;it++){
+    const acc=new Map();
+    for(const r of recs){const t=r.parts.reduce((a,x)=>a+x.q*P.get(x.k).c,0);if(!(t>0))continue;r.parts.forEach(x=>{acc.set(x.k,(acc.get(x.k)||0)+r.w*x.q*P.get(x.k).c/t)})}
+    P.forEach(p=>{const v=acc.get(p.k);if(v>0&&p.q>0)p.c=v/p.q});
+  }
+  const list=[...P.values()];
+  /* 実績が少ない品でも、同時登録の相手がすべて十分な実績のある品なら「合計−相手の分」で逆算できる */
+  list.forEach(e=>{e.strong=e.n>=PF_MIN_N||e.q>=PF_MIN_Q;e.est=false});
+  list.forEach(e=>{e.ok=e.strong;if(!e.strong&&e.n===1&&recs[e.ri]){const o=recs[e.ri].parts.filter(x=>x.k!==e.k);if(o.length&&o.every(x=>P.get(x.k).strong)){e.ok=true;e.est=true}}});
+  const bk=normName(PF_BASE);let bases=list.filter(e=>e.nk===bk);if(!bases.length)bases=list.filter(e=>e.nk.includes(bk));
+  bases=bases.filter(e=>e.strong).sort((a,b)=>(b.u==='台')-(a.u==='台')||b.n-a.n);
+  const be=bases[0]||null,base=be?{...be,perDai:be.c/uf(be.u)}:null,map=new Map();
+  list.forEach(e=>{map.set(e.k,{...e,f:base&&pfOk(e)?Math.min(PF_HI,Math.max(PF_LO,e.c/base.perDai)):null})});
+  const v={map,base,list};pfMemo={rs,sig,v};return v;
+}
+/* 品名＋単位ごとの係数：手動 ＞ 自動(OW2の1台=1.0 基準) ＞ 単位係数(台1/枚0.3/個0.1/本0.4) */
+function pfInfo(name,unit){
+  const u=unit||'台',k=pfKey(name,u),m=pfManual.find(p=>p.k===k);
+  if(m)return{f:m.f,src:'manual'};
+  if(pfAutoOn){
+    /* 過去データ(アーカイブ)未読込の間は、最後に保存した全期間ベースの自動係数(pfSnap)を使い、年をまたいでも値がぶれないようにする */
+    if(A.r.s!==2&&pfSnap.has(k))return{f:pfSnap.get(k),src:'auto'};
+    const a=pfAuto().map.get(k);if(a&&a.f!=null)return{f:a.f,src:a.est?'residual':'auto',n:a.n}}
+  return{f:uf(u),src:'none'};
+}
+const pfv=(name,unit)=>pfInfo(name,unit).f;
+const itemW=i=>(Number(i&&i.qty)||0)*pfv(i&&i.name,i&&i.unit);
 function itemShares(r,w){
-  const its=Array.isArray(r.items)?r.items:[],wt=its.map(i=>Math.max(0,(Number(i&&i.qty)||0)*uf((i&&i.unit)||'台'))),t=wt.reduce((a,b)=>a+b,0);
+  const its=Array.isArray(r.items)?r.items:[],wt=its.map(i=>Math.max(0,itemW(i))),t=wt.reduce((a,b)=>a+b,0);
   return t>0?wt.map(x=>w*x/t):its.map(()=>0);
 }
 const COL={r:'records',t:'tochaku_records'};
@@ -1714,7 +1836,7 @@ function listen(c,n){
     cache[c]=0;sched(c==='r'?3:5);
     if(navigator.onLine)setSyncState('ok','🟢 同期中');
   },e=>{
-    console.error(n,e);
+    console.error(n,e);dbDenied(e);
     setSyncState('err','🔴 同期エラー');
   })
 }
@@ -1806,7 +1928,7 @@ function rk(id,rows,empty,bg){
 }
 const srt=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
 /* 実質換算（台=1.0基準の重み付け合計）。小物・平板など単位が混在していても、ざっくり実態に近い件数・再塗装率を出すための補助値 */
-const itemsConv=items=>Array.isArray(items)?items.reduce((s,i)=>s+(Number(i.qty)||0)*uf(i.unit||'台'),0):0;
+const itemsConv=items=>Array.isArray(items)?items.reduce((s,i)=>s+itemW(i),0):0;
 function trendBucket(date,span){if(span<=14)return date;const d=pd(date);if(span<=90){d.setDate(d.getDate()-((d.getDay()+6)%7));return ds(d)}return date.slice(0,7)}
 function trendLabel(key,mode){if(mode==='day'){const d=pd(key);return `${d.getMonth()+1}/${d.getDate()}`}if(mode==='week'){const d=pd(key),e=D(d,6);return `${d.getMonth()+1}/${d.getDate()}～${e.getMonth()+1}/${e.getDate()}`}const [y,m]=key.split('-');return `${y}/${Number(m)}`}
 function trendWeekday(key){return '日月火水木金土'[pd(key).getDay()]}
@@ -2007,7 +2129,12 @@ function sum(){
 }
 
 /* ---------- 一覧 ---------- */
-const chip=i=>`<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.unit||'台')})</small></span>`,
+const pfOpenFor=async(n,u)=>{await ufSet();const f=$('pf-filter');if(f){f.value=n;pfListRender()}},
+chipP=(i,w,multi)=>{
+  const inf=pfInfo(i.name,i.unit||'台'),src=inf.src,tip={manual:'手動で指定した係数です（📐換算係数設定）',residual:'同時登録の合計から、相手品（実績十分）の使用量を引いて逆算した係数です',auto:'過去実績から自動算出した係数です（OW2の1台＝1.0）',none:''}[src];
+  const tag=src==='none'?`<button type="button" class="chip-set" title="実績が少なく係数を自動判定できないため、単位係数で仮に按分しています。押すと係数を指定できます" onclick="pfOpenFor(decodeURIComponent('${encodeURIComponent(i.name||'')}'),'${esc(i.unit||'台')}')">⚠️係数を指定</button>`:`<small class="chip-w" title="${tip}">${src==='manual'?'✍️手動':src==='residual'?'🧮逆算':'🧮自動'} ×${+inf.f.toFixed(2)}</small>`;
+  return `<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.unit||'台')})</small>${multi?` <small class="chip-w">≒${w.toFixed(2)}kg</small> ${tag}`:''}</span>`},
+chip=i=>`<span class="chip">${esc(i.name)} <small>(${esc(i.qty)}${esc(i.unit||'台')})</small></span>`,
 tg=m=>m?'<span class="tg m">📊実測</span>':'<span class="tg a">✨自動</span>',
 row=(l,v,c)=>`<div class="card-data-row${c?' '+c:''}"><span class="card-label">${l}</span><span class="card-value-text">${v}</span></div>`,
 summaryItems=(items,fallback='-')=>Array.isArray(items)&&items.length?items.map(i=>`${esc(i.name)} (${esc(i.qty)}${esc(i.unit||'台')})`).join(' / '):fallback,
@@ -2028,7 +2155,7 @@ function recHtml(r){
   return `<div class="card-item${ng?' ng-item':''}"><div class="card-header"><span>📅 ${esc(r.date)}</span><span class="${r.status==='OK'?'badge-ok':'badge-ng'}">${ng?'⚠️ <span class="text-danger">再塗装(NG)</span>':'OK'}</span></div>`+
   recordSummary(r.items,r.operator,fw(r.paint_weight),r.paint_name||'-',`${r.bake_temp||'-'}℃/${r.bake_time||'-'}分`)+
   `<div class="mobile-card-details"><div class="source-status"><span class="${r.source_type==='auto'?'auto':'real'}">${recordSource}</span><span>実績入力値を基準に表示</span></div>`+
-  `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?r.items.map(chip).join(''):'-'}</div><div class="card-data-grid">`+
+  `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?(()=>{const m=r.items.length>1&&Number(r._w)>0,sh=m?itemShares(r,Number(r._w)):[];return r.items.map((i,ix)=>chipP(i,sh[ix]||0,m)).join('')+(m?'<div class="chip-note">※同時登録の使用塗料は、各品の「数量×サイズ係数（OW2の1台＝1.0）」の比で按分した目安値です。🧮自動＝過去実績から算出／🧮逆算＝合計から相手品の分を引いて算出／✍️手動＝指定した係数／⚠️＝実績不足のため単位係数で仮按分（タップで係数を指定）</div>':'')})():'-'}</div><div class="card-data-grid">`+
   row('塗装者:',esc(r.operator))+row('塗装機:',esc(r.machine||'旭サナック'))+
   row(`天候${r.location?`(${esc(r.location)})`:'(福山市)'}:`,`${esc(r.weather)} (${esc(r.temp)}℃ / ${esc(r.humidity)}%)`)+
   row('塗料名:',esc(r.paint_name||'未選択'))+row('塗料使用量:',fw(r.paint_weight))+row('膜厚:',r.thickness!=null&&r.thickness!==''?Number(r.thickness).toFixed(1)+'μm':'未入力')+
@@ -2216,7 +2343,7 @@ $('p-form').onsubmit=e=>{
   const th=V('thickness'),old=editId&&fnd('r',editId),
   rec={timestamp:old&&old.timestamp||Date.now(),date,items,total_qty:tq,operator:os.length?os.join('・'):'-',machine:ms.length?ms.join('・'):'旭サナック',weather:V('weather'),weather_time:V('weather-time')||'12:00',location:(LOC[V('location-select')]||LOC.fukuyama).label,temp:V('temp')||'-',humidity:V('humidity')||'-',paint_weight:parseFloat(V('paint_weight'))||0,thickness:th!==''?parseFloat(th):null,voltage:pf('voltage',50),current:pf('current',20),discharge:pf('discharge',300),air_flow:pf('air_flow',250),preset_no:(old&&!pRe?old.preset_no:selNo)||null,preset_name:(old&&!pRe?old.preset_name:selName)||null,paint_name:(V('bake_paint_select')===''?'':(V('bake_paint_select').startsWith('stored:')?(old&&old.paint_name||decodeURIComponent(V('bake_paint_select').slice(7))):((bakePresets[Number(V('bake_paint_select'))]||{}).name||''))),source_type:'manual',bake_temp:pf('bake_temp',200),bake_time:pf('bake_time',20),status:st,ng_product:ngP,ng_qty:ngQ,ng_products:ngProducts,ng_details:ngD,memo:V('memo')||'-'};
   const wasEdit=!!editId;
-  busy(e.target,()=>save('r',editId,rec).then(()=>{const chg=date!==today();resetP();setToday();wx(today(),fillWx);chg&&onDate();window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました')}).catch(er=>uiAlert('保存エラー: '+er.message)))
+  busy(e.target,()=>save('r',editId,rec).then(()=>{const chg=date!==today();resetP();setToday();wx(today(),fillWx);chg&&onDate();window.appToast&&window.appToast(wasEdit?'✅ 実績を更新しました':'✅ 実績を登録しました');pfCheckAfterSave(rec.items)}).catch(er=>uiAlert('保存エラー: '+er.message)))
 };
 function toggleManualEntry(force){
   const wrap=$('manual-entry-wrap'),btn=$('quick-manual-open-2'),quick=$('quick-entry');
@@ -2418,7 +2545,7 @@ const ct=$('tab-content-calc');
 $('c_work_type').onchange=function(){document.querySelectorAll('.calc-work-section').forEach(e=>e.style.display='none');$('c_sec_'+this.value).style.display='block'};
 
 /* ---------- 初期化 ---------- */
-const unitSel=i=>`<select id="unit${i}" class="unit-sel" title="単位（実質換算に使用。基準:台=1.0）">${UNITS.map(u=>`<option value="${u}"${u==='台'?' selected':''}>${u}</option>`).join('')}</select>`;
+const unitSel=i=>`<select id="unit${i}" class="unit-sel" title="単位（実質換算・塗料按分に使用。係数は過去実績から自動算出／📐換算係数設定で手動指定も可）">${UNITS.map(u=>`<option value="${u}"${u==='台'?' selected':''}>${u}</option>`).join('')}</select>`;
 const rows=(a,b,n,t,withUnit)=>{let h='';for(let i=1;i<=n;i++){const f=t&&i===1;const qty=`<div class="qty-control" aria-label="台数${i} クイック入力"><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-10)" title="10台減らす">−10</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-5)" title="5台減らす">−5</button><button type="button" class="qty-step minus" onclick="adjustQty('${b}${i}',-1)" title="1台減らす">−1</button><input type="number" inputmode="numeric"${i===1?' class="req"':''} id="${b}${i}" placeholder="台数${i}" min="1"${f?' value="1" required':''}><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',1)" title="1台増やす">＋1</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',5)" title="5台増やす">＋5</button><button type="button" class="qty-step plus" onclick="adjustQty('${b}${i}',10)" title="10台増やす">＋10</button></div>`,nameField=withUnit?`<div class="prod-name-row"><input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>${unitSel(i)}</div>`:`<input type="text"${i===1?' class="req"':''} id="${a}${i}" placeholder="品名${i}${i>1?'':t?' ※必須':' (例: 制御盤A)'}" list="registered-products"${f?' required':''}>`;h+=`<div class="prod-grid" id="${a}-r${i}"${i>2?' hidden':''}>${nameField}${qty}</div>`}return h};
 const PR={p:['product','quantity',10,'prod-rows'],t:['t_product','t_qty',5,'t-rows']};
 function adjustQty(id,delta){
@@ -2467,7 +2594,7 @@ $('sum-cards').innerHTML=`<div class="summary-grid-ng summary-dashboard-cards">
     <div class="card-subcount summary-avg-sub" id="s-a-count"></div>
   </div>
 </div>
-<div class="summary-note">実質換算について：台・枚・個などの数量を、登録済みの換算係数に基づいて「台=1.0」として換算した集計値です。実質再塗装率も、この実質総件数を母数に算出しています。換算値は統計比較用で、実際の台数・枚数・個数そのものではありません。なお、戻り品再塗装（後日の検品や客先でのNG品）はこの集計には含まれません。</div>
+<div class="summary-note">実質換算について：台・枚・個などの数量を、製品ごとのサイズ係数（基準：OW2の1台＝1.0。過去実績から自動算出、算出できない品は手動係数または単位係数）で換算した集計値です。大きい品は重く、小さい品は軽く数えます。実質再塗装率も、この実質総件数を母数に算出しています。換算値は統計比較用で、実際の台数・枚数・個数そのものではありません。なお、戻り品再塗装（後日の検品や客先でのNG品）はこの集計には含まれません。</div>
 <div id="summary-trends-card" class="summary-trends-card"></div>`;
 document.querySelectorAll('.cause-tabs[data-t]').forEach(e=>{
   const t=e.dataset.t;
@@ -2798,7 +2925,7 @@ const toggleCursor=()=>cur.toggle();
     c.addEventListener('click',e=>{if(e.target===c)wrConfirmClose()});
     try{wrLoadSelected()}catch(e){console.warn('ウィークリーレポート初期表示に失敗',e)}
   }
-  window.initWeeklyReport=function(){if(wrReady)return;wrReady=true;try{wrBind()}catch(e){console.error('ウィークリーレポートUI初期化失敗:',e);return}if(!db){wrStatus(null);return}try{wrUnsub=db.collection(WR_COL).orderBy('week_start','desc').limit(52).onSnapshot(s=>{try{wrDocs=[];s.forEach(d=>wrDocs.push({docId:d.id,...d.data()}));if(!wrEditing)wrLoadSelected();wrRenderList()}catch(e){console.warn('ウィークリーレポート表示更新失敗',e)}},e=>{console.warn('ウィークリーレポート読込失敗',e);try{wrStatus(wrHit())}catch(_){}})}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}};
+  window.initWeeklyReport=function(){if(wrReady)return;wrReady=true;try{wrBind()}catch(e){console.error('ウィークリーレポートUI初期化失敗:',e);return}if(!db){wrStatus(null);return}try{wrUnsub=db.collection(WR_COL).orderBy('week_start','desc').limit(52).onSnapshot(s=>{try{wrDocs=[];s.forEach(d=>wrDocs.push({docId:d.id,...d.data()}));if(!wrEditing)wrLoadSelected();wrRenderList()}catch(e){console.warn('ウィークリーレポート表示更新失敗',e)}},e=>{console.warn('ウィークリーレポート読込失敗',e);dbDenied(e);try{wrStatus(wrHit())}catch(_){}})}catch(e){console.warn('ウィークリーレポート初期化失敗',e)}};
 })();
 
 /* ---------- 戻り品再塗装ログ ---------- */
@@ -2825,7 +2952,7 @@ const toggleCursor=()=>cur.toggle();
       items.forEach(it=>{
         const nm=lrNormName(it.name);if(!nm)return;
         let sim=simCache.get(it.name);if(sim===undefined){sim=lrNameSimilarity(name,it.name);simCache.set(it.name,sim)}if(sim<0.88)return;
-        const q=Number(it.qty)||0, u=it.unit||'台',eq=q*uf(u);
+        const q=Number(it.qty)||0, u=it.unit||'台',eq=q*pfv(it.name,u);
         if(eq<=0)return;
         const share=sh[r.items.indexOf(it)]||0;
         const perEq=share/eq;
@@ -2868,9 +2995,9 @@ const toggleCursor=()=>cur.toggle();
     if(typeof A!=='undefined'&&A.r&&A.r.s!==2){reset();note.textContent='⏳ 過去実績を読み込み中のため、自動計算はまだ確定していません。読み込み後に再計算されます。';return}
     const info=lrRatio(name,unit);
     if(info){
-      paint.value=(info.ratio*qty*uf(unit)).toFixed(3);
+      paint.value=(info.ratio*qty*pfv(name,unit)).toFixed(3);
       row.dataset.paintAuto='1';row.dataset.paintSource=info.approx?'historical-approx':'historical';
-      note.textContent=info.approx?`🧮 自動計算（過去実績の近似品「${info.matched}」から算出。表記ゆれ・単位換算に対応）`:`🧮 自動計算（過去実績 ${info.n.toLocaleString('ja-JP')}件分の平均。単位換算に対応）`;
+      note.textContent=info.approx?`🧮 自動計算（過去実績の近似品「${info.matched}」から算出。表記ゆれ・製品サイズ係数に対応）`:`🧮 自動計算（過去実績 ${info.n.toLocaleString('ja-JP')}件分の平均 × 製品サイズ係数。数量・単位が違っても自動で換算）`;
     }else{
       reset();
       note.textContent='⚠️ この品名の十分な過去実績が見つからないため、使用塗料量を手動で入力してください。登録済みの名称に合わせると自動計算できる場合があります。';
@@ -2982,7 +3109,7 @@ const toggleCursor=()=>cur.toggle();
           if(old>0&&x.paint_weight_auto!==true)return x;
           const info=lrRatio(x.name,unit);
           if(!info)return x;
-          const calc=Number((info.ratio*qty*uf(unit)).toFixed(3));
+          const calc=Number((info.ratio*qty*pfv(x.name,unit)).toFixed(3));
           const source=info.approx?'historical-approx':'historical';
           if(Math.abs(old-calc)>0.0005||x.paint_weight_auto!==true||x.paint_weight_source!==source){changed=true;return {...x,paint_weight:calc,paint_weight_auto:true,paint_weight_source:source};}
           return x;
@@ -3063,7 +3190,7 @@ const toggleCursor=()=>cur.toggle();
     lrRefresh();
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('late-repaint-card')?.classList.contains('open')&&!document.querySelector('.modal-overlay[style*="flex"]'))lrDetailToggle(false)})
   }
-  window.initLateRepaints=function(){try{lrBind()}catch(e){console.error('戻り品再塗装UI初期化失敗:',e)}if(!db)return;try{db.collection(LR_COL).orderBy('date','desc').onSnapshot(s=>{lrDocs=[];s.forEach(d=>lrDocs.push({docId:d.id,...d.data()}));lrRenderMainSummary();if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail()},e=>console.warn('戻り品再塗装読込失敗:',e))}catch(e){console.warn('戻り品再塗装初期化失敗:',e)}};
+  window.initLateRepaints=function(){try{lrBind()}catch(e){console.error('戻り品再塗装UI初期化失敗:',e)}if(!db)return;try{db.collection(LR_COL).orderBy('date','desc').onSnapshot(s=>{lrDocs=[];s.forEach(d=>lrDocs.push({docId:d.id,...d.data()}));lrRenderMainSummary();if($('late-repaint-card')?.classList.contains('open'))lrRenderDetail()},e=>{console.warn('戻り品再塗装読込失敗:',e);dbDenied(e)})}catch(e){console.warn('戻り品再塗装初期化失敗:',e)}};
 })();
 
 /* ---------- 簡易実績登録：5段階ステップ（既存保存処理を使用） ---------- */
