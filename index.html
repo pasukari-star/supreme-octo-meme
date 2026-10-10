@@ -1357,7 +1357,7 @@ let pw=atob('MTIzNA=='),apw=atob('MTk4NTA3MTU='),ops=['担当者A','担当者B',
 causes=['ブツ・ゴミ・毛など','湧き','マスキング跡','弾き','クレーター','傷','肌荒れ','色散り','板金の凹み','脱脂不良','アース不良','膜厚不足','その他'],
 UNITS=['台','枚','個','本'],unitFactors={台:1,枚:0.3,個:0.1,本:0.4},
 uf=u=>{const v=unitFactors[u];return typeof v==='number'&&v>0?v:1},
-pfManual=[],pfAutoOn=true,pfSnap=new Map(),
+pfManual=[],pfAutoOn=true,pfSnap=new Map(),pfSnapCv=new Map(),pfBaseKg=0,
 presets=Array.from({length:10},(_,i)=>({no:i+1,name:'プリセット'+(i+1),voltage:50,current:20,discharge:300,air:250})),
 bakePresets=[],bakeLocalChange=0,bakeConfigReady=0,bakeConfigLast='',presetLocalChange=0,presetConfigReady=0,presetConfigLast='',
 selNo=null,selName='',pRe=0,cfgOk=0,started=0,curTab='main',editId=null,tEdit=null,isAtt=0,psig='',wt=0,ngF=0,lastDay='',autoD='',tm=0,dirty=7,db=null;
@@ -1397,7 +1397,8 @@ db&&CFG().onSnapshot(d=>{
   if(x.unitFactors&&typeof x.unitFactors==='object')UNITS.forEach(u=>{if(typeof x.unitFactors[u]==='number'&&x.unitFactors[u]>0)unitFactors[u]=x.unitFactors[u]});
   if(Array.isArray(x.productFactors))pfManual=x.productFactors.filter(p=>p&&typeof p.k==='string'&&p.k.includes('|')&&typeof p.f==='number'&&p.f>0);
   if(typeof x.pfAutoOn==='boolean')pfAutoOn=x.pfAutoOn;
-  if(Array.isArray(x.pfSnap))pfSnap=new Map(x.pfSnap.filter(p=>p&&typeof p.k==='string'&&p.f>0).map(p=>[p.k,p.f]));
+  if(Array.isArray(x.pfSnap)){const ok=x.pfSnap.filter(p=>p&&typeof p.k==='string'&&p.f>0);pfSnap=new Map(ok.map(p=>[p.k,p.f]));pfSnapCv=new Map(ok.filter(p=>p.cv>0).map(p=>[p.k,p.cv]))}
+  if(typeof x.pfBaseKg==='number'&&x.pfBaseKg>0)pfBaseKg=x.pfBaseKg;
   cache.r=0;
   if(x.selectedPresetNo!==undefined)selNo=x.selectedPresetNo;
   if(x.selectedPresetName!==undefined)selName=x.selectedPresetName;
@@ -1563,9 +1564,9 @@ async function ufSave(){
   try{
     await pfLoadAll();
     /* 全期間の実績から自動係数を確定し保存（以後アーカイブ未読込でも同じ係数で集計される） */
-    const snapArr=A.r.s===2&&na?[...pfAuto().map.values()].filter(e=>e.f!=null).map(e=>({k:e.k,f:Math.round(e.f*10000)/10000})):null;
-    const upd={unitFactors:nf,productFactors:nm,pfAutoOn:na};if(snapArr)upd.pfSnap=snapArr;
-    if(snapArr)pfSnap=new Map(snapArr.map(p=>[p.k,p.f]));
+    const snapArr=A.r.s===2&&na?[...pfAuto().map.values()].filter(e=>e.f!=null).map(e=>({k:e.k,f:Math.round(e.f*10000)/10000,cv:e.cv?Math.round(e.cv*1000)/1000:0})):null;
+    const upd={unitFactors:nf,productFactors:nm,pfAutoOn:na};if(snapArr){upd.pfSnap=snapArr;const bk=pfAuto().base;if(bk&&bk.perDai>0)upd.pfBaseKg=Math.round(bk.perDai*10000)/10000}
+    if(snapArr){pfSnap=new Map(snapArr.map(p=>[p.k,p.f]));pfSnapCv=new Map(snapArr.filter(p=>p.cv>0).map(p=>[p.k,p.cv]));if(upd.pfBaseKg)pfBaseKg=upd.pfBaseKg}
     cache.r=0;sched(1);
     await setCfg(upd);
     window.appToast&&window.appToast('✅ 換算係数を保存し、全期間の過去ログに反映しました');
@@ -1807,6 +1808,9 @@ function pfRun(rs,merge){
   /* 単品登録の実績がある品は、その実績だけで確定（同時登録の記録には引きずられない）。残りの品だけを同時登録から逆算する */
   const sg=new Map();for(const r of recs)if(r.parts.length===1){const x=r.parts[0];let e=sg.get(x.k);if(!e)sg.set(x.k,e={w:0,q:0});e.w+=r.w;e.q+=x.q}
   sg.forEach((e,k)=>{const p=P.get(k);if(e.q>0){p.c=e.w/e.q;p.fixed=true}});
+  /* 単品実績のばらつき（変動係数）。3件以上あれば算出し、同時登録の按分で「ばらつきの大きい品ほど調整を多く受ける」ために使う */
+  const sv=new Map();for(const r of recs)if(r.parts.length===1){const x=r.parts[0];if(x.q>0){let a=sv.get(x.k);if(!a)sv.set(x.k,a=[]);a.push(r.w/x.q)}}
+  sv.forEach((a,k)=>{if(a.length>=3){const m=a.reduce((p,c)=>p+c,0)/a.length,sd=Math.sqrt(a.reduce((p,c)=>p+(c-m)*(c-m),0)/(a.length-1));P.get(k).cv=Math.min(0.8,Math.max(0.1,m>0?sd/m:0.35))}});
   for(let it=0;it<40&&c0>0;it++){
     const acc=new Map();
     for(const r of recs){const t=r.parts.reduce((a,x)=>a+x.q*P.get(x.k).c,0);if(!(t>0))continue;r.parts.forEach(x=>{acc.set(x.k,(acc.get(x.k)||0)+r.w*x.q*P.get(x.k).c/t)})}
@@ -1832,8 +1836,8 @@ function pfInfo(name,unit){
   if(m)return{f:m.f,src:'manual'};
   if(pfAutoOn){
     /* 過去データ(アーカイブ)未読込の間は、最後に保存した全期間ベースの自動係数(pfSnap)を使い、年をまたいでも値がぶれないようにする */
-    if(A.r.s!==2&&pfSnap.has(k))return{f:pfSnap.get(k),src:'auto'};
-    const a=pfAuto().map.get(k);if(a&&a.f!=null)return{f:a.f,src:a.est?'residual':'auto',n:a.n,few:!!a.few}}
+    if(A.r.s!==2&&pfSnap.has(k))return{f:pfSnap.get(k),src:'auto',cv:pfSnapCv.get(k)};
+    const a=pfAuto().map.get(k);if(a&&a.f!=null)return{f:a.f,src:a.est?'residual':'auto',n:a.n,few:!!a.few,cv:a.cv}}
   return{f:uf(u),src:'none'};
 }
 /* 自動で係数が出ない理由（画面表示用） */
@@ -1844,9 +1848,26 @@ function pfWhy(name,unit){
 }
 const pfv=(name,unit)=>pfInfo(name,unit).f;
 const itemW=i=>(Number(i&&i.qty)||0)*pfv(i&&i.name,i&&i.unit);
+/* 同時登録の塗料の按分：各品の「想定量（数量×係数×OW2の1台量）」を出し、合計との差は“ばらつきの大きい品ほど多く”調整して合計に合わせる。
+   ばらつき＝その品の単品実績の変動係数（3件以上）。実績が少ない/手動/係数なしの品は既定のばらつきを使う。 */
 function itemShares(r,w){
-  const its=Array.isArray(r.items)?r.items:[],wt=its.map(i=>Math.max(0,itemW(i))),t=wt.reduce((a,b)=>a+b,0);
-  return t>0?wt.map(x=>w*x/t):its.map(()=>0);
+  const its=Array.isArray(r.items)?r.items:[],bpd=(pfAuto().base&&pfAuto().base.perDai)||pfBaseKg;
+  const prop=()=>{const wt=its.map(i=>Math.max(0,itemW(i))),t=wt.reduce((a,b)=>a+b,0);return t>0?wt.map(x=>w*x/t):its.map(()=>0)};
+  if(!(bpd>0)||!(w>0))return prop();
+  const mu=[],vr=[];
+  its.forEach(i=>{const inf=pfInfo(i&&i.name,i&&i.unit),q=Number(i&&i.qty)||0,m=Math.max(0,q*inf.f*bpd),cv=inf.src==='manual'?0.15:inf.src==='none'?0.7:(inf.few||inf.src==='residual')?0.5:(inf.cv||0.35);mu.push(m);vr.push((cv*m)*(cv*m))});
+  if(!mu.some(m=>m>0))return its.map(()=>0);
+  const a=mu.slice(),act=new Set(mu.map((m,i)=>m>0?i:-1).filter(i=>i>=0));
+  for(let g=0;g<=its.length;g++){
+    let S=0,V=0;act.forEach(i=>{S+=mu[i];V+=vr[i]});
+    let fixed=0;a.forEach((x,i)=>{if(!act.has(i))fixed+=x});
+    const d=w-fixed-S;let neg=[];
+    act.forEach(i=>{a[i]=mu[i]+(V>0?vr[i]/V*d:d*mu[i]/S);if(a[i]<0)neg.push(i)});
+    if(!neg.length)break;
+    neg.forEach(i=>{a[i]=0;act.delete(i)});
+    if(!act.size)return prop();
+  }
+  return a;
 }
 const COL={r:'records',t:'tochaku_records'};
 const LR_COL='late_repaints';
@@ -2181,7 +2202,7 @@ function recHtml(r){
   return `<div class="card-item${ng?' ng-item':''}"><div class="card-header"><span>📅 ${esc(r.date)}</span><span class="${r.status==='OK'?'badge-ok':'badge-ng'}">${ng?'⚠️ <span class="text-danger">再塗装(NG)</span>':'OK'}</span></div>`+
   recordSummary(r.items,r.operator,fw(r.paint_weight),r.paint_name||'-',`${r.bake_temp||'-'}℃/${r.bake_time||'-'}分`)+
   `<div class="mobile-card-details"><div class="source-status"><span class="${r.source_type==='auto'?'auto':'real'}">${recordSource}</span><span>実績入力値を基準に表示</span></div>`+
-  `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?(()=>{const m=r.items.length>1&&Number(r._w)>0,sh=m?itemShares(r,Number(r._w)):[];return r.items.map((i,ix)=>chipP(i,sh[ix]||0,m)).join('')+(m?'<div class="chip-note">※同時登録の使用塗料は、各品の「数量×サイズ係数（OW2の1台＝1.0）」の比で按分した目安値です。🧮自動＝過去実績から算出／🧮逆算＝合計から相手品の分を引いて算出／✍️手動＝指定した係数／⚠️＝係数を算出できないため、単位係数で仮に按分した値（「仮≒」表示）。係数のタグ（✎）をタップすると、その品の係数を手動で指定・変更できます</div>':'')})():'-'}</div><div class="card-data-grid">`+
+  `<div class="item-line"><span>品名:</span>${Array.isArray(r.items)&&r.items.length?(()=>{const m=r.items.length>1&&Number(r._w)>0,sh=m?itemShares(r,Number(r._w)):[];return r.items.map((i,ix)=>chipP(i,sh[ix]||0,m)).join('')+(m?'<div class="chip-note">※同時登録の使用塗料は、各品の「数量×サイズ係数（OW2の1台＝1.0）」から想定量を出し、合計との差を、使用量のばらつき（過去実績のブレ）が大きい品ほど多めに調整して合わせた目安値です。🧮自動＝過去実績から算出／🧮逆算＝合計から相手品の分を引いて算出／✍️手動＝指定した係数／⚠️＝係数を算出できないため、単位係数で仮に按分した値（「仮≒」表示）。係数のタグ（✎）をタップすると、その品の係数を手動で指定・変更できます</div>':'')})():'-'}</div><div class="card-data-grid">`+
   row('塗装者:',esc(r.operator))+row('塗装機:',esc(r.machine||'旭サナック'))+
   row(`天候${r.location?`(${esc(r.location)})`:'(福山市)'}:`,`${esc(r.weather)} (${esc(r.temp)}℃ / ${esc(r.humidity)}%)`)+
   row('塗料名:',esc(r.paint_name||'未選択'))+row('塗料使用量:',fw(r.paint_weight))+row('膜厚:',r.thickness!=null&&r.thickness!==''?Number(r.thickness).toFixed(1)+'μm':'未入力')+
